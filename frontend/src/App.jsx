@@ -1,19 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [data, setData] = useState([]);
 
-  return (
-      <>
+    useEffect(() => {
+        axios.get('http://localhost:3000/api/data')
+            .then((response) => {
+                console.log('Données reçues :', response.data); // Vérifie ici
+                setData(response.data); // Stocker les données
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+            });
+    }, []);
 
-          <div className="text-3xl font-bold underline">
-              Hello, Tailwind CSS 3.4.17!
-          </div>
-      </>
-  )
+    useEffect(() => {
+        console.log(data)
+    }, [data]);
+
+    return (
+        <div>
+            <h1 className="text-3xl">Mon Application React</h1>
+            <ul>
+                {data.map((data) => (
+                    <li key={data.id} className="text-lg">
+                        {data.name}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }
 
-export default App
+export default App;
