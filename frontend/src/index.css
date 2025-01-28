@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* DATE PIKER */
+
+/* header */
+.react-datepicker__header:not(.react-datepicker__header--has-time-select) {
+    border-top-right-radius: 0.3rem;
+    background-color: #1F2937;
+}
+.react-datepicker__month-container {
+    background-color: #1F2937;
+    border: none
+}
+/* mois et années */
+.react-datepicker__month {
+    background-color: #1F2937;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.react-datepicker {
+    font-family: "ui-sans-serif";
+    font-size: 0.8rem;
+    background-color: #fff;
+    color: white;
+    border: none!important;
+    border-radius: 0.3rem;
+    display: inline-block;
+    position: relative;
+    line-height: initial;
+}
+
+.custom-date-picker {
+    padding-left: 15px;
+    background-color: #1F2937;
+    color: white;
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+.custom-date-picker:hover {
+    cursor: pointer;
+}
+.react-datepicker__month-wrapper {
+    color: white;
+}
+

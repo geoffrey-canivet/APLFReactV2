@@ -1,29 +1,29 @@
 const express = require('express');
 const cors = require('cors');
+const router = require('./router');
+const { sequelize } = require('./models');
 const app = express();
 
 const PORT = 3000;
 
 app.use(cors());
-
+app.use(express.json());
+app.use('/', router);
 
 // Routes
 app.get('/', (req, res) => {
     res.send('Server running!');
 });
 
-app.get('/api/data', (req, res) => {
-    const data = [
-        { id: 1, name: "Info1" },
-        { id: 2, name: "Info2" },
-        { id: 3, name: "Info3" }
-    ];
-    res.json(data);
-});
-
-
+// DB
+sequelize.sync({ force: false })
+    .then(() => {
+        console.log("Base de données synchronisée 🟢");
+    })
+    .catch(err => {
+        console.error("Erreur de synchronisation de la base de données 🔴 :", err);
+    });
 
 app.listen(PORT, () => {
     console.log(`Serveur ok 🟢 -> http://localhost:${PORT}`);
-    console.log(`Base de donnée Nok 🔴`);
 });
