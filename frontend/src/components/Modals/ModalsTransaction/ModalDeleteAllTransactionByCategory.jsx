@@ -1,9 +1,8 @@
-import {useEffect} from "react";
-import MySwal from "sweetalert2";
+import React, {useEffect} from 'react';
 import Swal from "sweetalert2";
+import MySwal from "sweetalert2";
 
-const ModalPeriod = ({closeModal}) => {
-
+const ModalDeleteAllTransactionByCategory = ({closeModal, handleDeleteAllTransacByCategory}) => {
     // Configure Toast
     const ToastNotification = Swal.mixin({
         toast: true,
@@ -20,19 +19,23 @@ const ModalPeriod = ({closeModal}) => {
 
     useEffect(() => {
         MySwal.fire({
-            title: "Période",
+            title: "Supprimer",
+            icon: "warning",
             padding: 0,
             customClass: {
                 popup: "custom-popup",
                 title: "custom-header",
                 htmlContainer: "custom-body",
                 actions: "custom-footer",
+                confirmButton: "small-confirm-button",
+                cancelButton: "small-cancel-button",
             },
             html: `
-                <div class="">
-                CHOIX
-</div>
+            <p class="alert">Cette action est irréverssible</p>
 				<style>
+				    .alert {
+				        color: red;
+				    }
 				    .custom-backdrop {
 				        background-color: rgba(0, 0, 0, 100)!important;
 				    }
@@ -47,7 +50,7 @@ const ModalPeriod = ({closeModal}) => {
                           padding-left: 0 ;
                           padding-right: 0 ;
                           padding-top: 15px;
-                          padding-bottom: 0;
+                          padding-bottom: 8px;
                           margin: 0 !important;
                           background-color: #1F2937;
                           color: #63b3ed;
@@ -76,34 +79,47 @@ const ModalPeriod = ({closeModal}) => {
                           border-radius: 4px !important;
                           background-color: #374151;
                     }
+                    .small-confirm-button:hover {
+                          background-color: #970000;
+                    }
                     .small-cancel-button {
                           font-size: 12px !important;
                           padding: 10px 24px !important;
                           border-radius: 4px !important;
                           background-color: #374151;
                     }
-				
+					
 				</style>
         `,
             showCancelButton: true,
-            showConfirmButton: false,
-            confirmButtonText: "Ajouter",
-            cancelButtonText: "Fermer",
+            confirmButtonText: "Supprimer",
+            cancelButtonText: "Annuler",
             didOpen: () => {
                 const backdrop = document.querySelector(".swal2-backdrop-show");
                 if (backdrop) {
                     backdrop.style.backdropFilter = "blur(5px)";
-                    backdrop.style.backgroundColor = "rgba(4,19,35,0.7)"
+                    backdrop.style.backgroundColor = "rgba(4,19,35,0.7)"; // Gris foncé avec 90% d'opacité
+                }
+                const validationMessage = document.querySelector(".swal2-validation-message");
+                if (validationMessage) {
+                    validationMessage.style.color = "#D6544A";
+                    validationMessage.style.backgroundColor = "#111827";
+                    validationMessage.style.margin = "0px";
+                    validationMessage.style.marginBottom = "5px";
                 }
             },
 
-        }).then(() => {
-
+        }).then((result) => {
+            if (result.isConfirmed) {
+                handleDeleteAllTransacByCategory();
+                ToastNotification.fire({
+                    icon: "success",
+                    title: `Supprimé avec succès.`,
+                });
+            }
             closeModal();
-
         });
     }, [closeModal]);
-
 
     return (
         <>
@@ -112,4 +128,4 @@ const ModalPeriod = ({closeModal}) => {
     );
 };
 
-export default ModalPeriod;
+export default ModalDeleteAllTransactionByCategory;

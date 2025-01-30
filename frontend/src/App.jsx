@@ -5,21 +5,19 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
+import Settings from "./pages/Settings.jsx";
 
 function App() {
     return (
         <Routes>
+            {/*Route publique*/}
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute>
-                        <Dashboard />
-                    </PrivateRoute>
-                }
-            />
+            {/*Route protégées par token*/}
+            <Route path="/settings" element={<PrivateRoute><Settings/></PrivateRoute>}/>
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>}/>
+            {/*404*/}
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

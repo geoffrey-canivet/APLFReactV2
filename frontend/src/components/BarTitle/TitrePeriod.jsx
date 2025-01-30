@@ -1,4 +1,4 @@
-import ModalPeriod from "../Modals/ModalPeriod/ModalPeriod.jsx";
+
 import {useState} from "react";
 import DatePicker from 'react-datepicker';
 /*import 'react-datepicker/dist/react-datepicker.css';*/
@@ -32,9 +32,6 @@ const TitrePeriod = () => {
                             <path fillRule="evenodd"d="M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1 2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" clipRule="evenodd"/>
                         </svg>
                     </span>
-                    {/*<h5
-                        onClick={() => setCurrentModal("modalPeriod")}
-                        className="text-white ml-4 font-bold text-md tracking-wide uppercase">Janvier 2024</h5>*/}
                     <DatePicker
                         selected={selectedDate}
                         onChange={(date) => setSelectedDate(date)}
@@ -46,13 +43,7 @@ const TitrePeriod = () => {
                      showMonthYearDropdown/>
                 </div>
             </div>
-            {/* MODAL */}
-            {currentModal === "modalPeriod" && (
-                <ModalPeriod
-                    closeModal={closeModal}
 
-                />
-            )}
         </>
     );
 };

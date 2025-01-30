@@ -5,6 +5,12 @@ import axios from "axios";
 import NavigationContainer from "../components/Navigation/NavigationContainer.jsx";
 import TitrePeriod from "../components/BarTitle/TitrePeriod.jsx";
 import TitreOutils from "../components/BarTitle/TitreOutils.jsx";
+import {Card} from "@mui/material";
+
+import CardFixe from "../components/Cards/CardFixe.jsx";
+import AccordionsCards from "../components/Accordions/AccordionsCards.jsx";
+import AccordionsTools from "../components/Accordions/AccordionsTools.jsx";
+import SliderSwiper from "../components/Slider/SliderSwiper.jsx";
 
 const Dashboard = () => {
 
@@ -57,8 +63,11 @@ const Dashboard = () => {
             <div className="dark:bg-gray-900 min-h-screen">
                 <NavigationContainer/>
                 <div className="pt-16">
+                    <SliderSwiper/>
                     <TitrePeriod/>
+                    <AccordionsCards/>
                     <TitreOutils/>
+                    <AccordionsTools/>
                 </div>
             </div>
         </>

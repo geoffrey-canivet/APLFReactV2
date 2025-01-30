@@ -60,5 +60,14 @@ module.exports = (sequelize, DataTypes) => {
             comment: "Table des utilisateurs"
         });
 
+    // Définir les associations dans une fonction associate
+    User.associate = (models) => {
+        User.hasMany(models.Transaction, {
+            foreignKey: 'userId',
+            as: 'transactions',
+        });
+    };
+
+
     return User
 }

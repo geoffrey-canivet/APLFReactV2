@@ -87,7 +87,7 @@ const userController = {
     // RECUPER USER
     getUserInfo: async (req, res) => {
         try {
-            const { id } = req.user; // req.user est défini par authMiddleware
+            const id = req.userId;
             const user = await User.findByPk(id); // Utilisez votre méthode pour trouver l'utilisateur
 
             if (!user) {

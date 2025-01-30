@@ -14,11 +14,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const NavBar = ({ handleDrawerOpen }) => {
-    console.log("handleDrawerOpen:", handleDrawerOpen);
+
     const navigate = useNavigate();
 
     const user = useUserStore((state) => state.user);
-    console.log(user);
+
 
     // Gestion du dropdown
     const [navDropdown, setNavDropdown] = useState(false);

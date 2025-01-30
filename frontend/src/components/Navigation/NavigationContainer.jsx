@@ -10,7 +10,7 @@ const NavigationContainer = () => {
         setDrawerOpen(stat);
     }
 
-    console.log("handleDrawerOpen in NavigationContainer:", handleDrawerOpen);
+
     return (
         <>
             <NavBar handleDrawerOpen={handleDrawerOpen} />
