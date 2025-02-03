@@ -6,7 +6,7 @@ const useTransacOccasStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    // 📌 Récupérer les catégories de type "occasionnelle"
+    // 📌 Récupérer les catégories de type "Occasionnelle"
     fetchOccas: async () => {
         set({ loading: true, error: null });
         try {
@@ -37,8 +37,7 @@ const useTransacOccasStore = create((set, get) => ({
         }
     },
 
-
-    // 📌 Ajouter une transaction occasionnelle
+    // 📌 Ajouter une transaction Occasionnelle
     addTransactionOccas: async (categoryId, data) => {
         set({ loading: true, error: null });
         try {
@@ -82,6 +81,7 @@ const useTransacOccasStore = create((set, get) => ({
                     transactionId,
                     amount: subTransactionData.amount,
                     date: subTransactionData.date,
+                    commerce: subTransactionData.commerce,
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -136,6 +136,75 @@ const useTransacOccasStore = create((set, get) => ({
             console.error("❌ Erreur deleteTransactionOccas :", error);
             set({ error: error.message });
         } finally {
+            set({ loading: false });
+        }
+    },
+
+    // Fonction pour supprimer une sous-transaction par son ID
+    deleteSubTransaction: async (subTransactionId) => {
+        try {
+            // Récupérez le token (par exemple stocké dans le localStorage)
+            const token = localStorage.getItem('token');
+
+            const response = await fetch("http://localhost:3000/subtransaction/deleteSubTransaction", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ subTransactionId })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Erreur lors de la suppression.");
+            }
+
+            const data = await response.json();
+            console.log(data.message);
+
+            // Optionnel : Mettre à jour l'état pour retirer la sous-transaction supprimée
+            set((state) => ({
+                subTransactions: state.subTransactions.filter(st => st.id !== subTransactionId)
+            }));
+
+            return data;
+        } catch (error) {
+            console.error("Erreur dans deleteSubTransaction:", error);
+            throw error;
+        }
+    },
+
+    // Supprimer toutes les transactions d'une catégorie
+    deleteAllTransactionsByCategory: async (categoryId) => {
+        set({ loading: true, error: null });
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
+
+            const response = await axios.post(
+                "http://localhost:3000/add/delAllByCat",
+                { categoryId },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            console.log("Transactions supprimée :", response.data);
+
+            // Re-fetch
+            const refreshResponse = await axios.get("http://localhost:3000/trans/getOccasionnelle", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            set({ categories: refreshResponse.data });
+
+            return response.data;
+
+        }catch (error) {
+            console.error("Erreur lors de la suppression des transactions :", error);
+            set({ error: error.message });
+            throw error;
+        }finally {
             set({ loading: false });
         }
     },

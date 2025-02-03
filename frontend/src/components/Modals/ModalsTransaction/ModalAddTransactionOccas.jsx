@@ -42,7 +42,7 @@ const ModalAddTransactionOccas = ({closeModal, addTransactionOccas}) => {
 							<input type="text" id="inputNom" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:bg-gray-800 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nom">
 						</div>
 						<!--Prix-->
-						<div class="relative">
+						<!--<div class="relative">
 							<div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none ">
 								<svg className="w-[24px] h-[24px] text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#9CA3AF" viewBox="0 0 24 24">
 									<path fill-rule="evenodd" d="M7 6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-2v-4a3 3 0 0 0-3-3H7V6Z" clip-rule="evenodd"/>
@@ -51,7 +51,7 @@ const ModalAddTransactionOccas = ({closeModal, addTransactionOccas}) => {
 								</svg>
 							</div>
 							<input type="text" id="inputPrix" class="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Prix">
-						</div>
+						</div>-->
                     </div>
 				</form>
 				<style>
@@ -128,9 +128,10 @@ const ModalAddTransactionOccas = ({closeModal, addTransactionOccas}) => {
                 const categoryId = 2
                 const periodId = 1
                 const name = document.getElementById("inputNom").value;
-                const amount = document.getElementById("inputPrix").value;
-                if (!name || !amount) {
-                    Swal.showValidationMessage("Veuillez remplir tous les champs.");
+                /*const amount = document.getElementById("inputPrix").value;*/
+                const amount = 0
+                if (!name) {
+                    Swal.showValidationMessage("Veuillez choisir un nom.");
                     return null;
                 }
                 return {name, amount, categoryId, periodId};

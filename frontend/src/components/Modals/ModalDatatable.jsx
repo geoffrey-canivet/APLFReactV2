@@ -1,11 +1,10 @@
 import {useEffect, useRef } from "react";
-import MySwal from "sweetalert2";
 import Swal from "sweetalert2";
+import MySwal from "sweetalert2";
 import { createRoot } from "react-dom/client";
-import PieChartFixe from "../Charts/Fixe/PieChartFixe.jsx";
+import Datatable from "../Datatable/Datatable.jsx";
 
-const ModalChart = ({closeModal, dataChart}) => {
-
+const ModalDatatable = ({closeModal, dataDatatable}) => {
     const rootRef = useRef(null);
 
     // Configure Toast
@@ -24,7 +23,7 @@ const ModalChart = ({closeModal, dataChart}) => {
 
     useEffect(() => {
         MySwal.fire({
-            title: "Graphique",
+            title: "DataTable",
             padding: 0,
             customClass: {
                 popup: "custom-popup",
@@ -40,7 +39,7 @@ const ModalChart = ({closeModal, dataChart}) => {
 				        background-color: rgba(0, 0, 0, 100)!important;
 				    }
                     .custom-popup {
-                        max-width: 450px;
+                        width: 70vw;
                         border: 2px solid #4a5568;
                         background-color: #1F2937;
                         border-radius: 12px;
@@ -104,8 +103,8 @@ const ModalChart = ({closeModal, dataChart}) => {
                         // Créer la racine uniquement si elle n'existe pas encore
                         rootRef.current = createRoot(chartContainer);
                     }
-                    // Mettre à jour le contenu du graphique
-                    rootRef.current.render(<PieChartFixe dataChart={dataChart.transactions} />);
+
+                    rootRef.current.render(<Datatable dataDatatable={dataDatatable} />);
                 }
 
             },
@@ -122,4 +121,4 @@ const ModalChart = ({closeModal, dataChart}) => {
     );
 };
 
-export default ModalChart;
+export default ModalDatatable;

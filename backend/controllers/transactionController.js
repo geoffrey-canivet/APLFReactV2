@@ -8,7 +8,7 @@ const transactionController = {
             const userId = req.userId; // Toujours basé sur l'utilisateur connecté
 
             // Validation simple des entrées
-            if (!userId || !categoryId || !periodId || !name || !amount) {
+            if (!userId || !categoryId || !periodId || !name) {
                 return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
             }
 

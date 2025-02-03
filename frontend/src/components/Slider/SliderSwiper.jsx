@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react'; // Importation des composants de Swiper
 
+
+
 import 'swiper/css'; // Styles de base de Swiper
 import 'swiper/css/navigation'; // Styles pour la navigation
 import 'swiper/css/pagination'; // Styles pour la pagination
@@ -8,20 +10,13 @@ import 'swiper/css/scrollbar'; // Styles pour la barre de défilement
 
 import {Autoplay, Navigation, Pagination, Scrollbar} from 'swiper/modules';
 
-import {
-    faAppleWhole,
-    faCreditCard,
-    faGift,
-    faHouse,
-    faPlane, faThumbtack,
-    faTicket,
-    faUmbrella,
-    faLandmark, faCashRegister, faTag, faStore, faWallet, faMoneyBill, faMoneyBillWave, faSackDollar, faSackXmark
-} from "@fortawesome/free-solid-svg-icons";
+import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 import cardData from "../../utils/DB.js";
+import useTransacFixeStore from "../../store/useTransacFixeStore.js";
+import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
 
 const SwiperDashboard = () => {
 
@@ -30,6 +25,15 @@ const SwiperDashboard = () => {
     const [fixe, setFixe] = useState(cardData.filter(card => [1, 2, 3, 4].includes(card.id)));
     const [occasionnelle, setOccasionnelle] = useState(cardData.filter(card => [5, 6, 7, 8].includes(card.id)));
     const [revenu, setRevenu] = useState(cardData.filter(card => [9, 10, 11, 12].includes(card.id)));
+
+    const calculateTotal = (transactions) => {
+        return transactions.reduce((total, transaction) => total + transaction.amount, 0);
+    };
+
+    // STORE
+    const { categories: categoriesFixe } = useTransacFixeStore();
+    const { categories: categoriesRevenu } = useTransacRevenuStore();
+
 
 
     return (
@@ -78,7 +82,7 @@ const SwiperDashboard = () => {
             >
                 {/* Slides */}
                 {/*FIXE*/}
-                {fixe.map((data, index) => (
+                {categoriesFixe.map((data, index) => (
                     <SwiperSlide key={index}>
                         <div
                             className="slide bg-gray-700 text-white flex items-center justify-center"
@@ -86,9 +90,9 @@ const SwiperDashboard = () => {
                             onMouseLeave={(e) => e.currentTarget.classList.remove('hovered')}
                         >
                             <div className="flex flex-col">
-                                <FontAwesomeIcon size="xl" className="" icon={data.icon} style={{color: data.color}} />
-                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.title}</h3>
-                                <p className="text-center mt-1 text-sm">{data.total} €</p>
+                                <FontAwesomeIcon size="xl" className="" icon={Icons[data.icon]} style={{color: data.color}} />
+                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.name}</h3>
+                                <p className="text-center mt-1 text-sm">{calculateTotal(data.transactions)} €</p>
                             </div>
 
                         </div>
@@ -112,7 +116,7 @@ const SwiperDashboard = () => {
                     </SwiperSlide>
                 ))}
                 {/*REVENU*/}
-                {revenu.map((data, index) => (
+                {categoriesRevenu.map((data, index) => (
                     <SwiperSlide key={index}>
                         <div
                             className="slide bg-gray-700 text-white flex items-center justify-center"
@@ -120,9 +124,9 @@ const SwiperDashboard = () => {
                             onMouseLeave={(e) => e.currentTarget.classList.remove('hovered')}
                         >
                             <div className="flex flex-col">
-                                <FontAwesomeIcon size="xl" className="" icon={data.icon} style={{color: data.color}} />
-                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.title}</h3>
-                                <p className="text-center mt-1 text-sm">{data.total} €</p>
+                                {/*<FontAwesomeIcon size="xl" className="" icon={data.icon} style={{color: data.color}} />*/}
+                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.name}</h3>
+                                <p className="text-center mt-1 text-sm">{calculateTotal(data.transactions)} €</p>
                             </div>
 
                         </div>

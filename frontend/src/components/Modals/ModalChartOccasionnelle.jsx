@@ -2,10 +2,9 @@ import {useEffect, useRef } from "react";
 import MySwal from "sweetalert2";
 import Swal from "sweetalert2";
 import { createRoot } from "react-dom/client";
-import PieChartFixe from "../Charts/Fixe/PieChartFixe.jsx";
+import PieChartOccasionnelle from "../Charts/Occasionnelle/PieChartOccasionnelle.jsx";
 
-const ModalChart = ({closeModal, dataChart}) => {
-
+const ModalChartOccasionnelle = ({closeModal, dataChart}) => {
     const rootRef = useRef(null);
 
     // Configure Toast
@@ -105,7 +104,7 @@ const ModalChart = ({closeModal, dataChart}) => {
                         rootRef.current = createRoot(chartContainer);
                     }
                     // Mettre à jour le contenu du graphique
-                    rootRef.current.render(<PieChartFixe dataChart={dataChart.transactions} />);
+                    rootRef.current.render(<PieChartOccasionnelle dataChart={dataChart.transactions} />);
                 }
 
             },
@@ -122,4 +121,4 @@ const ModalChart = ({closeModal, dataChart}) => {
     );
 };
 
-export default ModalChart;
+export default ModalChartOccasionnelle;

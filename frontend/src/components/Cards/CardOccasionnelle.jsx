@@ -3,12 +3,12 @@ import useTransacOccasStore  from "../../store/useTransacOccasStore.js";
 import ModalAddTransaction from "../Modals/ModalsTransaction/ModalAddTransaction.jsx";
 import ModalChart from "../Modals/ModalChart.jsx";
 import {
-    faAppleWhole,
+    faAppleWhole, faCaretDown, faCaretUp,
     faChartBar,
     faCreditCard, faEllipsis, faEraser,
     faFilter, faGift,
     faHouse, faPenToSquare, faPlane,
-    faPlusCircle, faTable, faThumbtack,
+    faPlusCircle, faSquareCaretDown, faSquareCaretUp, faTable, faThumbtack,
     faTicket, faTrash,
     faUmbrella
 } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +18,8 @@ import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/Mod
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
 import ModalAddTransactionOccas from "../Modals/ModalsTransaction/ModalAddTransactionOccas.jsx";
 import ModalAddSubTransaction from "../Modals/ModalsTransaction/ModalAddSubTransaction.jsx";
+import ModalDatatable from "../Modals/ModalDatatable.jsx";
+import ModalChartOccasionnelle from "../Modals/ModalChartOccasionnelle.jsx";
 
 // ICON CATEGORIES
 const iconMap = {
@@ -32,9 +34,23 @@ const calculateTotal = (transactions) => {
     return transactions.reduce((total, transaction) => total + transaction.amount, 0);
 };
 
+const calculateTransactionsTotal = (transactions) => {
+    if (!Array.isArray(transactions) || transactions.length === 0) {
+        return 0;
+    }
+
+    return transactions.reduce((globalTotal, transaction) => {
+        const transactionTotal =
+            transaction.subTransactions?.reduce((sum, sub) => sum + sub.amount, 0) || 0;
+        return globalTotal + transactionTotal;
+    }, 0);
+};
+
+
+
+
 const CardOccasionnelle = () => {
 
-    console.log("Token :", localStorage.getItem("token"));
 
 
     // STORE
@@ -56,6 +72,8 @@ const CardOccasionnelle = () => {
     const [categoryId, setCategoryId] = useState(0);
     const [transactionId, setTransactionId] = useState(0);
     const [dataChart, setDataChart] = useState(null);
+    const [dataDatatable, setDataDatatable] = useState(null);
+    const [viewSubTransactions, setViewSubTransactions] = useState(false);
 
     // RECUP CATEGORIES - OCCASIONNELLE
     useEffect(() => {
@@ -79,6 +97,11 @@ const CardOccasionnelle = () => {
         };
     }, []);
 
+    // AFFICHER SOUS-TRANSACTION
+    const handleViewSubTransactions = () => {
+        setViewSubTransactions(prevState => !prevState);
+    }
+
     // MODALS
     // AJOUTER TRANSACTION
     const modalAddTransaction = (e) => {
@@ -100,10 +123,19 @@ const CardOccasionnelle = () => {
         setCurrentModal("modalDeleteAllTransactionByCategory");
         setCategoryId(Number(e.currentTarget.id));
     }
+    // MODAL DATATABLE
+    const modalDatatable = (e) => {
+        setCurrentModal("modalDatatable");
+        const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
+        setDataDatatable(cat);
+    }
 
-
-
-
+    // MODAL GRAPHIQUE
+    const modalChart = (e) => {
+        setCurrentModal("modalChart");
+        const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
+        setDataChart(cat);
+    };
 
 
     // MODAL AJOUTER SUB-TRANSACTION
@@ -125,17 +157,6 @@ const CardOccasionnelle = () => {
         await addSubTransaction(transactionId, data);
     }
 
-
-
-
-
-
-    // MODAL GRAPHIQUE
-    const modalChart = (e) => {
-        setCurrentModal("modalChart");
-        const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
-        setDataChart(cat);
-    };
     // MODAL FERMETURE
     const closeModal = () => {
         setCurrentModal(null);
@@ -190,23 +211,35 @@ const CardOccasionnelle = () => {
                                 {card.name}
                             </h5>
                             <div className="px-0 py-0 flex gap-4">
+                                {/* Btn Afficher sous-transaction */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Filtre"
                                     id={card.id}
+                                    onClick={handleViewSubTransactions}
+                                >
+                                    {viewSubTransactions ? <FontAwesomeIcon icon={faSquareCaretUp} /> : <FontAwesomeIcon icon={faSquareCaretDown} />}
 
+
+                                </button>
+                                {/* Btn Filtre */}
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                    title="Filtre"
+                                    id={card.id}
                                 >
                                     <FontAwesomeIcon icon={faFilter}/>
                                 </button>
-
+                                {/* Btn Datatable */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Graphique"
                                     id={card.id}
-                                    /*onClick={modalChart}*/
+                                    onClick={modalDatatable}
                                 >
                                     <FontAwesomeIcon icon={faTable}/>
                                 </button>
+                                {/* Btn Graphique */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Graphique"
@@ -215,6 +248,7 @@ const CardOccasionnelle = () => {
                                 >
                                     <FontAwesomeIcon icon={faChartBar}/>
                                 </button>
+                                {/* Btn Ajouter transaction */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Ajouter un élément"
@@ -223,6 +257,7 @@ const CardOccasionnelle = () => {
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
                                 </button>
+                                {/* Btn Supprimer toutes les transactions et sous-transactionW */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
                                     title="Filtre"
@@ -239,9 +274,10 @@ const CardOccasionnelle = () => {
                                 <tbody>
                                 {card.transactions?.length > 0 ? (
                                     card.transactions.map((transaction, i) => {
-                                        // 📌 Calculer le total des sous-transactions
-                                        const totalSubTransactions = transaction.subTransactions?.reduce((sum, sub) => sum + sub.amount, 0) || 0;
-                                        const totalTransaction = transaction.amount + totalSubTransactions;
+                                        // 📌 Calculer le total des sous-transactions uniquement
+                                        const totalSubTransactions =
+                                            transaction.subTransactions?.reduce((sum, sub) => sum + sub.amount, 0) || 0;
+                                        const totalTransaction = totalSubTransactions; // Total uniquement basé sur les sous-transactions
 
                                         return (
                                             <React.Fragment key={transaction.id}>
@@ -288,24 +324,32 @@ const CardOccasionnelle = () => {
                                                 </tr>
 
                                                 {/* 📌 Affichage des sous-transactions */}
-                                                {/*<tr className="bg-gray-100 dark:bg-gray-900">
-                                                    <td colSpan="3">
-                                                        <div className="ml-6">
-                                                            <p className="text-gray-700 dark:text-gray-300 font-semibold">Sous-transactions :</p>
-                                                            {Array.isArray(transaction.subTransactions) && transaction.subTransactions.length > 0 ? (
-                                                                <ul className="list-disc ml-4">
-                                                                    {transaction.subTransactions.map((sub) => (
-                                                                        <li key={sub.id} className="text-sm text-gray-700 dark:text-gray-300">
-                                                                            {sub.date} - {sub.amount} €
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            ) : (
-                                                                <p className="text-sm text-gray-500 italic">Pas de sous-transactions</p>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>*/}
+                                                {viewSubTransactions ?
+                                                    <tr className="bg-gray-100 dark:bg-gray-900">
+                                                        <td colSpan="3">
+                                                            <div className="ml-6">
+                                                                <p className="text-gray-700 dark:text-gray-300 font-semibold">Sous-transactions
+                                                                    :</p>
+                                                                {Array.isArray(transaction.subTransactions) && transaction.subTransactions.length > 0 ? (
+                                                                    <ul className="list-disc ml-4">
+                                                                        {transaction.subTransactions.map((sub) => (
+                                                                            <li key={sub.id}
+                                                                                className="text-sm text-gray-700 dark:text-gray-300">
+                                                                                {sub.date} - {sub.amount} € - {sub.commerce}
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : (
+                                                                    <p className="text-sm text-gray-500 italic">Pas de
+                                                                        sous-transactions</p>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    :
+                                                    null
+                                                }
+
                                             </React.Fragment>
                                         );
                                     })
@@ -316,8 +360,6 @@ const CardOccasionnelle = () => {
                                 )}
 
 
-
-
                                 </tbody>
                             </table>
                         </div>
@@ -325,19 +367,19 @@ const CardOccasionnelle = () => {
                         <div className="flex justify-between px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-b-lg">
                             <div className="flex-1 text-center border-r border-gray-300 dark:border-gray-600">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions)} €
+                                    {calculateTransactionsTotal(card.transactions)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Mois</div>
                             </div>
                             <div className="flex-1 text-center border-r border-gray-300 dark:border-gray-600">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions) * 3} €
+                                    {calculateTransactionsTotal(card.transactions) * 3} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Trimestre</div>
                             </div>
                             <div className="flex-1 text-center">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions) * 12} €
+                                    {calculateTransactionsTotal(card.transactions) * 12} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Année</div>
                             </div>
@@ -377,7 +419,11 @@ const CardOccasionnelle = () => {
             )}
             {/* MODAL Chart */}
             {currentModal === "modalChart" && dataChart && (
-                <ModalChart closeModal={closeModal} dataChart={dataChart} />
+                <ModalChartOccasionnelle closeModal={closeModal} dataChart={dataChart} />
+            )}
+            {/* MODAL Datatable */}
+            {currentModal === "modalDatatable" && (
+                <ModalDatatable closeModal={closeModal} dataDatatable={dataDatatable} />
             )}
         </>
     );

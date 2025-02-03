@@ -137,7 +137,7 @@ const ModalAddTransaction = ({closeModal, addTransactionFixe}) => {
             },
         }).then((result) => {
             if (result.isConfirmed) {
-                addTransactionFixe(c)
+                addTransactionFixe(result.value)
                 ToastNotification.fire({
                     icon: "success",
                     title: `${result.value.name} ajouté avec succès.`,

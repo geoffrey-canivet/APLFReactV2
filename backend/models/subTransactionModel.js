@@ -15,6 +15,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        commerce: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        comments: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        photo: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        document: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         transactionId: {
             type: DataTypes.INTEGER,
             allowNull: false,

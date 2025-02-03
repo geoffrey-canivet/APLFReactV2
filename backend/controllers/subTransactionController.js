@@ -3,9 +3,9 @@ const db = require("../models"); // ✅ Importer l'index des modèles correcteme
 const subTransactionController = {
     addSubTransaction: async (req, res) => {
         try {
-            const { transactionId, amount, date } = req.body;
+            const { transactionId, amount, date, commerce } = req.body;
 
-            console.log("📥 Données reçues :", { transactionId, amount, date });
+            console.log("📥 Données reçues :", { transactionId, amount, date, commerce });
 
             // ✅ Vérification de la transaction principale
             const transaction = await db.Transaction.findByPk(transactionId);
@@ -21,6 +21,7 @@ const subTransactionController = {
                 transactionId,
                 amount,
                 date,
+                commerce,
             });
 
             console.log("✅ Sous-transaction ajoutée avec succès :", newSubTransaction);
@@ -28,6 +29,33 @@ const subTransactionController = {
             res.status(201).json(newSubTransaction);
         } catch (error) {
             console.error("❌ Erreur lors de l'ajout de la sous-transaction :", error);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    },
+
+    deleteSubTransaction: async (req, res) => {
+        try {
+            // Récupération de l'ID de la sous-transaction dans le body
+            const { subTransactionId } = req.body;
+
+            if (!subTransactionId) {
+                return res.status(400).json({ error: "L'id de la sous-transaction est requis." });
+            }
+
+            // Recherche de la sous-transaction
+            const subTransaction = await db.SubTransaction.findByPk(subTransactionId);
+
+            if (!subTransaction) {
+                return res.status(404).json({ error: "Sous-transaction non trouvée." });
+            }
+
+            // Suppression de la sous-transaction
+            await subTransaction.destroy();
+
+            console.log("✅ Sous-transaction supprimée avec succès :", subTransactionId);
+            res.status(200).json({ message: "Sous-transaction supprimée avec succès." });
+        } catch (error) {
+            console.error("❌ Erreur lors de la suppression de la sous-transaction :", error);
             res.status(500).json({ error: "Erreur serveur" });
         }
     },

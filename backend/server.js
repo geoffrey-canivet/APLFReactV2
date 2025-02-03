@@ -22,21 +22,53 @@ app.get('/', (req, res) => {
         console.log("Base de données synchronisée 🟢");
 
         // Ajout des catégories si elles n'existent pas
-        const categories = [
+        /*const categories = [
             "charges", "credits", "assurances", "abonnements", "courantes", "loisirs", "occasionnelles",
             "depenses_divers", "revenu_actif", "revenu_passif", "revenu_exeptionnelles", "revenus_divers"
+        ];*/
+
+
+
+        const categories = [
+            {name: "charges", icon: "faHouse", color: "#74C0FC"},
+            {name: "credits", icon: "faCreditCard", color: "#74C0FC"},
+            {name: "assurances", icon: "faUmbrella", color: "#74C0FC"},
+            {name: "abonnements", icon: "faTicket", color: "#74C0FC"},
+
+            {name: "courantes", icon: "faAppleWhole", color: "#74C0FC"},
+            {name: "Loisirs", icon: "faPlane", color: "#74C0FC"},
+            {name: "Occasionnelles", icon: "faGift", color: "#74C0FC"},
+            {name: "depenses_divers", icon: "faThumbtack", color: "#74C0FC"},
+
+            {name: "revenu_actif", icon: "faMoneyBill", color: "#48AE6F"},
+            {name: "revenu_passif", icon: "faThumbtack", color: "#48AE6F"},
+            {name: "revenu_exeptionnelles", icon: "faMoneyBillWave", color: "#48AE6F"},
+            {name: "revenus_divers", icon: "faSackDollar", color: "#48AE6F"},
         ];
 
-        for (const name of categories) {
+        /*for (const name of categories) {
             const [category, created] = await models.Category.findOrCreate({
-                where: { name }, // Vérifie si la catégorie existe déjà
-                defaults: { name }, // Sinon, insère la catégorie
+                where: { name },
+                defaults: { name },
             });
 
             if (created) {
                 console.log(`Catégorie ajoutée : ${name}`);
             } else {
                 console.log(`Catégorie déjà existante : ${name}`);
+            }
+        }*/
+
+        for (const data of categories) {
+            const [category, created] = await models.Category.findOrCreate({
+                where: { name: data.name },
+                defaults: data, // On passe l'objet complet qui contient name, icon, et color
+            });
+
+            if (created) {
+                console.log(`Catégorie ajoutée : ${data.name}`);
+            } else {
+                console.log(`Catégorie déjà existante : ${data.name}`);
             }
         }
 

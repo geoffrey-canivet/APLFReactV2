@@ -11,6 +11,16 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             unique: true,
             comment: "Nom de la catégorie (ex: charges, crédits, etc.)"
+        },
+        color: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            comment: "Couleur dans le slider"
+        },
+        icon: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            comment: "Icon"
         }
     }, {
         tableName: 'categories',
