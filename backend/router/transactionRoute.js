@@ -6,4 +6,5 @@ router.post("/transaction", authMiddleware, transactionController.addTransaction
 router.post("/delete", authMiddleware, transactionController.deleteTransaction)
 router.post("/delAllByCat",authMiddleware, transactionController.deleteAllTransactionsByCategory)
 router.put("/update", authMiddleware, transactionController.updateTransaction)
+
 module.exports = router;

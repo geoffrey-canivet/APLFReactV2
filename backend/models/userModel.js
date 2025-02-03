@@ -26,6 +26,25 @@ module.exports = (sequelize, DataTypes) => {
             },
             comment: "Nom utilisateur"
         },
+            // PRENOM
+            firstName: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: {
+                        msg: "Le prenom ne peut pas etre vide"
+                    },
+                    len: {
+                        args: [3, 999],
+                        msg: "Le prenom doit contenir entre 3 et 50 caracteres"
+                    },
+                    is: {
+                        args: /^[a-zA-Z\s'-]+$/i,
+                        msg: "Le prenom ne peut contenir que des lettres, espaces, tirets et apostrophes"
+                    }
+                },
+                comment: "prénom utilisateur"
+            },
         // EMAIL
         email: {
             type: DataTypes.STRING,
@@ -41,6 +60,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             comment: "Adresse email unique"
         },
+        avatar_url: {
+            type: DataTypes.STRING,
+                allowNull: true
+            },
         // PASSWORD
         password: {
             type: DataTypes.STRING,

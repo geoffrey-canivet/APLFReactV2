@@ -10,7 +10,16 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.FLOAT,
             allowNull: false,
             comment: "Montant de la sous-transaction"
-        }
+        },
+        date: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        transactionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            comment: "Référence à la transaction principale"
+        },
     }, {
         tableName: 'sub_transactions',
         timestamps: true,
@@ -20,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     SubTransaction.associate = (models) => {
         SubTransaction.belongsTo(models.Transaction, {
             foreignKey: 'transactionId',
-            as: 'transaction'
+            as: 'transaction',
+            onDelete: 'CASCADE'
         });
     };
 

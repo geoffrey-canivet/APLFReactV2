@@ -3,6 +3,7 @@ const userRouter = require('./userRoute');
 const dashboardRoute = require('./dashboardRoute');
 const categoriesTransactionsRoute = require('./categoriesTransactionsRoute');
 const transactionRoute = require('./transactionRoute');
+const subTransactionRoute = require('./subTransactionRoute');
 
 router.use('/auth', userRouter);
 
@@ -11,5 +12,7 @@ router.use('/dashboard', dashboardRoute);
 router.use('/trans', categoriesTransactionsRoute);
 
 router.use('/add', transactionRoute);
+
+router.use('/subTransaction', subTransactionRoute);
 
 module.exports = router;

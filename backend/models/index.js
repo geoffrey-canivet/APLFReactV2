@@ -1,21 +1,16 @@
 const fs = require('fs');
 const path = require('path');
-const { Sequelize, DataTypes } = require('sequelize'); // Import Sequelize et DataTypes
-const config = require('../config/db.js'); // Import de la configuration de la base de données
+const { Sequelize, DataTypes } = require('sequelize');
+const config = require('../config/db.js');
 
-// Création d'une instance Sequelize avec la configuration
+// ✅ Création de l'instance Sequelize
 const sequelizeInstance = new Sequelize(config);
 
-// Création d'un objet pour contenir tous les modèles et la configuration
 const db = {};
 
-// Lecture des fichiers modèles et synchronisation avec la base de données
+// ✅ Lecture des fichiers modèles et synchronisation avec la base de données
 fs.readdirSync(__dirname)
     .filter(file => {
-        // Filtrer les fichiers modèles :
-        // - Ignorer les fichiers commençant par un point
-        // - Ignorer ce fichier (index.js)
-        // - Inclure uniquement les fichiers se terminant par .js
         return (
             file.indexOf('.') !== 0 &&
             file !== 'index.js' &&
@@ -23,25 +18,24 @@ fs.readdirSync(__dirname)
         );
     })
     .forEach(file => {
-        // Importer chaque modèle :
-        // - Construire le chemin complet du fichier
-        // - Importer le modèle avec require
-        // - Passer l'instance Sequelize et DataTypes
-        // - Ajouter le modèle à l'objet db avec son nom comme clé
         const model = require(path.join(__dirname, file))(sequelizeInstance, DataTypes);
         db[model.name] = model;
     });
 
-// Configurer les relations entre les modèles, si elles existent
+// ✅ Configuration des relations entre les modèles
 Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {
         db[modelName].associate(db);
     }
 });
 
-// Ajouter l'instance Sequelize et la classe Sequelize à l'objet db
+// ✅ Ajouter l'instance Sequelize et la classe Sequelize
 db.sequelize = sequelizeInstance;
 db.Sequelize = Sequelize;
 
-// Exporter l'objet db
+// 📌 Vérifier si les relations sont bien établies
+console.log("📌 Modèles chargés :", Object.keys(db));
+console.log("📌 Relations Transaction -> SubTransaction :", db.Transaction?.associations?.subTransactions);
+console.log("📌 Relations SubTransaction -> Transaction :", db.SubTransaction?.associations?.transaction);
+
 module.exports = db;

@@ -1,4 +1,4 @@
-const { Category, Transaction } = require('../models');
+const { Category, Transaction, SubTransaction } = require('../models');
 
 const categoriesTransactionsController = {
 
@@ -53,27 +53,36 @@ const categoriesTransactionsController = {
         try {
             const userId = req.userId;
 
-            // Récupérer uniquement les catégories avec les ID spécifiques
+            // 🔍 Récupération des catégories avec transactions et sous-transactions
             const categories = await Category.findAll({
                 where: {
-                    id: [5,6,7,8],
+                    id: [5, 6, 7, 8],
                 },
                 include: [
                     {
                         model: Transaction,
-                        as: 'transactions',
-                        where: { userId }, // Filtrer les transactions par utilisateur connecté
-                        required: false, // Inclure les catégories même si elles n'ont pas de transactions
+                        as: "transactions",
+                        where: { userId }, // 🔹 Filtrer par utilisateur
+                        required: false, // 🔹 Inclure même si pas de transactions
+                        include: [
+                            {
+                                model: SubTransaction, // 🔥 Ajoute les sous-transactions
+                                as: "subTransactions",
+                                required: false, // 🔹 Inclure même si pas de sous-transactions
+                            },
+                        ],
                     },
                 ],
             });
 
+            console.log("✅ Catégories récupérées avec transactions et sous-transactions :", categories);
             res.status(200).json(categories);
         } catch (error) {
-            console.error("Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error });
+            console.error("❌ Erreur lors de la récupération des catégories :", error);
+            res.status(500).json({ message: "Erreur serveur.", error: error.message });
         }
     },
+
     getRevenu: async (req, res) => {
         try {
             const userId = req.userId;

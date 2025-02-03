@@ -10,4 +10,8 @@ router.post("/register", userController.create);
 
 router.get("/me", authMiddleware, userController.getUserInfo);
 
+router.put("/updateUser", authMiddleware, userController.updateUser);
+
+router.post("/uploadImage", authMiddleware, userController.uploadImage);
+
 module.exports = router;

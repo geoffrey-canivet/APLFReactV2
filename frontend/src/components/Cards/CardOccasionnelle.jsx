@@ -8,7 +8,7 @@ import {
     faCreditCard, faEllipsis, faEraser,
     faFilter, faGift,
     faHouse, faPenToSquare, faPlane,
-    faPlusCircle, faThumbtack,
+    faPlusCircle, faTable, faThumbtack,
     faTicket, faTrash,
     faUmbrella
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ModalDeleteTransaction from "../Modals/ModalsTransaction/ModalDeleteTransaction.jsx";
 import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/ModalDeleteAllTransactionByCategory.jsx";
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
+import ModalAddTransactionOccas from "../Modals/ModalsTransaction/ModalAddTransactionOccas.jsx";
+import ModalAddSubTransaction from "../Modals/ModalsTransaction/ModalAddSubTransaction.jsx";
 
 // ICON CATEGORIES
 const iconMap = {
@@ -31,6 +33,10 @@ const calculateTotal = (transactions) => {
 };
 
 const CardOccasionnelle = () => {
+
+    console.log("Token :", localStorage.getItem("token"));
+
+
     // STORE
     const {
         categories,
@@ -40,7 +46,8 @@ const CardOccasionnelle = () => {
         addTransactionOccas,
         deleteTransactionOccas,
         deleteAllTransactionsByCategory,
-        updateTransaction
+        updateTransaction,
+        addSubTransaction
     } = useTransacOccasStore();
 
     // STATE
@@ -83,7 +90,7 @@ const CardOccasionnelle = () => {
         setCurrentModal("modalUpadte");
         setTransactionId(Number(e.currentTarget.id));
     }
-    // MODAL SUPPRIMER
+    // MODAL SUPPRIMER TRANSACTION
     const modalSupprimer = (e) => {
         setCurrentModal("modalDeleteTransaction");
         setTransactionId(Number(e.currentTarget.id));
@@ -93,6 +100,36 @@ const CardOccasionnelle = () => {
         setCurrentModal("modalDeleteAllTransactionByCategory");
         setCategoryId(Number(e.currentTarget.id));
     }
+
+
+
+
+
+
+    // MODAL AJOUTER SUB-TRANSACTION
+    const modalAddSubTransaction = async (e) => {
+        console.log("📡 Tentative d'ajout d'une sous-transaction...");
+        setCurrentModal("modalAddSubTransaction");
+        setTransactionId(Number(e.currentTarget.id))
+
+    }
+    // HANDLER AJOUTER SUB TRANSACTION
+    const handleAddSubTransaction = async (data) => {
+// 🔹 Données de test en dur
+/*        const data = {
+            transactionId: transactionId,  // 🆔 Remplace par un ID valide de transaction
+            amount: 25,     // 💰 Montant de la sous-transaction
+            date: "2024-02-01" // 📅 Date de la sous-transaction
+        };*/
+        console.log(transactionId, data)
+        await addSubTransaction(transactionId, data);
+    }
+
+
+
+
+
+
     // MODAL GRAPHIQUE
     const modalChart = (e) => {
         setCurrentModal("modalChart");
@@ -161,6 +198,15 @@ const CardOccasionnelle = () => {
                                 >
                                     <FontAwesomeIcon icon={faFilter}/>
                                 </button>
+
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                    title="Graphique"
+                                    id={card.id}
+                                    /*onClick={modalChart}*/
+                                >
+                                    <FontAwesomeIcon icon={faTable}/>
+                                </button>
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Graphique"
@@ -183,7 +229,7 @@ const CardOccasionnelle = () => {
                                     id={card.id}
                                     onClick={modalDeleteAllTransactionByCategory}
                                 >
-                                    <FontAwesomeIcon icon={faEraser} />
+                                    <FontAwesomeIcon icon={faEraser}/>
                                 </button>
                             </div>
                         </div>
@@ -192,50 +238,86 @@ const CardOccasionnelle = () => {
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <tbody>
                                 {card.transactions?.length > 0 ? (
-                                    card.transactions.map((transaction, i) => (
-                                        <tr
-                                            key={transaction.id}
-                                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 relative"
-                                        >
-                                            <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {transaction.name}
-                                            </td>
-                                            <td className="px-4 py-2">{transaction.amount}.00</td>
-                                            <td className="px-4 py-2 relative">
-                                                <button
-                                                    onClick={() => toggleDropdown(`${card.id}-${i}`)}
-                                                    className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                                >
-                                                    <FontAwesomeIcon icon={faEllipsis} />
-                                                </button>
-                                                {openDropdownId === `${card.id}-${i}` && (
-                                                    <div className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
+                                    card.transactions.map((transaction, i) => {
+                                        // 📌 Calculer le total des sous-transactions
+                                        const totalSubTransactions = transaction.subTransactions?.reduce((sum, sub) => sum + sub.amount, 0) || 0;
+                                        const totalTransaction = transaction.amount + totalSubTransactions;
+
+                                        return (
+                                            <React.Fragment key={transaction.id}>
+                                                {/* 📌 Transaction principale avec total */}
+                                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 relative">
+                                                    <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                        {transaction.name}
+                                                    </td>
+                                                    <td className="px-4 py-2">{totalTransaction} €</td>
+                                                    <td className="px-4 py-2 relative">
                                                         <button
-                                                            id={transaction.id}
-                                                            className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
-                                                            onClick={modalUpadte}
+                                                            onClick={() => toggleDropdown(`${card.id}-${i}`)}
+                                                            className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                                         >
-                                                            <FontAwesomeIcon icon={faPenToSquare} /> Modifier
+                                                            <FontAwesomeIcon icon={faEllipsis} />
                                                         </button>
-                                                        <button
-                                                            id={transaction.id}
-                                                            onClick={modalSupprimer}
-                                                            className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-500"
-                                                        >
-                                                            <FontAwesomeIcon icon={faTrash} /> Supprimer
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
+                                                        {openDropdownId === `${card.id}-${i}` && (
+                                                            <div
+                                                                className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
+                                                                <button
+                                                                    id={transaction.id}
+                                                                    className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
+                                                                    onClick={modalAddSubTransaction}
+                                                                >
+                                                                    <FontAwesomeIcon icon={faPlusCircle}/> Ajouter
+                                                                </button>
+                                                                <button
+                                                                    id={transaction.id}
+                                                                    className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
+                                                                    onClick={modalUpadte}
+                                                                >
+                                                                    <FontAwesomeIcon icon={faPenToSquare}/> Modifier
+                                                                </button>
+                                                                <button
+                                                                    id={transaction.id}
+                                                                    onClick={modalSupprimer}
+                                                                    className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-500"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faTrash}/> Supprimer
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                </tr>
+
+                                                {/* 📌 Affichage des sous-transactions */}
+                                                {/*<tr className="bg-gray-100 dark:bg-gray-900">
+                                                    <td colSpan="3">
+                                                        <div className="ml-6">
+                                                            <p className="text-gray-700 dark:text-gray-300 font-semibold">Sous-transactions :</p>
+                                                            {Array.isArray(transaction.subTransactions) && transaction.subTransactions.length > 0 ? (
+                                                                <ul className="list-disc ml-4">
+                                                                    {transaction.subTransactions.map((sub) => (
+                                                                        <li key={sub.id} className="text-sm text-gray-700 dark:text-gray-300">
+                                                                            {sub.date} - {sub.amount} €
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            ) : (
+                                                                <p className="text-sm text-gray-500 italic">Pas de sous-transactions</p>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>*/}
+                                            </React.Fragment>
+                                        );
+                                    })
                                 ) : (
                                     <tr>
-                                        <td colSpan="3" className="text-center py-4">
-                                            Aucun élément
-                                        </td>
+                                        <td colSpan="3" className="text-center py-4">Aucune transaction</td>
                                     </tr>
                                 )}
+
+
+
+
                                 </tbody>
                             </table>
                         </div>
@@ -266,7 +348,11 @@ const CardOccasionnelle = () => {
 
             {/* MODAL Add Transaction */}
             {currentModal === "modalAddTransaction" && (
-                <ModalAddTransaction closeModal={closeModal} addTransactionFixe={handleAddTransaction} />
+                <ModalAddTransactionOccas closeModal={closeModal} addTransactionOccas={handleAddTransaction} />
+            )}
+            {/* MODAL Add SubTransaction */}
+            {currentModal === "modalAddSubTransaction" && (
+                <ModalAddSubTransaction closeModal={closeModal} handleAddSubTransaction={handleAddSubTransaction} />
             )}
             {/* MODAL Upadte */}
             {currentModal === "modalUpadte" && (
@@ -275,18 +361,18 @@ const CardOccasionnelle = () => {
             {/* MODAL Supprimer */}
             {currentModal === "modalDeleteTransaction" && (
                 <ModalDeleteTransaction closeModal={closeModal}
-                    handleDelete={() => {
-                        handleDelete(transactionId)
-                    }}
+                                        handleDelete={() => {
+                                            handleDelete(transactionId)
+                                        }}
                 />
             )}
             {/* MODAL Supprimer toutes les transactiond d'une catégorie */}
             {currentModal === "modalDeleteAllTransactionByCategory" && (
                 <ModalDeleteAllTransactionByCategory
                     closeModal={closeModal}
-                     handleDeleteAllTransacByCategory={() => {
-                         handleDeleteAllTransacByCategory(categoryId)
-                     }}
+                    handleDeleteAllTransacByCategory={() => {
+                        handleDeleteAllTransacByCategory(categoryId)
+                    }}
                 />
             )}
             {/* MODAL Chart */}

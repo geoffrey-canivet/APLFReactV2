@@ -5,6 +5,7 @@ import logo from "../assets/logo-small.png";
 const Register = () => {
 
     const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,7 +15,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Erreur
-        if (name === "" || email === "" || password === "" || confirmPassword === "") {
+        if (name === "" || firstName === "" || email === "" || password === "" || confirmPassword === "") {
             setError("Vous devez remplire tout les champs");
             return;
         }
@@ -25,16 +26,18 @@ const Register = () => {
         setError("");
 
         // Envois des données vers backend
-        console.log(name, email, password);
+        console.log(name, firstName, email, password);
         try {
             const response = await axios.post("http://localhost:3000/auth/register", {
                 name,
+                firstName,
                 email,
                 password,
             })
             // Succès
             setSuccess("Utilisateur créé avec succès !");
             setName("");
+            setFirstName("")
             setEmail("");
             setPassword("");
             setConfirmPassword("");
@@ -68,11 +71,23 @@ const Register = () => {
                             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                                 <div>
                                     <label htmlFor="nom"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Votre nom</label>
-                                    <input type="nom" name="nom"
+                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Votre
+                                        nom</label>
+                                    <input type="text" name="nom"
                                            id="nom"
                                            value={name}
                                            onChange={(e) => setName(e.target.value)}
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                           placeholder="Musk" required=""/>
+                                </div>
+                                <div>
+                                    <label htmlFor="prénom"
+                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Votre
+                                        Prénom</label>
+                                    <input type="text" name="prénom"
+                                           id="prénom"
+                                           value={firstName}
+                                           onChange={(e) => setFirstName(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                            placeholder="Elon" required=""/>
                                 </div>
@@ -93,12 +108,13 @@ const Register = () => {
                                 <div className="grid grid-cols-2 gap-6 mb-6">
                                     <div>
                                         <label htmlFor="pass"
-                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de passe</label>
+                                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot
+                                            de passe</label>
                                         <input type="password" id="pass"
                                                value={password}
                                                onChange={(e) => setPassword(e.target.value)}
                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder=". . . . . ." />
+                                               placeholder=". . . . . ."/>
                                     </div>
                                     <div>
                                         <label htmlFor="confirmPass"
@@ -107,7 +123,7 @@ const Register = () => {
                                                value={confirmPassword}
                                                onChange={(e) => setConfirmPassword(e.target.value)}
                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder=". . . . . ." />
+                                               placeholder=". . . . . ."/>
                                     </div>
                                 </div>
                                 {error ? <p className="text-red-500">{error}</p> : null}

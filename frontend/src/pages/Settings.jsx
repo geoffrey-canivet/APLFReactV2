@@ -5,7 +5,7 @@ import ProfileUser from "../components/Settings/ProfileUser/ProfileUser.jsx";
 const Settings = () => {
     return (
         <div className="dark:bg-gray-900 min-h-screen">
-{/*            <NavigationContainer/>*/}
+            <NavigationContainer/>
             <ProfileUser/>
         </div>
     );

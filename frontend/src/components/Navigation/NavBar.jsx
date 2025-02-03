@@ -80,7 +80,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                     {/* Dropdown utilisateur */}
                     <div className="relative flex items-center dark:text-white">
                         <div className="text-right mr-4">
-                            <p className="font-bold text-sm">{user.email}</p>
+                            <p className="font-bold text-sm">email</p>
                             <p className="text-sm text-gray-500">Admin</p>
                         </div>
 
@@ -101,7 +101,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                 {/* Email utilisateur */}
                                 <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                     <div className="font-medium text-xs truncate">
-                                        {user.email}
+                                        email
                                     </div>
                                 </div>
                                 {/* Liens de navigation */}
@@ -111,7 +111,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                 >
                                     <li>
                                         <a
-                                            href="/profil"
+                                            href="/settings"
                                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         >
                                             <FontAwesomeIcon className="mr-3" icon={faUser}/>
