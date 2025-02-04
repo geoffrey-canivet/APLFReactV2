@@ -17,6 +17,7 @@ import useTransacFixeStore from "../../store/useTransacFixeStore.js";
 import ModalDeleteTransaction from "../Modals/ModalsTransaction/ModalDeleteTransaction.jsx";
 import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/ModalDeleteAllTransactionByCategory.jsx";
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
+import usePeriodStore from "../../store/usePeriodStore.js";
 
 // ICON CATEGORIES
 const iconMap = {
@@ -38,11 +39,17 @@ const CardFixe = () => {
         loading,
         error,
         fetchFixe,
+        fetchFixeByPeriod,
         addTransactionFixe,
         deleteTransaction ,
         deleteAllTransactionsByCategory,
         updateTransaction
     } = useTransacFixeStore();
+    const {
+        month,
+        year,
+    } = usePeriodStore();
+
 
     // STATE
     const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -51,11 +58,15 @@ const CardFixe = () => {
     const [transactionId, setTransactionId] = useState(0);
     const [dataChart, setDataChart] = useState(null);
 
+    const [selectedMonth, setSelectedMonth] = useState(month);
+    const [selectedYear, setSelectedYear] = useState(year);
+
+
+
     // RECUP CATEGORIES - TRANSACTIONS
     useEffect(() => {
-        fetchFixe();
-
-    }, []);
+        fetchFixeByPeriod(month, year);
+    }, [month, year]);
 
     // DROPDOWN
     const toggleDropdown = (id) => {
@@ -108,12 +119,13 @@ const CardFixe = () => {
     // HANDLER AJOUTER
     const handleAddTransaction = async (data) => {
         await addTransactionFixe(categoryId, data);
+        await fetchFixeByPeriod(month, year);
         closeModal();
     };
 
     // HANDLER UPDATE TRANSACTION
     const handleUpdateTransaction = async (data) => {
-        console.log(data)
+
         const name = data.name
         const amount = data.amount
         await updateTransaction(transactionId, name, amount);
@@ -121,7 +133,7 @@ const CardFixe = () => {
 
     // HANDLER SUPPRIMER UNE TRANSACTION
     const handleDelete = async (e) => {
-        console.log(transactionId);
+
         await deleteTransaction(transactionId);
     };
 
@@ -145,6 +157,12 @@ const CardFixe = () => {
                     onClick={() => setOpenDropdownId(null)}
                 ></div>
             )}
+{/*            <button
+                onClick={() => fetchFixeByPeriod(selectedMonth, selectedYear)}
+                className="p-2 bg-blue-500 text-white rounded"
+            >
+                Filtrer
+            </button>*/}
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center m-5">
                 {categories.map((card) => (
                     <div
@@ -155,7 +173,8 @@ const CardFixe = () => {
                         <div className="flex justify-between px-4 pt-2 pb-2 bg-gray-50 dark:bg-gray-700 rounded-t-lg">
                             <h5 className="text-lg font-semibold text-gray-900 dark:text-white">
                                 {iconMap[card.id] && (
-                                    <FontAwesomeIcon icon={iconMap[card.id]} className="mr-3" style={{ color: "#74C0FC" }} />
+                                    <FontAwesomeIcon icon={iconMap[card.id]} className="mr-3"
+                                                     style={{color: "#74C0FC"}}/>
                                 )}
                                 {card.name}
                             </h5>
@@ -190,7 +209,7 @@ const CardFixe = () => {
                                     id={card.id}
                                     onClick={modalDeleteAllTransactionByCategory}
                                 >
-                                    <FontAwesomeIcon icon={faEraser} />
+                                    <FontAwesomeIcon icon={faEraser}/>
                                 </button>
                             </div>
                         </div>
@@ -213,23 +232,24 @@ const CardFixe = () => {
                                                     onClick={() => toggleDropdown(`${card.id}-${i}`)}
                                                     className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                                 >
-                                                    <FontAwesomeIcon icon={faEllipsis} />
+                                                    <FontAwesomeIcon icon={faEllipsis}/>
                                                 </button>
                                                 {openDropdownId === `${card.id}-${i}` && (
-                                                    <div className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
+                                                    <div
+                                                        className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
                                                         <button
                                                             id={transaction.id}
                                                             className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
                                                             onClick={modalUpadte}
                                                         >
-                                                            <FontAwesomeIcon icon={faPenToSquare} /> Modifier
+                                                            <FontAwesomeIcon icon={faPenToSquare}/> Modifier
                                                         </button>
                                                         <button
                                                             id={transaction.id}
                                                             onClick={modalSupprimer}
                                                             className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-500"
                                                         >
-                                                            <FontAwesomeIcon icon={faTrash} /> Supprimer
+                                                            <FontAwesomeIcon icon={faTrash}/> Supprimer
                                                         </button>
                                                     </div>
                                                 )}
@@ -273,7 +293,7 @@ const CardFixe = () => {
 
             {/* MODAL Add Transaction */}
             {currentModal === "modalAddTransaction" && (
-                <ModalAddTransaction closeModal={closeModal} addTransactionFixe={handleAddTransaction} />
+                <ModalAddTransaction closeModal={closeModal} addTransactionFixe={handleAddTransaction}/>
             )}
             {/* MODAL Upadte */}
             {currentModal === "modalUpadte" && (
@@ -282,23 +302,23 @@ const CardFixe = () => {
             {/* MODAL Supprimer */}
             {currentModal === "modalDeleteTransaction" && (
                 <ModalDeleteTransaction closeModal={closeModal}
-                    handleDelete={handleDelete}
+                                        handleDelete={handleDelete}
 
                 />
             )}
             {/* MODAL Supprimer toutes les transactiond d'une catégorie */}
             {currentModal === "modalDeleteAllTransactionByCategory" && (
                 <ModalDeleteAllTransactionByCategory closeModal={closeModal}
-                    handleDeleteAllTransacByCategory={() => {
-                        handleDeleteAllTransacByCategory(categoryId)
+                                                     handleDeleteAllTransacByCategory={() => {
+                                                         handleDeleteAllTransacByCategory(categoryId)
 
-                    }}
+                                                     }}
 
                 />
             )}
             {/* MODAL Chart */}
             {currentModal === "modalChart" && dataChart && (
-                <ModalChart closeModal={closeModal} dataChart={dataChart} />
+                <ModalChart closeModal={closeModal} dataChart={dataChart}/>
             )}
         </>
     );

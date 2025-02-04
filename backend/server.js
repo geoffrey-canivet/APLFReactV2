@@ -46,19 +46,6 @@ app.get('/', (req, res) => {
             {name: "revenus_divers", icon: "faSackDollar", color: "#48AE6F"},
         ];
 
-        /*for (const name of categories) {
-            const [category, created] = await models.Category.findOrCreate({
-                where: { name },
-                defaults: { name },
-            });
-
-            if (created) {
-                console.log(`Catégorie ajoutée : ${name}`);
-            } else {
-                console.log(`Catégorie déjà existante : ${name}`);
-            }
-        }*/
-
         for (const data of categories) {
             const [category, created] = await models.Category.findOrCreate({
                 where: { name: data.name },

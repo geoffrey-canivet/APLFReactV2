@@ -18,6 +18,7 @@ import ModalChart from "../Modals/ModalChart.jsx";
 import ModalDeleteTransaction from "../Modals/ModalsTransaction/ModalDeleteTransaction.jsx";
 import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/ModalDeleteAllTransactionByCategory.jsx";
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
+import usePeriodStore from "../../store/usePeriodStore.js";
 
 // CALCULE TOTAL CATEGORIES
 const calculateTotal = (transactions) => {
@@ -32,11 +33,16 @@ const CardRevenu = () => {
         loading,
         error,
         fetchRevenu,
+        fetchRevenuByPeriod,
         addTransactionRevenu,
         deleteTransactionRevenu,
         deleteAllTransactionsByCategory,
         updateTransaction
     } = useTransacRevenuStore();
+    const {
+        month,
+        year,
+    } = usePeriodStore();
 
     // ICON CATEGORIES
     const iconMap = {
@@ -53,11 +59,13 @@ const CardRevenu = () => {
     const [transactionId, setTransactionId] = useState(0);
     const [dataChart, setDataChart] = useState(null);
 
+    const [selectedMonth, setSelectedMonth] = useState(month);
+    const [selectedYear, setSelectedYear] = useState(year);
+
     // RECUP CATEGORIES - TRANSACTIONS
     useEffect(() => {
-        fetchRevenu();
-
-    }, []);
+        fetchRevenuByPeriod(month, year);
+    }, [month, year]);
 
     // DROPDOWN
     const toggleDropdown = (id) => {
@@ -110,6 +118,7 @@ const CardRevenu = () => {
     // Handler pour l'ajout
     const handleAddTransaction = async (data) => {
         await addTransactionRevenu(categoryId, data);
+        await fetchRevenuByPeriod(month, year);
         closeModal();
     };
     // HANDLER UPDATE TRANSACTION

@@ -20,6 +20,7 @@ import ModalAddTransactionOccas from "../Modals/ModalsTransaction/ModalAddTransa
 import ModalAddSubTransaction from "../Modals/ModalsTransaction/ModalAddSubTransaction.jsx";
 import ModalDatatable from "../Modals/ModalDatatable.jsx";
 import ModalChartOccasionnelle from "../Modals/ModalChartOccasionnelle.jsx";
+import usePeriodStore from "../../store/usePeriodStore.js";
 
 // ICON CATEGORIES
 const iconMap = {
@@ -58,13 +59,17 @@ const CardOccasionnelle = () => {
         categories,
         loading,
         error,
-        fetchOccas,
+        fetchOccasByPeriod,
         addTransactionOccas,
         deleteTransactionOccas,
         deleteAllTransactionsByCategory,
         updateTransaction,
         addSubTransaction
     } = useTransacOccasStore();
+    const {
+        month,
+        year,
+    } = usePeriodStore();
 
     // STATE
     const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -75,11 +80,14 @@ const CardOccasionnelle = () => {
     const [dataDatatable, setDataDatatable] = useState(null);
     const [viewSubTransactions, setViewSubTransactions] = useState(false);
 
+    const [selectedMonth, setSelectedMonth] = useState(month);
+    const [selectedYear, setSelectedYear] = useState(year);
+
     // RECUP CATEGORIES - OCCASIONNELLE
     useEffect(() => {
-        fetchOccas();
+        fetchOccasByPeriod(month, year);
 
-    }, []);
+    }, [month, year]);
 
     // DROPDOWN
     const toggleDropdown = (id) => {
@@ -165,6 +173,7 @@ const CardOccasionnelle = () => {
     // HANDLER AJOUTER
     const handleAddTransaction = async (data) => {
         await addTransactionOccas(categoryId, data);
+        await fetchOccasByPeriod(month, year);
         closeModal();
     };
     // HANDLER UPDATE TRANSACTION

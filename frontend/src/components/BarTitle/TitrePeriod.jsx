@@ -1,25 +1,52 @@
-
-import {useState} from "react";
-import DatePicker from 'react-datepicker';
+import {useEffect, useState} from "react";
+import DatePicker from "react-datepicker";
+import useTransacFixeStore from "../../store/useTransacFixeStore.js";
+import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
+import useTransacOccasStore from "../../store/useTransacOccasStore.js";
+import usePeriodStore from "../../store/usePeriodStore.js";
 /*import 'react-datepicker/dist/react-datepicker.css';*/
 
 const TitrePeriod = () => {
 
-    // DATEPIKER
+    // STORE
+    const {
+        fetchFixeByPeriod,
+    } = useTransacFixeStore();
+    const {
+        fetchRevenuByPeriod,
+    } = useTransacRevenuStore();
+    const {
+        fetchOccasByPeriod,
+    } = useTransacOccasStore();
+    const {
+        addMonth,
+        addYear,
+    } = usePeriodStore();
+
+    // DATEPIKER - Initialisation avec la date actuelle
     const [selectedDate, setSelectedDate] = useState(new Date());
+
+    // ✅ Récupération du mois et de l'année
+    const selectedMonth = selectedDate.getMonth() + 1; // Mois (ajouter +1 car getMonth() commence à 0)
+    const selectedYear = selectedDate.getFullYear(); // Année
+
+/*    console.log("📅 Mois sélectionné :", selectedMonth);
+    console.log("📅 Année sélectionnée :", selectedYear);*/
 
     const renderMonthContent = (month, shortMonth, longMonth, day) => {
         const fullYear = new Date(day).getFullYear();
         const tooltipText = `Tooltip for month: ${longMonth} ${fullYear}`;
-
         return <span title={tooltipText}>{shortMonth}</span>;
     };
 
-    const [currentModal, setCurrentModal] = useState(null);
-    // FERMER MODAL
-    const closeModal = () => {
-        setCurrentModal(null);
-    }
+    useEffect(() => {
+        addMonth(selectedMonth);
+        addYear(selectedYear);
+        fetchFixeByPeriod(selectedMonth, selectedYear);
+        fetchRevenuByPeriod(selectedMonth, selectedYear);
+        fetchOccasByPeriod(selectedMonth, selectedYear);
+    }, [selectedMonth, selectedYear]);
+
 
     return (
         <>
@@ -40,10 +67,15 @@ const TitrePeriod = () => {
                         dateFormat="MM/yyyy"
                         className="custom-date-picker" // Classe pour l'input
                         calendarClassName="custom-calendar" // Classe pour le calendrier
-                     showMonthYearDropdown/>
+                        showMonthYearDropdown
+                    />
+                </div>
+                {/* ✅ Affichage des valeurs pour vérification */}
+                <div className="mt-2 text-gray-800 dark:text-white">
+                    <p><strong>Mois sélectionné :</strong> {selectedMonth}</p>
+                    <p><strong>Année sélectionnée :</strong> {selectedYear}</p>
                 </div>
             </div>
-
         </>
     );
 };

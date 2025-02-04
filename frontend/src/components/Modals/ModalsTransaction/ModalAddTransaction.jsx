@@ -2,7 +2,10 @@ import Swal from "sweetalert2";
 import MySwal from "sweetalert2";
 import {useEffect} from "react";
 
+
 const ModalAddTransaction = ({closeModal, addTransactionFixe}) => {
+
+
     // Configure Toast
     const ToastNotification = Swal.mixin({
         toast: true,
@@ -125,19 +128,19 @@ const ModalAddTransaction = ({closeModal, addTransactionFixe}) => {
                 }
             },
             preConfirm: () => {
-                const categoryId = 2
-                const periodId = 1
+
                 const name = document.getElementById("inputNom").value;
                 const amount = document.getElementById("inputPrix").value;
                 if (!name || !amount) {
                     Swal.showValidationMessage("Veuillez remplir tous les champs.");
                     return null;
                 }
-                return {name, amount, categoryId, periodId};
+                return {name, amount};
             },
         }).then((result) => {
             if (result.isConfirmed) {
                 addTransactionFixe(result.value)
+                console.log("modalAddTransaction -> ", result.value)
                 ToastNotification.fire({
                     icon: "success",
                     title: `${result.value.name} ajouté avec succès.`,

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import usePeriodStore from "./usePeriodStore.js";
 
 const useTransacOccasStore = create((set, get) => ({
     categories: [],
@@ -17,7 +18,7 @@ const useTransacOccasStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("📡 Réponse du backend :", response.data);
+            /*console.log("📡 Réponse du backend :", response.data);*/
 
             const categoriesWithSubTransactions = response.data.map((cat) => ({
                 ...cat,
@@ -28,9 +29,51 @@ const useTransacOccasStore = create((set, get) => ({
             }));
 
             set({ categories: categoriesWithSubTransactions });
-            console.log("✅ fetchOccas -> Catégories après formatage :", categoriesWithSubTransactions);
+            /*console.log("✅ fetchOccas -> Catégories après formatage :", categoriesWithSubTransactions);*/
         } catch (error) {
             console.error("❌ Erreur fetchOccas :", error);
+            set({ error: error.message || "Impossible de récupérer les catégories." });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    // 📌 Récupérer les catégories de type "Occasionnelle"
+    fetchOccasByPeriod: async (month, year) => {
+        set({ loading: true, error: null });
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
+
+            /*console.log(`🔍 Fetching occasionnelle transactions for Month: ${month}, Year: ${year}`);*/
+
+            const response = await axios.post(
+                "http://localhost:3000/trans/getOccasionnelleByPeriod",  // 📌 Envoi vers le bon endpoint
+                { month, year }, // 📌 Envoi du mois et de l'année dans le body
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            /*console.log(`📡 Réponse du backend pour ${month}/${year}:`, response.data);*/
+
+            // 🔹 Assurer que chaque transaction a un tableau `subTransactions`
+            const categoriesWithSubTransactions = response.data.map((cat) => ({
+                ...cat,
+                transactions: cat.transactions.map((t) => ({
+                    ...t,
+                    subTransactions: Array.isArray(t.subTransactions) ? t.subTransactions : [], // ✅ Évite les erreurs
+                })),
+            }));
+
+            set({ categories: categoriesWithSubTransactions });
+
+            /*console.log(`✅ Transactions occasionnelles récupérées pour ${month}/${year}:`, categoriesWithSubTransactions);*/
+        } catch (error) {
+            console.error("❌ Erreur fetchOccasByPeriod :", error);
             set({ error: error.message || "Impossible de récupérer les catégories." });
         } finally {
             set({ loading: false });
@@ -43,10 +86,26 @@ const useTransacOccasStore = create((set, get) => ({
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
+// ✅ Récupérer le mois et l'année depuis le store `usePeriodStore`
+            const { month, year } = usePeriodStore.getState();
+
+            console.log(`🟢 Ajout d'une transaction pour ${month}/${year}`);
+
+            // 🔹 Trouver le periodId correspondant dans ta base de données
+            const periodResponse = await axios.post("http://localhost:3000/period/findPeriod", {
+                month,
+                year
+            }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            const periodId = periodResponse.data.id; // Récupération du periodId
+
+            console.log(`📅 Période trouvée: ${periodId}`);
 
             const transactionData = {
                 categoryId,
-                periodId: 1,
+                periodId,
                 name: data.name,
                 amount: data.amount,
             };
@@ -55,10 +114,18 @@ const useTransacOccasStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("Transaction ajoutée :", response.data);
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getOccasionnelleByPeriod",
+                { month, year },  // 📌 Envoi du mois et de l'année dans le body
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
-            // 📌 Rafraîchir les transactions après ajout
-            await get().fetchOccas();
+            set({ categories: refreshResponse.data });
         } catch (error) {
             console.error("Erreur lors de l'ajout de la transaction :", error);
             set({ error: error.response?.data || error.message });
@@ -86,7 +153,7 @@ const useTransacOccasStore = create((set, get) => ({
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            console.log("✅ Sous-transaction ajoutée :", response.data);
+            /*console.log("✅ Sous-transaction ajoutée :", response.data);*/
 
             // 🔄 Mise à jour locale du state
             set((state) => ({
@@ -122,7 +189,7 @@ const useTransacOccasStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("✅ Transaction supprimée :", transactionId);
+            /*console.log("✅ Transaction supprimée :", transactionId);*/
 
             // Mise à jour du state sans refetch
             set((state) => ({
@@ -161,7 +228,7 @@ const useTransacOccasStore = create((set, get) => ({
             }
 
             const data = await response.json();
-            console.log(data.message);
+            /*console.log(data.message);*/
 
             // Optionnel : Mettre à jour l'état pour retirer la sous-transaction supprimée
             set((state) => ({
@@ -190,7 +257,7 @@ const useTransacOccasStore = create((set, get) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            console.log("Transactions supprimée :", response.data);
+            /*console.log("Transactions supprimée :", response.data);*/
 
             // Re-fetch
             const refreshResponse = await axios.get("http://localhost:3000/trans/getOccasionnelle", {
@@ -220,7 +287,7 @@ const useTransacOccasStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log(`✅ Sous-transactions pour Transaction ${transactionId} :`, response.data);
+            /*console.log(`✅ Sous-transactions pour Transaction ${transactionId} :`, response.data);*/
 
             return response.data || [];  // ✅ Toujours retourner un tableau
 
@@ -246,7 +313,7 @@ const useTransacOccasStore = create((set, get) => ({
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            console.log("✅ Transaction mise à jour :", response.data);
+            /*console.log("✅ Transaction mise à jour :", response.data);*/
 
             // Mise à jour du state sans refetch
             set((state) => ({
