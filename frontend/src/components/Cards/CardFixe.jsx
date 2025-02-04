@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faChartBar,
+    faChartBar, faChartColumn, faChartPie,
     faCreditCard,
-    faEllipsis, faEraser, faFilter,
+    faEllipsis, faEllipsisVertical, faEraser, faFilter,
     faHouse,
     faPenToSquare,
     faPlusCircle,
@@ -187,14 +187,7 @@ const CardFixe = () => {
                                 >
                                     <FontAwesomeIcon icon={faFilter}/>
                                 </button>
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Graphique"
-                                    id={card.id}
-                                    onClick={modalChart}
-                                >
-                                    <FontAwesomeIcon icon={faChartBar}/>
-                                </button>
+
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Ajouter un élément"
@@ -203,20 +196,52 @@ const CardFixe = () => {
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
                                 </button>
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
-                                    title="Filtre"
-                                    id={card.id}
-                                    onClick={modalDeleteAllTransactionByCategory}
-                                >
-                                    <FontAwesomeIcon icon={faEraser}/>
-                                </button>
+                                <div className="relative inline-block dropdown">
+                                    <button
+                                        onClick={() => toggleDropdown(`header-${card.id}`)}
+                                        className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                        title="Options"
+                                        id={`header-${card.id}`}
+                                    >
+                                        <FontAwesomeIcon icon={faEllipsis}/>
+                                    </button>
+                                    {openDropdownId === `header-${card.id}` && (
+                                        <div
+                                            className="absolute flex flex-col right-0 p-2 mt-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
+                                            <button
+                                                className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
+                                                title="Graphique"
+                                                id={card.id}
+                                                onClick={modalChart}
+                                            >
+                                                <FontAwesomeIcon icon={faChartPie}/>
+                                            </button>
+                                            <button
+                                                className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
+                                                title="Graphique"
+                                                id={card.id}
+                                                onClick={modalChart}
+                                            >
+                                                <FontAwesomeIcon icon={faChartColumn}/>
+                                            </button>
+                                            <button
+                                                className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                title="Filtre"
+                                                id={card.id}
+                                                onClick={modalDeleteAllTransactionByCategory}
+                                            >
+                                                <FontAwesomeIcon icon={faEraser}/>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
                         </div>
                         {/* Transactions */}
                         <div className="relative w-full h-64 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <tbody>
+                            <tbody>
                                 {card.transactions?.length > 0 ? (
                                     card.transactions.map((transaction, i) => (
                                         <tr

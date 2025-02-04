@@ -233,6 +233,8 @@ const categoriesTransactionsController = {
         }
     },
 
+    
+
 }
 
 module.exports = categoriesTransactionsController;

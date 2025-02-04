@@ -1,4 +1,4 @@
-const { Transaction, Category, User, Period } = require('../models');
+const { Transaction, Category, User, Period, SubTransaction} = require('../models');
 
 const transactionController = {
     // AJOUTER UNE TRANSACTION
@@ -118,8 +118,26 @@ const transactionController = {
         } catch (error) {
 
         }
-    }
+    },
 
+    deleteAllTransactions: async (req, res) => {
+        try {
+            console.log("🔴 Suppression de toutes les transactions et sous-transactions...");
+
+            // Supprimer toutes les sous-transactions en premier (cascade gérée par Sequelize aussi)
+            await SubTransaction.destroy({ where: {} });
+
+            // Supprimer toutes les transactions
+            await Transaction.destroy({ where: {} });
+
+            console.log("✅ Toutes les transactions et sous-transactions ont été supprimées.");
+            res.status(200).json({ message: "Toutes les transactions et sous-transactions ont été supprimées avec succès." });
+
+        } catch (error) {
+            console.error("❌ Erreur lors de la suppression des transactions :", error);
+            res.status(500).json({ message: "Erreur serveur lors de la suppression des transactions.", error: error.message });
+        }
+    },
 };
 
 module.exports = transactionController;

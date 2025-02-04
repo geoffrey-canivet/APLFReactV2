@@ -5,19 +5,29 @@ import logo from "../../assets/logo-small.png";
 import avat from "../../assets/avat.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faBars,
-    faGear,
+    faBars, faCircleHalfStroke,
+    faGear, faLandMineOn,
     faRightFromBracket,
     faTriangleExclamation,
     faUser,
     faXmark
 } from "@fortawesome/free-solid-svg-icons";
+import useTransactionStore from "../../store/useTransactionStore.js";
 
 const NavBar = ({ handleDrawerOpen }) => {
 
+    const { deleteAllTransactions} = useTransactionStore();
+
     const navigate = useNavigate();
 
-    const user = useUserStore((state) => state.user);
+    const { user, fetchUser, updateUser, loading, error } = useUserStore();
+
+    const handleDellAllTransactions = async () => {
+        console.log("click")
+        await deleteAllTransactions();
+        console.log("✅ Suppression terminée, redirection...");
+        window.location.href = "/dashboard"
+    }
 
 
     // Gestion du dropdown
@@ -59,12 +69,12 @@ const NavBar = ({ handleDrawerOpen }) => {
             )}
             <nav
                 className="bg-white dark:bg-gray-800 fixed w-full z-30 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
-                <div className="flex flex-wrap items-center justify-between mx-auto p-2 px-10">
+                <div className="flex flex-wrap items-center justify-between mx-auto p-2 px-5 sm:px-10">
                     {/* Logo et menu */}
                     <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                        <img src={logo} className="h-8" alt="App Logo"/>
+                        <img src={logo} className="h-6 sm:h-8" alt="App Logo"/>
                         <span
-                            className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">APPLAB</span>
+                            className="self-center text-md sm:text-2xl font-semibold whitespace-nowrap dark:text-white">APPLAB</span>
                         <button
                             id="dbtn"
                             onClick={toggleNavDrawer}
@@ -78,22 +88,18 @@ const NavBar = ({ handleDrawerOpen }) => {
                     </div>
 
                     {/* Dropdown utilisateur */}
-                    <div className="relative flex items-center dark:text-white">
+                    <div
+                        onClick={toggleNavDropdown}
+                        className="cursor-pointer relative flex items-center dark:text-white">
                         <div className="text-right mr-4">
-                            <p className="font-bold text-sm">email</p>
-                            <p className="text-sm text-gray-500">Admin</p>
+                            <p className="font-bold text-sm">{user?.email}</p>
+                            <p className="text-sm text-gray-500"></p>
+                            <span
+                                className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">
+                                Utilisateur
+                            </span>
                         </div>
-
-                        <button
-                            id="dropdownUserAvatarButton"
-                            onClick={toggleNavDropdown}
-                            className="flex text-sm bg-gray-800 rounded focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                            type="button"
-                        >
-                            <span className="sr-only">Open user menu</span>
-                            <img className="w-10 h-10 rounded" src={avat} alt="User avatar"/>
-                        </button>
-
+                        <img className="hidden sm:block  w-10 h-10 rounded" src={avat} alt="User avatar"/>
                         {/* Dropdown menu */}
                         {navDropdown && (
                             <div id="dropdownAvatar"
@@ -101,26 +107,25 @@ const NavBar = ({ handleDrawerOpen }) => {
                                 {/* Email utilisateur */}
                                 <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                     <div className="font-medium text-xs truncate">
-                                        email
+                                        <FontAwesomeIcon className="mr-3" icon={faUser}/>
+                                        {user?.email}
                                     </div>
                                 </div>
-                                {/* Liens de navigation */}
                                 <ul
                                     className="py-2 text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="dropdownUserAvatarButton"
                                 >
                                     <li>
                                         <a
-                                            href="/settings"
-                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            className="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         >
-                                            <FontAwesomeIcon className="mr-3" icon={faUser}/>
-                                            Profil
+                                            <FontAwesomeIcon className="mr-3" icon={faCircleHalfStroke}/>
+                                            Mode
                                         </a>
                                     </li>
                                     <li>
                                         <a
-                                            href="#"
+                                            href="/settings"
                                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         >
                                             <FontAwesomeIcon className="mr-3" icon={faGear}/>
@@ -136,13 +141,20 @@ const NavBar = ({ handleDrawerOpen }) => {
                                     <li>
                                         <a
                                             href="#"
-                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            onClick={handleDellAllTransactions}
+                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-yellow-400 dark:hover:text-white"
                                         >
-                                            <FontAwesomeIcon
-                                                className="mr-3"
-                                                icon={faTriangleExclamation}
-                                            />
-                                            Notifications
+                                            <FontAwesomeIcon className="mr-3" icon={faTriangleExclamation}/>
+                                            Init Month
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            href="#"
+                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-red-400 dark:hover:text-white"
+                                        >
+                                            <FontAwesomeIcon className="mr-3" icon={faLandMineOn}/>
+                                            Init All
                                         </a>
                                     </li>
                                 </ul>
@@ -151,7 +163,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                 <div className="py-2">
                                     <a
                                         onClick={handleLogout}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                        className="block cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-red-400 dark:hover:bg-red-400 dark:text-gray-200 dark:hover:text-white"
                                     >
                                         <FontAwesomeIcon
                                             className="mr-3"

@@ -4,6 +4,8 @@ import useTransacFixeStore from "../../store/useTransacFixeStore.js";
 import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
 import usePeriodStore from "../../store/usePeriodStore.js";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faChevronDown} from "@fortawesome/free-solid-svg-icons";
 /*import 'react-datepicker/dist/react-datepicker.css';*/
 
 const TitrePeriod = () => {
@@ -69,12 +71,10 @@ const TitrePeriod = () => {
                         calendarClassName="custom-calendar" // Classe pour le calendrier
                         showMonthYearDropdown
                     />
+                    <FontAwesomeIcon className="text-blue-300" icon={faChevronDown} />
                 </div>
-                {/* ✅ Affichage des valeurs pour vérification */}
-                <div className="mt-2 text-gray-800 dark:text-white">
-                    <p><strong>Mois sélectionné :</strong> {selectedMonth}</p>
-                    <p><strong>Année sélectionnée :</strong> {selectedYear}</p>
-                </div>
+
+
             </div>
         </>
     );

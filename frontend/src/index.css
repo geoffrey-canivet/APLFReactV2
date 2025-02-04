@@ -43,6 +43,7 @@
     color: white;
     font-size: 1.05rem;
     font-weight: bold;
+    width: 90px;
 }
 .custom-date-picker:hover {
     cursor: pointer;

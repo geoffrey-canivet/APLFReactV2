@@ -4,7 +4,7 @@ import ModalAddTransaction from "../Modals/ModalsTransaction/ModalAddTransaction
 import ModalChart from "../Modals/ModalChart.jsx";
 import {
     faAppleWhole, faCaretDown, faCaretUp,
-    faChartBar,
+    faChartBar, faChartColumn, faChartPie,
     faCreditCard, faEllipsis, faEraser,
     faFilter, faGift,
     faHouse, faPenToSquare, faPlane,
@@ -227,7 +227,8 @@ const CardOccasionnelle = () => {
                                     id={card.id}
                                     onClick={handleViewSubTransactions}
                                 >
-                                    {viewSubTransactions ? <FontAwesomeIcon icon={faSquareCaretUp} /> : <FontAwesomeIcon icon={faSquareCaretDown} />}
+                                    {viewSubTransactions ? <FontAwesomeIcon icon={faSquareCaretUp}/> :
+                                        <FontAwesomeIcon icon={faSquareCaretDown}/>}
 
 
                                 </button>
@@ -239,24 +240,7 @@ const CardOccasionnelle = () => {
                                 >
                                     <FontAwesomeIcon icon={faFilter}/>
                                 </button>
-                                {/* Btn Datatable */}
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Graphique"
-                                    id={card.id}
-                                    onClick={modalDatatable}
-                                >
-                                    <FontAwesomeIcon icon={faTable}/>
-                                </button>
-                                {/* Btn Graphique */}
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Graphique"
-                                    id={card.id}
-                                    onClick={modalChart}
-                                >
-                                    <FontAwesomeIcon icon={faChartBar}/>
-                                </button>
+
                                 {/* Btn Ajouter transaction */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
@@ -266,15 +250,58 @@ const CardOccasionnelle = () => {
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
                                 </button>
-                                {/* Btn Supprimer toutes les transactions et sous-transactionW */}
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
-                                    title="Filtre"
-                                    id={card.id}
-                                    onClick={modalDeleteAllTransactionByCategory}
-                                >
-                                    <FontAwesomeIcon icon={faEraser}/>
-                                </button>
+
+                                <div className="relative inline-block dropdown">
+                                    <button
+                                        onClick={() => toggleDropdown(`header-${card.id}`)}
+                                        className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                        title="Options"
+                                        id={`header-${card.id}`}
+                                    >
+                                        <FontAwesomeIcon icon={faEllipsis}/>
+                                    </button>
+                                    {openDropdownId === `header-${card.id}` && (
+                                        <div
+                                            className="absolute flex flex-col right-0 p-2 mt-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50">
+                                            {/* Btn Datatable */}
+                                            <button
+                                                className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
+                                                title="Graphique"
+                                                id={card.id}
+                                                onClick={modalDatatable}
+                                            >
+                                                <FontAwesomeIcon icon={faTable}/>
+                                            </button>
+                                            {/* Btn Graphique */}
+                                            <button
+                                                className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
+                                                title="Graphique"
+                                                id={card.id}
+                                                onClick={modalChart}
+                                            >
+                                                <FontAwesomeIcon icon={faChartPie}/>
+                                            </button>
+                                            <button
+                                                className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
+                                                title="Graphique"
+                                                id={card.id}
+                                                onClick={modalChart}
+                                            >
+                                                <FontAwesomeIcon icon={faChartColumn}/>
+                                            </button>
+                                            {/* Btn Supprimer toutes les transactions et sous-transactionW */}
+                                            <button
+                                                className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                title="Filtre"
+                                                id={card.id}
+                                                onClick={modalDeleteAllTransactionByCategory}
+                                            >
+                                                <FontAwesomeIcon icon={faEraser}/>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
                         </div>
                         {/* Transactions */}
@@ -301,12 +328,12 @@ const CardOccasionnelle = () => {
                                                             onClick={() => toggleDropdown(`${card.id}-${i}`)}
                                                             className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                                         >
-                                                            <FontAwesomeIcon icon={faEllipsis} />
+                                                            <FontAwesomeIcon icon={faEllipsis}/>
                                                         </button>
                                                         {openDropdownId === `${card.id}-${i}` && (
                                                             <div
                                                                 className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
-                                                                <button
+                                                            <button
                                                                     id={transaction.id}
                                                                     className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
                                                                     onClick={modalAddSubTransaction}
