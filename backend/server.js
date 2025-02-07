@@ -3,9 +3,13 @@ const cors = require('cors');
 const router = require('./router');
 const { sequelize } = require('./models');
 const models = require('./models');
+const morgan = require("morgan");
 const app = express();
 
 const PORT = 3000;
+
+// Utilisation de Morgan en mode 'dev' (affiche des logs colorés)
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 
 app.use(cors());
 app.use(express.json());
@@ -20,14 +24,6 @@ app.get('/', (req, res) => {
         await sequelize.sync(); // Pas de { force: true } pour éviter de tout réinitialiser
 
         console.log("Base de données synchronisée 🟢");
-
-        // Ajout des catégories si elles n'existent pas
-        /*const categories = [
-            "charges", "credits", "assurances", "abonnements", "courantes", "loisirs", "occasionnelles",
-            "depenses_divers", "revenu_actif", "revenu_passif", "revenu_exeptionnelles", "revenus_divers"
-        ];*/
-
-
 
         const categories = [
             {name: "charges", icon: "faHouse", color: "#74C0FC"},
@@ -46,6 +42,7 @@ app.get('/', (req, res) => {
             {name: "revenus_divers", icon: "faSackDollar", color: "#48AE6F"},
         ];
 
+        // Ajout des catégories
         for (const data of categories) {
             const [category, created] = await models.Category.findOrCreate({
                 where: { name: data.name },
@@ -59,12 +56,12 @@ app.get('/', (req, res) => {
             }
         }
 
-        // Ajout des périodes si elles n'existent pas
-        for (let year = 2020; year <= 2025; year++) {
+        // Ajout des périodes
+        for (let year = 2020; year <= 2030; year++) {
             for (let month = 1; month <= 12; month++) {
                 await models.Period.findOrCreate({
-                    where: { month, year }, // Vérifie si la période existe déjà
-                    defaults: { month, year }, // Sinon, insère la période
+                    where: { month, year },
+                    defaults: { month, year },
                 });
             }
         }

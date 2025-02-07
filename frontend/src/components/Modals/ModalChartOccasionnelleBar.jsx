@@ -2,10 +2,10 @@ import {useEffect, useRef } from "react";
 import MySwal from "sweetalert2";
 import Swal from "sweetalert2";
 import { createRoot } from "react-dom/client";
-import PieChartFixe from "../Charts/Fixe/PieChartFixe.jsx";
+import BarChartFixe from "../Charts/Fixe/BarChartFixe.jsx";
+import BarChartOccasionnelle from "../Charts/Occasionnelle/BarChartOccasionnelle.jsx";
 
-const ModalChart = ({closeModal, dataChart}) => {
-
+const ModalChartOccasionnelleBar = ({closeModal, dataChart}) => {
     const rootRef = useRef(null);
 
     // Configure Toast
@@ -24,7 +24,7 @@ const ModalChart = ({closeModal, dataChart}) => {
 
     useEffect(() => {
         MySwal.fire({
-            title: "Graphique",
+            /*title: "Graphique",*/
             padding: 0,
             customClass: {
                 popup: "custom-popup",
@@ -33,9 +33,45 @@ const ModalChart = ({closeModal, dataChart}) => {
                 actions: "custom-footer",
             },
             html: `
-<div id="chart-container"></div>
+
+                <div class="modal-header">
+                        <div class="btnClose">
+                            <button id="close-modal-btn" class="close-btn">&times;</button>
+                        </div>
+                        
+                        <h3>Graphique Bart</h3>
+                        <p>(Catégorie)</p>
+                        
+                    </div>
+                    <div id="chart-container"></div>
 
 				<style>
+				.modal-header h3 {
+                        color: #74C0FC; 
+                        font-weight: 800;
+                    }
+                    .modal-header p {
+                        color: rgba(116,192,252,0.8); 
+                        font-weight: 500;
+                    }
+                    .btnClose {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin: 0;
+				        padding-right: 15px;
+                    }
+                    .close-btn {
+				        color: rgba(255,255,255,0.53);
+				        font-size: 2rem;
+				        margin: 0;
+				        padding: 0;
+				    }
+				    .close-btn:hover {
+				        color: #74C0FC;
+				        font-size: 2rem;
+				        margin: 0;
+				        padding: 0;
+				    }
 				    .custom-backdrop {
 				        background-color: rgba(0, 0, 0, 100)!important;
 				    }
@@ -61,7 +97,7 @@ const ModalChart = ({closeModal, dataChart}) => {
                     .custom-body {
                             padding: 0 !important;
                           margin: 0 !important;
-                          background-color: #1F2937;
+                          background-color: transparent;
                     }
                     .custom-footer {
                           padding-left: 0 ;
@@ -88,11 +124,15 @@ const ModalChart = ({closeModal, dataChart}) => {
 				
 				</style>
         `,
-            showCancelButton: true,
+            showCancelButton: false,
             showConfirmButton: false,
             confirmButtonText: "Ajouter",
             cancelButtonText: "Fermer",
             didOpen: () => {
+                document.getElementById("close-modal-btn").addEventListener("click", () => {
+                    Swal.close();
+                    closeModal(); // Ferme la modal proprement
+                });
                 const backdrop = document.querySelector(".swal2-backdrop-show");
                 if (backdrop) {
                     backdrop.style.backdropFilter = "blur(5px)";
@@ -105,7 +145,7 @@ const ModalChart = ({closeModal, dataChart}) => {
                         rootRef.current = createRoot(chartContainer);
                     }
                     // Mettre à jour le contenu du graphique
-                    rootRef.current.render(<PieChartFixe dataChart={dataChart.transactions} />);
+                    rootRef.current.render(<BarChartOccasionnelle dataChart={dataChart.transactions} />);
                 }
 
             },
@@ -122,4 +162,4 @@ const ModalChart = ({closeModal, dataChart}) => {
     );
 };
 
-export default ModalChart;
+export default ModalChartOccasionnelleBar;

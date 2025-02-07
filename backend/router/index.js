@@ -5,6 +5,7 @@ const categoriesTransactionsRoute = require('./categoriesTransactionsRoute');
 const transactionRoute = require('./transactionRoute');
 const subTransactionRoute = require('./subTransactionRoute');
 const periodRoute = require("./periodRoute");
+const logHistoryRoute = require("./logHistoryRoute");
 
 router.use('/auth', userRouter);
 
@@ -17,5 +18,7 @@ router.use('/add', transactionRoute);
 router.use('/subTransaction', subTransactionRoute);
 
 router.use("/period", periodRoute);
+
+router.use("/logHistory", logHistoryRoute)
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useLogHistoryStore from "./useLogHistoryStore.js";
 
 const useTransactionStore = create((set) => ({
     loading: false,
@@ -20,7 +21,13 @@ const useTransactionStore = create((set) => ({
             });
 
             console.log("✅ Toutes les transactions supprimées avec succès.");
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "General",
+                date: new Date().toISOString(),
+                type: "DELETE_ALL",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("❌ Erreur lors de la suppression des transactions :", error);
             set({ error: error.response?.data || error.message });

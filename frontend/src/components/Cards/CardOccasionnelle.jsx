@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import useTransacOccasStore  from "../../store/useTransacOccasStore.js";
-import ModalAddTransaction from "../Modals/ModalsTransaction/ModalAddTransaction.jsx";
-import ModalChart from "../Modals/ModalChart.jsx";
+
 import {
     faAppleWhole, faCaretDown, faCaretUp,
     faChartBar, faChartColumn, faChartPie,
@@ -19,8 +18,10 @@ import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTrans
 import ModalAddTransactionOccas from "../Modals/ModalsTransaction/ModalAddTransactionOccas.jsx";
 import ModalAddSubTransaction from "../Modals/ModalsTransaction/ModalAddSubTransaction.jsx";
 import ModalDatatable from "../Modals/ModalDatatable.jsx";
-import ModalChartOccasionnelle from "../Modals/ModalChartOccasionnelle.jsx";
+import ModalChartOccasionnellePie from "../Modals/ModalChartOccasionnellePie.jsx";
 import usePeriodStore from "../../store/usePeriodStore.js";
+import ModalChartOccasionnelleBar from "../Modals/ModalChartOccasionnelleBar.jsx";
+
 
 // ICON CATEGORIES
 const iconMap = {
@@ -37,14 +38,16 @@ const calculateTotal = (transactions) => {
 
 const calculateTransactionsTotal = (transactions) => {
     if (!Array.isArray(transactions) || transactions.length === 0) {
-        return 0;
+        return "0.00";
     }
 
-    return transactions.reduce((globalTotal, transaction) => {
+    const total = transactions.reduce((globalTotal, transaction) => {
         const transactionTotal =
             transaction.subTransactions?.reduce((sum, sub) => sum + sub.amount, 0) || 0;
         return globalTotal + transactionTotal;
     }, 0);
+
+    return total.toFixed(2);
 };
 
 
@@ -138,13 +141,19 @@ const CardOccasionnelle = () => {
         setDataDatatable(cat);
     }
 
-    // MODAL GRAPHIQUE
+    // MODAL GRAPHIQUE PIE
     const modalChart = (e) => {
         setCurrentModal("modalChart");
         const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
         setDataChart(cat);
     };
-
+    // MODAL GRAPHIQUE BAR
+    const modalChartBar = (e) => {
+        console.log('bar chart')
+        setCurrentModal("modalChartBar");
+        const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
+        setDataChart(cat);
+    };
 
     // MODAL AJOUTER SUB-TRANSACTION
     const modalAddSubTransaction = async (e) => {
@@ -155,12 +164,6 @@ const CardOccasionnelle = () => {
     }
     // HANDLER AJOUTER SUB TRANSACTION
     const handleAddSubTransaction = async (data) => {
-// 🔹 Données de test en dur
-/*        const data = {
-            transactionId: transactionId,  // 🆔 Remplace par un ID valide de transaction
-            amount: 25,     // 💰 Montant de la sous-transaction
-            date: "2024-02-01" // 📅 Date de la sous-transaction
-        };*/
         console.log(transactionId, data)
         await addSubTransaction(transactionId, data);
     }
@@ -285,7 +288,7 @@ const CardOccasionnelle = () => {
                                                 className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
                                                 title="Graphique"
                                                 id={card.id}
-                                                onClick={modalChart}
+                                                onClick={modalChartBar}
                                             >
                                                 <FontAwesomeIcon icon={faChartColumn}/>
                                             </button>
@@ -319,10 +322,11 @@ const CardOccasionnelle = () => {
                                             <React.Fragment key={transaction.id}>
                                                 {/* 📌 Transaction principale avec total */}
                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 relative">
+                                                    <td className="px-4 py-2">{transaction.subTransactions.length}</td>
                                                     <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {transaction.name}
                                                     </td>
-                                                    <td className="px-4 py-2">{totalTransaction} €</td>
+                                                    <td className="px-4 py-2">{totalTransaction.toFixed(2)} €</td>
                                                     <td className="px-4 py-2 relative">
                                                         <button
                                                             onClick={() => toggleDropdown(`${card.id}-${i}`)}
@@ -333,7 +337,7 @@ const CardOccasionnelle = () => {
                                                         {openDropdownId === `${card.id}-${i}` && (
                                                             <div
                                                                 className="absolute right-3 mt-2 w-32 border border-gray-600 dark:bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
-                                                            <button
+                                                                <button
                                                                     id={transaction.id}
                                                                     className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-500"
                                                                     onClick={modalAddSubTransaction}
@@ -409,13 +413,13 @@ const CardOccasionnelle = () => {
                             </div>
                             <div className="flex-1 text-center border-r border-gray-300 dark:border-gray-600">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTransactionsTotal(card.transactions) * 3} €
+                                    {(calculateTransactionsTotal(card.transactions) * 3).toFixed(2)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Trimestre</div>
                             </div>
                             <div className="flex-1 text-center">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTransactionsTotal(card.transactions) * 12} €
+                                    {(calculateTransactionsTotal(card.transactions) * 12).toFixed(2)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Année</div>
                             </div>
@@ -455,8 +459,12 @@ const CardOccasionnelle = () => {
             )}
             {/* MODAL Chart */}
             {currentModal === "modalChart" && dataChart && (
-                <ModalChartOccasionnelle closeModal={closeModal} dataChart={dataChart} />
+                <ModalChartOccasionnellePie closeModal={closeModal} dataChart={dataChart} />
+            )}{/* MODAL Chart */}
+            {currentModal === "modalChartBar" && dataChart && (
+                <ModalChartOccasionnelleBar closeModal={closeModal} dataChart={dataChart} />
             )}
+
             {/* MODAL Datatable */}
             {currentModal === "modalDatatable" && (
                 <ModalDatatable closeModal={closeModal} dataDatatable={dataDatatable} />

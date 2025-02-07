@@ -13,36 +13,41 @@ import {Autoplay, Navigation, Pagination, Scrollbar} from 'swiper/modules';
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-
-import cardData from "../../utils/DB.js";
 import useTransacFixeStore from "../../store/useTransacFixeStore.js";
 import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
 
 const SwiperDashboard = () => {
 
-    const calculateTotal = (transactions) => {
-        return transactions.reduce((total, transaction) => total + transaction.amount, 0);
-    };
-
-    const calculateTotalOccas = (categories) => {
-        return categories.reduce((totalCategory, category) => {
-            return totalCategory + category.transactions.reduce((totalTransaction, transaction) => {
-                return totalTransaction + transaction.subTransactions.reduce((totalSub, subTransaction) => {
-                    return totalSub + subTransaction.amount;
-                }, 0); // Somme des sous-transactions
-            }, 0); // Somme des transactions
-        }, 0); // Somme des catégories
-    };
-
-
     // STORE
     const { categories: categoriesFixe } = useTransacFixeStore();
     const { categories: categoriesRevenu } = useTransacRevenuStore();
     const { categories: categoriesOccasionnelle } = useTransacOccasStore();
 
-    console.log(categoriesFixe);
-    console.log(categoriesOccasionnelle);
+    // Calcule total d'une catégorie fixe et revenu
+    const calculateTotalFixedCategory = (category) => {
+        return category.transactions.reduce((total, transaction) => total + transaction.amount, 0);
+    };
+
+    // Calcule total des catégories fixes et revenus
+    const calculateTotalFixedCategories = (categories) => {
+        return categories.reduce((total, category) => total + calculateTotalFixedCategory(category), 0);
+    };
+
+    // Calcule total sous transaction occasionnelle
+    const calculateTotalOccas = (categories) => {
+        return categories.reduce((totalCategory, category) => {
+            return totalCategory + category.transactions.reduce((totalTransaction, transaction) => {
+                return totalTransaction + transaction.subTransactions.reduce((totalSub, subTransaction) => {
+                    return totalSub + subTransaction.amount;
+                }, 0);
+            }, 0);
+        }, 0);
+    };
+
+    const totalFixe = calculateTotalFixedCategories(categoriesFixe);
+    const totalRevenu = calculateTotalFixedCategories(categoriesRevenu);
+    const totalOccas = calculateTotalOccas(categoriesOccasionnelle);
 
 
 
@@ -58,7 +63,8 @@ const SwiperDashboard = () => {
                 spaceBetween={20}
                 /*                onSlideChange={() => console.log('Slide changed!')} // Événement de changement de slide
                                 onSwiper={(swiper) => console.log(swiper)} // Instance Swiper*/
-                loop={true}
+                loop={false}
+
                 speed={5000}
                 grabCursor={true}
                 zoom={true}
@@ -90,58 +96,74 @@ const SwiperDashboard = () => {
                     },
                 }}
             >
-                {/* Slides */}
-                {/*FIXE*/}
+
+                {/* 🔵 Fixes */}
+                <SwiperSlide>
+                    <div className="slide bg-gray-700 text-white flex items-center justify-center">
+                        <div className="flex flex-col">
+                            <FontAwesomeIcon size="xl" icon={Icons.faWallet} />
+                            <h3 className="text-center mt-2 text-xs font-bold">Total Fixes</h3>
+                            <p className="text-center mt-1 text-sm">{totalFixe.toFixed(2)} €</p>
+                        </div>
+                    </div>
+                </SwiperSlide>
                 {categoriesFixe.map((data, index) => (
                     <SwiperSlide key={index}>
-                        <div
-                            className="slide bg-gray-700 text-white flex items-center justify-center"
-                            onMouseEnter={(e) => e.currentTarget.classList.add('hovered')}
-                            onMouseLeave={(e) => e.currentTarget.classList.remove('hovered')}
-                        >
+                        <div className="slide bg-gray-700 text-white flex items-center justify-center">
                             <div className="flex flex-col">
-                                <FontAwesomeIcon size="xl" className="" icon={Icons[data.icon]} style={{color: data.color}} />
-                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.name}</h3>
-                                <p className="text-center mt-1 text-sm">{calculateTotal(data.transactions)} €</p>
+                                <FontAwesomeIcon size="xl" icon={Icons[data.icon]} style={{color: data.color}} />
+                                <h3 className="text-center mt-2 text-xs font-bold">{data.name}</h3>
+                                <p className="text-center mt-1 text-sm">{calculateTotalFixedCategory(data).toFixed(2)} €</p>
                             </div>
-
                         </div>
                     </SwiperSlide>
                 ))}
-                {/*OCCASIONNELLE*/}
+
+                {/* 🟠 Carte Total Occasionnelles */}
+                <SwiperSlide>
+                    <div className="slide bg-gray-700 text-white flex items-center justify-center">
+                        <div className="flex flex-col">
+                            <FontAwesomeIcon size="xl" icon={Icons.faShoppingCart} />
+                            <h3 className="text-center mt-2 text-xs font-bold">Total Occasionnelles</h3>
+                            <p className="text-center mt-1 text-sm">{totalOccas.toFixed(2)} €</p>
+                        </div>
+                    </div>
+                </SwiperSlide>
                 {categoriesOccasionnelle.map((data, index) => (
                     <SwiperSlide key={index}>
-                        <div
-                            className="slide bg-gray-700 text-white flex items-center justify-center"
-                            onMouseEnter={(e) => e.currentTarget.classList.add('hovered')}
-                            onMouseLeave={(e) => e.currentTarget.classList.remove('hovered')}
-                        >
+                        <div className="slide bg-gray-700 text-white flex items-center justify-center">
                             <div className="flex flex-col">
-                                <FontAwesomeIcon size="xl" className="" icon={Icons[data.icon]} style={{color: data.color}} />
-                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.name}</h3>
-                                <p className="text-center mt-1 text-sm">{calculateTotalOccas([data])} €</p>
+                                <FontAwesomeIcon size="xl" icon={Icons[data.icon]} style={{color: data.color}} />
+                                <h3 className="text-center mt-2 text-xs font-bold">{data.name}</h3>
+                                <p className="text-center mt-1 text-sm">{calculateTotalOccas([data]).toFixed(2)} €</p>
                             </div>
-
                         </div>
                     </SwiperSlide>
                 ))}
-                {/*REVENU*/}
+
+                {/* 🟢 Carte Total Revenus */}
+                <SwiperSlide>
+                    <div className="slide bg-gray-700 text-white flex items-center justify-center">
+                        <div className="flex flex-col">
+                            <FontAwesomeIcon size="xl" icon={Icons.faDollarSign} />
+                            <h3 className="text-center mt-2 text-xs font-bold">Total Revenus</h3>
+                            <p className="text-center mt-1 text-sm">{totalRevenu.toFixed(2)} €</p>
+                        </div>
+                    </div>
+                </SwiperSlide>
                 {categoriesRevenu.map((data, index) => (
                     <SwiperSlide key={index}>
-                        <div
-                            className="slide bg-gray-700 text-white flex items-center justify-center"
-                            onMouseEnter={(e) => e.currentTarget.classList.add('hovered')}
-                            onMouseLeave={(e) => e.currentTarget.classList.remove('hovered')}
-                        >
+                        <div className="slide bg-gray-700 text-white flex items-center justify-center">
                             <div className="flex flex-col">
-                                <FontAwesomeIcon size="xl" className="" icon={Icons[data.icon]} style={{color: data.color}} />
-                                <h3 className="dark:text-gray-400 text-center mt-2 text-xs font-bold">{data.name}</h3>
-                                <p className="text-center mt-1 text-sm">{calculateTotal(data.transactions)} €</p>
+                                <FontAwesomeIcon size="xl" icon={Icons[data.icon]} style={{color: data.color}} />
+                                <h3 className="text-center mt-2 text-xs font-bold">{data.name}</h3>
+                                <p className="text-center mt-1 text-sm">{calculateTotalFixedCategory(data).toFixed(2)} €</p>
                             </div>
-
                         </div>
                     </SwiperSlide>
                 ))}
+
+
 
             </Swiper>
             <style>

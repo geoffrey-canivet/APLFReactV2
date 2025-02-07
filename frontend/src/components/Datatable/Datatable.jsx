@@ -2,57 +2,75 @@ import DataTable from "react-data-table-component";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleInfo, faImage, faPaperclip, faPenToSquare, faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
+import ModalDatatable from "../Modals/ModalDatatable.jsx";
+import React, {useState} from "react";
+import ModalUpdateSubTransaction from "../Modals/ModalsTransaction/ModalUpdateSubTransaction.jsx";
 
 const Datatable = ({dataDatatable}) => {
-    console.log("datatable -> ",dataDatatable.transactions);
+    console.log("datatable -> ", dataDatatable.transactions);
 
     // STORE
-    const {
-        categories,
-        loading,
-        error,
-        fetchOccas,
-        deleteSubTransaction,
-    } = useTransacOccasStore();
+    const { updateSubTransaction, deleteSubTransaction } = useTransacOccasStore();
+    const data = dataDatatable.transactions;
 
-    const data = dataDatatable.transactions
+    const [modalUpdateSubTransactionIsOpen, setModalUpdateSubTransactionIsOpen] =
+        useState(false);
+    const [subCatId, setSubCatId] = useState(0);
 
-    /*const data = [
-        {
-            id: 99,
-            name: "transaction1",
-            price: "500",
-            subData: [
-                {id: 7, date: "05/01/2024", item: '15'},
-                {id: 94, date: "05/01/2024", item: '43'},
-                {id: 8, date: "05/01/2024", item: '95'},
-            ]
-        },
-        {
-            id: 23,
-            name: "transaction 2",
-            price: "500",
-            subData: [
-                {id: 20, date: "05/01/2024", item: '15'},
-                {id: 10, date: "05/01/2024", item: '43'},
-                {id: 38, date: "05/01/2024", item: '95'},
-            ]
-        },
-    ]*/
+    // 🔹 Fonction pour obtenir le total des sous-transactions d'une transaction
+    const getTotalSubTransactions = (row) =>
+        row.subTransactions.reduce((sum, sub) => sum + sub.amount, 0);
 
-    function generateRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
+    // 🔹 Calculer le total général des transactions
+    const totalGeneral = data.reduce((sum, row) => sum + getTotalSubTransactions(row), 0);
+
+    // 🔹 Calculer le pourcentage d'une transaction par rapport au total général
+    const getTransactionPercentage = (row) => {
+        const transactionTotal = getTotalSubTransactions(row);
+        return totalGeneral > 0 ? ((transactionTotal / totalGeneral) * 100).toFixed(2) : 0;
+    };
+
+    // 🔹 Fermer la modal
+    const closeModal = () => setModalUpdateSubTransactionIsOpen(false);
+
+    // 🔹 Ouvrir la modal
+    const modalUpdateSubTransaction = (id) => {
+        setSubCatId(id);
+        setModalUpdateSubTransactionIsOpen(true);
+    };
+
+    const handleUpdateSubTransaction = (updateData) => {
+        console.log("id: ",subCatId, "amount: ", updateData.amount, "commerce: ", updateData.commerce, "comment: ", updateData.myComment, "date: ", updateData.date);
+        updateSubTransaction(subCatId, updateData.amount, updateData.date, updateData.commerce)
+    }
+
+    // 🔹 Générer une couleur aléatoire
+    const generateRandomColor = () => {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
         for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
-    }
+    };
+
+
 
     const columns = [
+        { name: "", cell: (row) => (
+                <span
+                    className="px-1.5 py-1.5 rounded-full"
+                    style={{
+                        backgroundColor: generateRandomColor(), // Couleur dynamique
+                    }}
+                ></span>
+            ),
+            sortable: true,
+            $grow: 0
+        },
         { name: "Nb", selector: (row) => row.subTransactions.length, sortable: true, $grow: 0 },
         { name: "Nom", selector: (row) => row.name, sortable: true, $grow: 1 },
-        { name: "Total", selector: (row) => row.amount, sortable: true, $grow: 0 },
+        { name: "Total", selector: (row) => `${getTotalSubTransactions(row).toFixed(2)} €`, sortable: true, $grow: 0 },
         { name: "Commerce", cell: (row) => (
                 <span
                     className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Carrefour</span>
@@ -61,27 +79,40 @@ const Datatable = ({dataDatatable}) => {
             $grow: 1
         },
         {
-            name: "Progression", cell: (row) => (
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div
-                        className="h-2.5 rounded-full"
-                        style={{
-                            width: "45%", // Définir la largeur en fonction de vos données
-                            backgroundColor: generateRandomColor(), // Couleur dynamique
-                        }}
-                    ></div>
-                </div>
-            ),
+            name: "Progression", cell: (row) => {
+                const pourcentage = getTransactionPercentage(row);
+                return (
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                            className="h-2.5 rounded-full"
+                            style={{
+                                width: `${pourcentage}%`,
+                                backgroundColor: generateRandomColor(), // Couleur dynamique
+                                transition: "width 0.5s ease-in-out" // Animation fluide
+                            }}
+
+                        ></div>
+                    </div>
+                )
+
+            },
             sortable: true,
             $grow: 1
         },
-        { name: "Pourcent", selector: (row) => "45%", sortable: true, $grow: 0 },
-        { name: "Dernier achat", selector: (row) => "14/01/2024", $grow: 0 },
+        {
+            name: "Pourcentage",
+            selector: (row) => `${getTransactionPercentage(row)} %`,
+            sortable: true,
+            grow: 1,
+        },
+        {name: "Dernier achat", selector: (row) => "14/01/2024", $grow: 0},
     ];
 
     const columnDetail = [
-        { name: "Date", selector: (row) => row.date, sortable: true, $grow: 0 },
-        { name: "Prix", selector: (row) => row.amount, sortable: true, $grow: 0 },
+
+        {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
+        {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
+        {name: "Prix", selector: (row) => row.amount, sortable: true, $grow: 0 },
         { name: "Commerce", cell: (row) => (
                 <span
                     className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">{row.commerce}</span>
@@ -91,27 +122,29 @@ const Datatable = ({dataDatatable}) => {
         },
         { name: "Actions", cell: (row) => (
                 <div className="px-0 py-0 flex gap-4">
-                    <button className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
+                    <button
+                        className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
+                        onClick={() => modalUpdateSubTransaction(row.id)}
                     >
                         <FontAwesomeIcon icon={faPenToSquare}/>
                     </button>
                     <button
-                        className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                        className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
                         title="Supprimer la sous-transaction"
                         onClick={() => deleteSubTransaction(row.id)}
                     >
                         <FontAwesomeIcon icon={faTrashCan}/>
                     </button>
-                    <button className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
+                    <button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
                     >
                         <FontAwesomeIcon icon={faPaperclip}/>
                     </button>
-                    <button className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                    <button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
                             title="Ajouter un élément"
                     >
                         <FontAwesomeIcon icon={faImage}/>
                     </button>
-                    <button className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                    <button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
                             title="Ajouter un élément"
                     >
                         <FontAwesomeIcon icon={faCircleInfo} />
@@ -164,9 +197,9 @@ const Datatable = ({dataDatatable}) => {
                         },
                         minHeight: "72px",
                         transition: "background-color 0.3s ease",
-                        backgroundColor: "#1F2937", // Fond vert par défaut
+                        backgroundColor: "#55657c", // Fond vert par défaut
                         '&:hover': {
-                            backgroundColor: "#374151", // Fond rouge vif au survol
+                            backgroundColor: "#7c92b3", // Fond rouge vif au survol
                         },
                         svg: {
                             fill: "#fff", // Couleur des chevrons
@@ -188,8 +221,9 @@ const Datatable = ({dataDatatable}) => {
                         paddingTop: "10px",
                         paddingBottom: "10px",
                         paddingLeft: "17px",
-                        color: "#fff",
+                        color: "#2b3845",
                         fontSize: "14px",
+                        fontWeight: "bolder",
                     },
                 },
             }}
@@ -328,8 +362,20 @@ const Datatable = ({dataDatatable}) => {
                     },
                 }}
             />
+
+            {/* MODAL Datatable */}
+            {modalUpdateSubTransactionIsOpen === true && (
+                <ModalUpdateSubTransaction closeModal={closeModal} subCatId={subCatId} handleUpdateSubTransaction={handleUpdateSubTransaction} />
+            )}
         </>
     );
 };
 
 export default Datatable;
+
+
+
+
+
+
+

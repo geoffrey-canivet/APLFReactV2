@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { createRoot } from "react-dom/client";
 import PieChartOccasionnelle from "../Charts/Occasionnelle/PieChartOccasionnelle.jsx";
 
-const ModalChartOccasionnelle = ({closeModal, dataChart}) => {
+const ModalChartOccasionnellePie = ({closeModal, dataChart}) => {
     const rootRef = useRef(null);
 
     // Configure Toast
@@ -121,4 +121,4 @@ const ModalChartOccasionnelle = ({closeModal, dataChart}) => {
     );
 };
 
-export default ModalChartOccasionnelle;
+export default ModalChartOccasionnellePie;

@@ -21,13 +21,21 @@ const PieChartFixe = ({ dataChart }) => {
 
         },
         legend: {
+            orient: 'horizontal',
+            left: 'center',
             top: 'bottom',
             textStyle: {
                 color: "#fff"
-            }
+            },
+            itemGap: 10,           // 🔹 Espacement entre les éléments de la légende
+            bottom: '0%',
+            margin: [0, 0, 0, 0],  // 🔹 Ajoute un espace (haut, droite, bas, gauche)
+        },
+        grid: {
+            bottom: '20%' // ✅ Ajoute encore plus d’espace en bas
         },
         title: {
-            text: `Total\n\n${total} €`,
+            text: `Total\n\n${total.toFixed(2)} €`,
             left: '50%',       // ✅ Centre horizontalement
             top: '50%',        // ✅ Centre verticalement
             textAlign: 'center',
@@ -40,7 +48,7 @@ const PieChartFixe = ({ dataChart }) => {
         },
         avoidLabelOverlap: false,
         toolbox: {
-            show: true,
+            show: false,
             feature: {
                 mark: { show: true },
                 dataView: { show: true, readOnly: false },
@@ -52,7 +60,7 @@ const PieChartFixe = ({ dataChart }) => {
             {
                 name: "Transaction",
                 type: "pie",
-                radius: ['40%', '70%'],
+                radius: ['45%', '70%'],
                 selectedMode: 'single',
                 /*roseType: 'area',*/
                 padAngle: 5,
@@ -75,7 +83,11 @@ const PieChartFixe = ({ dataChart }) => {
         ],
     };
 
-    return <ReactECharts option={option} />;
+    return (
+        <div style={{ width: '400px', height: '450px', margin: '0 auto', paddingBottom: '30px' }}> {/* ✅ Ajuste la taille */}
+            <ReactECharts option={option} style={{ width: '100%', height: '100%' }} /> {/* ✅ Empêche le débordement */}
+        </div>
+    );
 };
 
 export default PieChartFixe;

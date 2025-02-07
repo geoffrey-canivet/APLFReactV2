@@ -3,6 +3,7 @@ import useUserStore from "../../store/useUserStore.js";
 import {useEffect, useState} from "react";
 import logo from "../../assets/logo-small.png";
 import avat from "../../assets/avat.png";
+import logo2 from "../../assets/logo2.png"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faBars, faCircleHalfStroke,
@@ -72,9 +73,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                 <div className="flex flex-wrap items-center justify-between mx-auto p-2 px-5 sm:px-10">
                     {/* Logo et menu */}
                     <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                        <img src={logo} className="h-6 sm:h-8" alt="App Logo"/>
-                        <span
-                            className="self-center text-md sm:text-2xl font-semibold whitespace-nowrap dark:text-white">APPLAB</span>
+                        <img src={logo2} className="h-6 sm:h-8" alt="App Logo"/>
                         <button
                             id="dbtn"
                             onClick={toggleNavDrawer}
@@ -91,15 +90,15 @@ const NavBar = ({ handleDrawerOpen }) => {
                     <div
                         onClick={toggleNavDropdown}
                         className="cursor-pointer relative flex items-center dark:text-white">
-                        <div className="text-right mr-4">
-                            <p className="font-bold text-sm">{user?.email}</p>
-                            <p className="text-sm text-gray-500"></p>
+                        <img className="mr-4 hidden sm:block w-10 h-10 rounded" src={avat} alt="User avatar"/>
+                        <div className="text-center">
+                            <p className="font-bold text-center text-sm">{user?.firstName}</p>
                             <span
-                                className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">
+                                className="bg-blue-100 text-center text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-md dark:bg-blue-900 dark:text-blue-300">
                                 Utilisateur
                             </span>
                         </div>
-                        <img className="hidden sm:block  w-10 h-10 rounded" src={avat} alt="User avatar"/>
+
                         {/* Dropdown menu */}
                         {navDropdown && (
                             <div id="dropdownAvatar"

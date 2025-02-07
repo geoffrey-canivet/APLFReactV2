@@ -1,7 +1,8 @@
-// src/store/useTransacFixeStore.js
+
 import { create } from "zustand";
 import axios from "axios";
 import usePeriodStore from "./usePeriodStore.js";
+import useLogHistoryStore from "./useLogHistoryStore.js";
 
 const useTransacRevenuStore = create((set) => ({
     categories: [],
@@ -106,7 +107,13 @@ const useTransacRevenuStore = create((set) => ({
             );
 
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction Revenu",
+                date: new Date().toISOString(),
+                type: "CREATE",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("Erreur lors de l'ajout de la transaction :", error);
             set({ error: error.response?.data || error.message });
@@ -136,7 +143,13 @@ const useTransacRevenuStore = create((set) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction revenu",
+                date: new Date().toISOString(),
+                type: "DELETE",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
         } catch (error) {
             console.error("Erreur lors de la suppression de la transaction :", error);
@@ -169,7 +182,13 @@ const useTransacRevenuStore = create((set) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction fixe ajoutée",
+                date: new Date().toISOString(),
+                type: "DELETE_BY_CATEGORY",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
 
         }catch (error) {
@@ -207,7 +226,13 @@ const useTransacRevenuStore = create((set) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction revenu",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
 
         }catch (error) {

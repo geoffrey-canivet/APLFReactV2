@@ -1,8 +1,7 @@
-
 import { create } from "zustand";
 import axios from "axios";
 import usePeriodStore from "./usePeriodStore.js";
-
+import useLogHistoryStore from "./useLogHistoryStore.js";
 const useTransacFixeStore = create((set, get) => ({
     categories: [],
     loading: false,
@@ -37,7 +36,7 @@ const useTransacFixeStore = create((set, get) => ({
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
-            console.log(`🔍 Fetching transactions for Month: ${month}, Year: ${year}`);
+           /* console.log(`🔍 Fetching transactions for Month: ${month}, Year: ${year}`);*/
 
             const response = await axios.post(
                 "http://localhost:3000/trans/getFixeByPeriod",
@@ -51,7 +50,7 @@ const useTransacFixeStore = create((set, get) => ({
             );
 
             set({ categories: response.data });
-            console.log(`✅ Transactions récupérées pour ${month}/${year}:`, response.data);
+            /*console.log(`✅ Transactions récupérées pour ${month}/${year}:`, response.data);*/
         } catch (error) {
             console.error("❌ Erreur fetchFixeByPeriod :", error);
             set({ error: error.message || "Impossible de récupérer les catégories." });
@@ -108,6 +107,14 @@ const useTransacFixeStore = create((set, get) => ({
 
             set({ categories: refreshResponse.data });
 
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction fixe",
+                date: new Date().toISOString(),
+                type: "CREATE",
+                time: new Date().toLocaleTimeString(),
+            });
+
         } catch (error) {
             console.error("Erreur lors de l'ajout de la transaction :", error);
             set({ error: error.response?.data || error.message });
@@ -137,7 +144,13 @@ const useTransacFixeStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction fixe",
+                date: new Date().toISOString(),
+                type: "Delete",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
         } catch (error) {
             console.error("Erreur lors de la suppression de la transaction :", error);
@@ -170,7 +183,13 @@ const useTransacFixeStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction fixe",
+                date: new Date().toISOString(),
+                type: "DELETE_BY_CATEGORY",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
 
         }catch (error) {
@@ -208,7 +227,13 @@ const useTransacFixeStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
             set({ categories: refreshResponse.data });
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction fixe",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
 
         }catch (error) {

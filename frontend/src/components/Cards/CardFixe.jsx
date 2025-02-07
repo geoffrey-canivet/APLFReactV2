@@ -12,12 +12,13 @@ import {
     faUmbrella,
 } from "@fortawesome/free-solid-svg-icons";
 import ModalAddTransaction from "../Modals/ModalsTransaction/ModalAddTransaction.jsx";
-import ModalChart from "../Modals/ModalChart.jsx";
+import ModalChartPie from "../Modals/ModalChartPie.jsx";
 import useTransacFixeStore from "../../store/useTransacFixeStore.js";
 import ModalDeleteTransaction from "../Modals/ModalsTransaction/ModalDeleteTransaction.jsx";
 import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/ModalDeleteAllTransactionByCategory.jsx";
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
 import usePeriodStore from "../../store/usePeriodStore.js";
+import ModalChartBar from "../Modals/ModalChartBar.jsx";
 
 // ICON CATEGORIES
 const iconMap = {
@@ -105,9 +106,15 @@ const CardFixe = () => {
         setCurrentModal("modalDeleteAllTransactionByCategory");
         setCategoryId(Number(e.currentTarget.id));
     }
-    // MODAL GRAPHIQUE
+    // MODAL GRAPHIQUE PIE
     const modalChart = (e) => {
         setCurrentModal("modalChart");
+        const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
+        setDataChart(cat);
+    };
+    // MODAL GRAPHIQUE BAR
+    const modalChartBar = (e) => {
+        setCurrentModal("modalChartBar");
         const cat = categories.find((c) => c.id === Number(e.currentTarget.id));
         setDataChart(cat);
     };
@@ -220,7 +227,7 @@ const CardFixe = () => {
                                                 className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
                                                 title="Graphique"
                                                 id={card.id}
-                                                onClick={modalChart}
+                                                onClick={modalChartBar}
                                             >
                                                 <FontAwesomeIcon icon={faChartColumn}/>
                                             </button>
@@ -251,7 +258,7 @@ const CardFixe = () => {
                                             <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {transaction.name}
                                             </td>
-                                            <td className="px-4 py-2">{transaction.amount}.00</td>
+                                            <td className="px-4 py-2">{transaction.amount}</td>
                                             <td className="px-4 py-2 relative">
                                                 <button
                                                     onClick={() => toggleDropdown(`${card.id}-${i}`)}
@@ -295,19 +302,19 @@ const CardFixe = () => {
                         <div className="flex justify-between px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-b-lg">
                             <div className="flex-1 text-center border-r border-gray-300 dark:border-gray-600">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions)} €
+                                    {calculateTotal(card.transactions).toFixed(2)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Mois</div>
                             </div>
                             <div className="flex-1 text-center border-r border-gray-300 dark:border-gray-600">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions) * 3} €
+                                    {(calculateTotal(card.transactions) * 3).toFixed(2)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Trimestre</div>
                             </div>
                             <div className="flex-1 text-center">
                                 <div className="font-semibold text-gray-900 dark:text-white">
-                                    {calculateTotal(card.transactions) * 12} €
+                                    {(calculateTotal(card.transactions) * 12).toFixed(2)} €
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">Année</div>
                             </div>
@@ -341,9 +348,13 @@ const CardFixe = () => {
 
                 />
             )}
-            {/* MODAL Chart */}
+            {/* MODAL Chart Pie */}
             {currentModal === "modalChart" && dataChart && (
-                <ModalChart closeModal={closeModal} dataChart={dataChart}/>
+                <ModalChartPie closeModal={closeModal} dataChart={dataChart}/>
+            )}
+            {/* MODAL Chart Bar */}
+            {currentModal === "modalChartBar" && dataChart && (
+                <ModalChartBar closeModal={closeModal} dataChart={dataChart}/>
             )}
         </>
     );

@@ -14,6 +14,19 @@ const commerceOptions = [
     { label: "Brico", value: "Brico" },
     { label: "Brico Plan-It", value: "Brico Plan-It" },
     { label: "Hubo", value: "Hubo" },
+
+    { label: "Fast-food", value: "Fast-food" },
+    { label: "MisterCash", value: "MisterCash" },
+    { label: "Action", value: "Action" },
+    { label: "Steam", value: "Steam" },
+    { label: "Amazon", value: "Amazon" },
+    { label: "Zalando", value: "Zalando" },
+    { label: "PayPal", value: "PayPal" },
+    { label: "Distributeur", value: "Distributeur" },
+    { label: "Restaurant", value: "Restaurant" },
+    { label: "Hubo", value: "Hubo" } ,
+
+
     { label: "Gamma", value: "Gamma" },
     { label: "Shop", value: "Shop" },
     { label: "Banque", value: "Banque" },

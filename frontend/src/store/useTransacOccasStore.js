@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import usePeriodStore from "./usePeriodStore.js";
+import useLogHistoryStore from "./useLogHistoryStore.js";
 
 const useTransacOccasStore = create((set, get) => ({
     categories: [],
@@ -86,7 +87,7 @@ const useTransacOccasStore = create((set, get) => ({
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
-// ✅ Récupérer le mois et l'année depuis le store `usePeriodStore`
+            // ✅ Récupérer le mois et l'année depuis le store `usePeriodStore`
             const { month, year } = usePeriodStore.getState();
 
             console.log(`🟢 Ajout d'une transaction pour ${month}/${year}`);
@@ -126,6 +127,13 @@ const useTransacOccasStore = create((set, get) => ({
             );
 
             set({ categories: refreshResponse.data });
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction occasionnelle",
+                date: new Date().toISOString(),
+                type: "CREATE",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("Erreur lors de l'ajout de la transaction :", error);
             set({ error: error.response?.data || error.message });
@@ -142,6 +150,8 @@ const useTransacOccasStore = create((set, get) => ({
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant.");
 
+
+
             const response = await axios.post(
                 "http://localhost:3000/subTransaction/addSubTransaction",
                 {
@@ -149,11 +159,12 @@ const useTransacOccasStore = create((set, get) => ({
                     amount: subTransactionData.amount,
                     date: subTransactionData.date,
                     commerce: subTransactionData.commerce,
+                    comment: subTransactionData.myComment,
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            /*console.log("✅ Sous-transaction ajoutée :", response.data);*/
+            console.log("✅ Sous-transaction ajoutée :", response.data);
 
             // 🔄 Mise à jour locale du state
             set((state) => ({
@@ -169,7 +180,13 @@ const useTransacOccasStore = create((set, get) => ({
                     ),
                 })),
             }));
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Sub-transaction",
+                date: new Date().toISOString(),
+                type: "CREATE",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("❌ Erreur addSubTransaction :", error);
             set({ error: error.message });
@@ -198,7 +215,13 @@ const useTransacOccasStore = create((set, get) => ({
                     transactions: cat.transactions.filter((t) => t.id !== transactionId),
                 })),
             }));
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction occasionnelle",
+                date: new Date().toISOString(),
+                type: "DELETE",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("❌ Erreur deleteTransactionOccas :", error);
             set({ error: error.message });
@@ -234,7 +257,13 @@ const useTransacOccasStore = create((set, get) => ({
             set((state) => ({
                 subTransactions: state.subTransactions.filter(st => st.id !== subTransactionId)
             }));
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Sub-transaction",
+                date: new Date().toISOString(),
+                type: "DELETE",
+                time: new Date().toLocaleTimeString(),
+            });
             return data;
         } catch (error) {
             console.error("Erreur dans deleteSubTransaction:", error);
@@ -265,6 +294,13 @@ const useTransacOccasStore = create((set, get) => ({
             });
             set({ categories: refreshResponse.data });
 
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction occasionnelle",
+                date: new Date().toISOString(),
+                type: "DELETE_BY_CATEGORY",
+                time: new Date().toLocaleTimeString(),
+            });
             return response.data;
 
         }catch (error) {
@@ -277,24 +313,31 @@ const useTransacOccasStore = create((set, get) => ({
     },
 
     // 📌 Récupérer les sous-transactions d'une transaction spécifique
-    fetchSubTransactions: async (transactionId) => {
+    fetchSubTransactionById: async (subTransactionId) => {
         set({ loading: true, error: null });
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant.");
 
-            const response = await axios.get(`http://localhost:3000/subTransaction/getSubTransactions/${transactionId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            const response = await axios.post(
+                "http://localhost:3000/subTransaction/getSubTransactionById",
+                { subTransactionId },  // ✅ Envoi de l'ID via le body
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
-            /*console.log(`✅ Sous-transactions pour Transaction ${transactionId} :`, response.data);*/
+            /*console.log(`✅ Sous-transaction trouvée ${subTransactionId} :`, response.data);*/
 
-            return response.data || [];  // ✅ Toujours retourner un tableau
+            return response.data || null;  // ✅ Retourne `null` si pas trouvé
 
         } catch (error) {
-            console.error("❌ Erreur fetchSubTransactions :", error);
+            console.error("❌ Erreur fetchSubTransactionById :", error);
             set({ error: error.message });
-            return []; // ✅ Éviter les erreurs en front
+            return null; // ✅ Retourner null pour éviter les erreurs en front
         } finally {
             set({ loading: false });
         }
@@ -324,7 +367,13 @@ const useTransacOccasStore = create((set, get) => ({
                     ),
                 })),
             }));
-
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction occasionnelle",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
         } catch (error) {
             console.error("❌ Erreur updateTransaction :", error);
             set({ error: error.message });
@@ -332,6 +381,51 @@ const useTransacOccasStore = create((set, get) => ({
             set({ loading: false });
         }
     },
+
+    // 📌 Mettre à jour une sous-transaction
+    updateSubTransaction: async (subTransactionId, amount, date, commerce) => {
+        set({ loading: true, error: null });
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Token manquant.");
+
+            const response = await axios.put(
+                "http://localhost:3000/subTransaction/updateSubTransaction",
+                { subTransactionId, amount, date, commerce},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            /*console.log("✅ Sous-transaction mise à jour :", response.data);*/
+
+            // Mise à jour du state sans refetch
+            set((state) => ({
+                categories: state.categories.map((cat) => ({
+                    ...cat,
+                    transactions: cat.transactions.map((t) => ({
+                        ...t,
+                        subTransactions: t.subTransactions.map((subT) =>
+                            subT.id === subTransactionId
+                                ? { ...subT, amount, date, commerce}
+                                : subT
+                        ),
+                    })),
+                })),
+            }));
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Sub-transaction",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
+        } catch (error) {
+            console.error("❌ Erreur updateSubTransaction :", error);
+            set({ error: error.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
 
 }));
 

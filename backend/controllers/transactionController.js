@@ -7,7 +7,7 @@ const transactionController = {
             const { categoryId, periodId, name, amount, details } = req.body;
             const userId = req.userId; // Toujours basé sur l'utilisateur connecté
 
-            // Validation simple des entrées
+            // Validation
             if (!userId || !categoryId || !periodId || !name) {
                 return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
             }
@@ -120,6 +120,7 @@ const transactionController = {
         }
     },
 
+    // SUPPRIMER TOUTES LES TRANSACTION DE TOUTE LES CATEGORIES
     deleteAllTransactions: async (req, res) => {
         try {
             console.log("🔴 Suppression de toutes les transactions et sous-transactions...");

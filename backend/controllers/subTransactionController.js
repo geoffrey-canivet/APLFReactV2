@@ -3,9 +3,9 @@ const db = require("../models"); // ✅ Importer l'index des modèles correcteme
 const subTransactionController = {
     addSubTransaction: async (req, res) => {
         try {
-            const { transactionId, amount, date, commerce } = req.body;
+            const { transactionId, amount, date, commerce, comment } = req.body;
 
-            console.log("📥 Données reçues :", { transactionId, amount, date, commerce });
+            console.log("📥 Données reçues :", { transactionId, amount, date, commerce, comment });
 
             // ✅ Vérification de la transaction principale
             const transaction = await db.Transaction.findByPk(transactionId);
@@ -22,6 +22,7 @@ const subTransactionController = {
                 amount,
                 date,
                 commerce,
+                comments : comment,
             });
 
             console.log("✅ Sous-transaction ajoutée avec succès :", newSubTransaction);
@@ -32,6 +33,40 @@ const subTransactionController = {
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
+
+    updateSubTransaction: async (req, res) => {
+        try {
+            // Récupération des données de la requête
+            const { subTransactionId, amount, date, commerce, comment } = req.body;
+
+            if (!subTransactionId) {
+                return res.status(400).json({ error: "L'id de la sous-transaction est requis." });
+            }
+
+            // Vérifier si la sous-transaction existe
+            const subTransaction = await db.SubTransaction.findByPk(subTransactionId);
+
+            if (!subTransaction) {
+                return res.status(404).json({ error: "Sous-transaction non trouvée." });
+            }
+
+            // Mettre à jour la sous-transaction avec les nouvelles valeurs
+            await subTransaction.update({
+                amount: amount !== undefined ? amount : subTransaction.amount,
+                date: date || subTransaction.date,
+                commerce: commerce || subTransaction.commerce,
+                comments: comment !== undefined ? comment : subTransaction.comments,
+            });
+
+            console.log("✅ Sous-transaction mise à jour avec succès :", subTransaction);
+            res.status(200).json({ message: "Sous-transaction mise à jour avec succès.", subTransaction });
+
+        } catch (error) {
+            console.error("❌ Erreur lors de la mise à jour de la sous-transaction :", error);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    },
+
 
     deleteSubTransaction: async (req, res) => {
         try {
@@ -76,6 +111,36 @@ const subTransactionController = {
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
+
+    getSubTransactionById: async (req, res) => {
+        try {
+            const { subTransactionId } = req.body;
+
+            // Vérifier que l'ID est fourni
+            if (!subTransactionId) {
+                return res.status(400).json({ error: "L'id de la sous-transaction est requis." });
+            }
+
+            // 🔍 Recherche de la sous-transaction par ID
+            const subTransaction = await db.SubTransaction.findOne({
+                where: { id: subTransactionId },
+                include: {
+                    model: db.Transaction,
+                    as: "transaction",
+                },
+            });
+
+            if (!subTransaction) {
+                return res.status(404).json({ error: "Sous-transaction non trouvée." });
+            }
+
+            res.status(200).json(subTransaction);
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération de la sous-transaction :", error);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    },
+
 };
 
 module.exports = subTransactionController;

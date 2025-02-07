@@ -4,15 +4,20 @@ import MySwal from "sweetalert2";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import commerceOptions from "../../../utils/commerceOptions.js";
+import usePeriodStore from "../../../store/usePeriodStore.js";
 
 const ModalAddSubTransaction = ({ closeModal, handleAddSubTransaction }) => {
 
+    // Store
+    const {
+        month,
+        year,
+    } = usePeriodStore();
 
-// Générer dynamiquement les options du select
+    // Générer dynamiquement les options du select
     const selectOptionsHtml = commerceOptions
         .map(option => `<option value="${option.value}">${option.label}</option>`)
         .join("");
-
 
     // Configure Toast
     const ToastNotification = Swal.mixin({
@@ -87,7 +92,7 @@ const ModalAddSubTransaction = ({ closeModal, handleAddSubTransaction }) => {
                                 </svg>
                             </div>
                             <!-- Champ textarea avec un padding supérieur et gauche ajusté -->
-                            <textarea disabled id="inputCommentaire" rows="3" class="block pt-2 pl-12 p-2.5 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Commentaire ..."></textarea>
+                            <textarea id="inputCommentaire" rows="3" class="block pt-2 pl-12 p-2.5 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Commentaire ..."></textarea>
                         </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md mx-auto mt-3">
@@ -175,20 +180,13 @@ const ModalAddSubTransaction = ({ closeModal, handleAddSubTransaction }) => {
                 // Initialisation de l'input date
                 const inputDate = document.getElementById("inputDate");
                 if (inputDate) {
-                    // Récupérer la date du jour
-                    const today = new Date();
-                    // Formater la date au format "YYYY-MM-DD"
-                    const yyyy = today.getFullYear();
-                    const mm = String(today.getMonth() + 1).padStart(2, "0"); // Les mois commencent à 0
-                    const dd = String(today.getDate()).padStart(2, "0");
-                    const formattedDate = `${dd}-${mm}-${yyyy}`;
-
-                    // Affecter la date du jour à l'input
+                    // Utilisation de month et year du store
+                    const formattedDate = `01-${String(month).padStart(2, "0")}-${year}`;
                     inputDate.value = formattedDate;
 
-                    // Initialisation de flatpickr sur l'input avec le format souhaité
                     flatpickr(inputDate, {
                         dateFormat: "d/m/Y",
+                        defaultDate: new Date(year, month - 1, 1), // Initialise à la date du store
                     });
                 }
                 const backdrop = document.querySelector(".swal2-backdrop-show");
@@ -208,11 +206,12 @@ const ModalAddSubTransaction = ({ closeModal, handleAddSubTransaction }) => {
                 const date = document.getElementById("inputDate").value;
                 const amount = document.getElementById("inputPrix").value;
                 const commerce = document.getElementById("inputCommerce").value;
+                const myComment = document.getElementById("inputCommentaire").value;
                 if (!date || !amount) {
                     Swal.showValidationMessage("Veuillez remplir tous les champs.");
                     return null;
                 }
-                return { date, amount, commerce };
+                return { date, amount, commerce, myComment };
             },
         }).then((result) => {
             if (result.isConfirmed) {

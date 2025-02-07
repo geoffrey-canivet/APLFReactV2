@@ -89,6 +89,14 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'userId',
             as: 'transactions',
         });
+
+        // ✅ Un utilisateur a plusieurs logs
+        User.hasMany(models.LogHistory, {
+            foreignKey: "userId",
+            as: "logs",
+            onDelete: "CASCADE",
+            onUpdate: "CASCADE"
+        });
     };
 
 

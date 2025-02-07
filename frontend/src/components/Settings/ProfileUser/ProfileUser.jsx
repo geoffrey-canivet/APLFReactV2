@@ -15,11 +15,17 @@ import useUserStore from "../../../store/useUserStore.js";
 import ToastNotification from "sweetalert2";
 import Swal from "sweetalert2";
 import axios from "axios";
+import useLogHistoryStore from "../../../store/useLogHistoryStore.js";
 const trophees = import.meta.glob("../../../assets/trophees/*.png", { eager: true });
 
 const ProfileUser = () => {
 
     const { user, fetchUser, updateUser, loading, error } = useUserStore();
+    const { log, getAllLogHistory } = useLogHistoryStore();
+    useEffect(() => {
+        getAllLogHistory(); // Charger les logs au montage du composant
+    }, []);
+    console.log("Logs stockés dans Zustand :", log);
 
     const [name, setName] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -374,73 +380,38 @@ const ProfileUser = () => {
 
 
                         <div className="relative overflow-x-auto">
-                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead
-                                    className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        Product name
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Color
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Category
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Price
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                    <th scope="row"
-                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Apple MacBook Pro 17"
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        Silver
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        Laptop
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        $2999
-                                    </td>
-                                </tr>
-                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                    <th scope="row"
-                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Microsoft Surface Pro
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        White
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        Laptop PC
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        $1999
-                                    </td>
-                                </tr>
-                                <tr className="bg-white dark:bg-gray-800">
-                                    <th scope="row"
-                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Magic Mouse 2
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        Black
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        Accessories
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        $99
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <h2 className="text-white text-xl font-bold mb-4">Historique des Logs</h2>
+
+                            {loading ? (
+                                <p className="text-white">Chargement des logs...</p>
+                            ) : error ? (
+                                <p className="text-red-500">Erreur : {error}</p>
+                            ) : log.length === 0 ? (
+                                <p className="text-white">Aucun log disponible</p>
+                            ) : (
+                                <table className="w-full text-sm text-left text-gray-400">
+                                    <thead className="text-xs uppercase bg-gray-700 text-gray-300">
+                                    <tr>
+                                        <th className="px-6 py-3">Nom</th>
+                                        <th className="px-6 py-3">Type</th>
+                                        <th className="px-6 py-3">Date</th>
+                                        <th className="px-6 py-3">Temps</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {log.map((entry) => (
+                                        <tr key={entry.id} className="bg-gray-800 border-b border-gray-600">
+                                            <td className="px-6 py-4 text-white">{entry.name}</td>
+                                            <td className="px-6 py-4">{entry.type}</td>
+                                            <td className="px-6 py-4">{entry.date}</td>
+                                            <td className="px-6 py-4">{entry.time}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            )}
                         </div>
+
 
                     </div>
                 </div>

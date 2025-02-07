@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from "axios";
+import useLogHistoryStore from "./useLogHistoryStore.js";
 
 const useUserStore = create((set) => ({
     user: null,
@@ -40,9 +41,17 @@ const useUserStore = create((set) => ({
                 { headers: { Authorization: `Bearer ${token}` } });
 
             set({ user: response.data.user }); // ✅ Met à jour l'utilisateur dans Zustand
-            console.log("Utilisateur mis à jour :", response.data);
+
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Utilisateur",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
+            console.log("Utilisateur mis à jour : ", response.data);
         } catch (error) {
-            console.error("Erreur lors de la mise à jour :", error.response?.data || error.message);
+            console.error("Erreur lors de la mise à jour : ", error.response?.data || error.message);
         }
     }
 }));
