@@ -39,7 +39,7 @@ const ModalChartPie = ({closeModal, dataChart}) => {
                         </div>
                         
                         <h3>Graphique Pie</h3>
-                        <p>(Catégorie)</p>
+                       <!-- <p>(Catégorie)</p>-->
                         
                     </div>
                     <div id="chart-container"></div>

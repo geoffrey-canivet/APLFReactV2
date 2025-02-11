@@ -198,17 +198,17 @@ const ProfileUser = () => {
                             <div className="flex flex-col">
                                 <button type="button"
                                         onClick={handleUpdateProfile}
-                                        className="text-white text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        className="text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faUserPen}/>
                                     Modifier
                                 </button>
                                 <button type="button"
-                                        className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        className="text-white justify-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
                                     Modifier le mot de passe
                                 </button>
                                 <button type="button"
-                                        className="text-white bg-orange-500 hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        className="text-white justify-center bg-orange-500 hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
                                     Désinscription
                                 </button>
@@ -224,16 +224,10 @@ const ProfileUser = () => {
                 <div
                     className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
                     <span>
-                        <svg className="w-6 h-6 text-gray-800 dark:text-blue-400" aria-hidden="true"
-                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                             viewBox="0 0 24 24">
-                          <path fillRule="evenodd"
-                                d="M20.337 3.664c.213.212.354.486.404.782.294 1.711.657 5.195-.906 6.76-1.77 1.768-8.485 5.517-10.611 6.683a.987.987 0 0 1-1.176-.173l-.882-.88-.877-.884a.988.988 0 0 1-.173-1.177c1.165-2.126 4.913-8.841 6.682-10.611 1.562-1.563 5.046-1.198 6.757-.904.296.05.57.191.782.404ZM5.407 7.576l4-.341-2.69 4.48-2.857-.334a.996.996 0 0 1-.565-1.694l2.112-2.111Zm11.357 7.02-.34 4-2.111 2.113a.996.996 0 0 1-1.69-.565l-.422-2.807 4.563-2.74Zm.84-6.21a1.99 1.99 0 1 1-3.98 0 1.99 1.99 0 0 1 3.98 0Z"
-                                clipRule="evenodd"/>
-                        </svg>
+                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"  icon={faGear} />
 
                     </span>
-                    <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">Outils</h5>
+                    <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">Paramètres</h5>
                 </div>
             </div>
             <div className="pt-0 px-3">
@@ -355,14 +349,8 @@ const ProfileUser = () => {
                 <div
                     className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
                     <span>
-                        <svg className="w-6 h-6 text-gray-800 dark:text-blue-400" aria-hidden="true"
-                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                             viewBox="0 0 24 24">
-                          <path fillRule="evenodd"
-                                d="M20.337 3.664c.213.212.354.486.404.782.294 1.711.657 5.195-.906 6.76-1.77 1.768-8.485 5.517-10.611 6.683a.987.987 0 0 1-1.176-.173l-.882-.88-.877-.884a.988.988 0 0 1-.173-1.177c1.165-2.126 4.913-8.841 6.682-10.611 1.562-1.563 5.046-1.198 6.757-.904.296.05.57.191.782.404ZM5.407 7.576l4-.341-2.69 4.48-2.857-.334a.996.996 0 0 1-.565-1.694l2.112-2.111Zm11.357 7.02-.34 4-2.111 2.113a.996.996 0 0 1-1.69-.565l-.422-2.807 4.563-2.74Zm.84-6.21a1.99 1.99 0 1 1-3.98 0 1.99 1.99 0 0 1 3.98 0Z"
-                                clipRule="evenodd"/>
-                        </svg>
 
+                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"  icon={faBoxArchive} />
                     </span>
                     <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">historique</h5>
                 </div>
@@ -370,17 +358,8 @@ const ProfileUser = () => {
             <div className="pt-0 px-7">
                 <div className="px-5 py-4 bg-gray-800 rounded-md">
                     <div className="">
-                        <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                            <FontAwesomeIcon icon={faBoxArchive}/>
-                            <span>Historique</span>
-                        </div>
-                        <div className="">
-                            <hr className="border-t my-4 border-gray-600"/>
-                        </div>
-
 
                         <div className="relative overflow-x-auto">
-                            <h2 className="text-white text-xl font-bold mb-4">Historique des Logs</h2>
 
                             {loading ? (
                                 <p className="text-white">Chargement des logs...</p>
@@ -395,16 +374,25 @@ const ProfileUser = () => {
                                         <th className="px-6 py-3">Nom</th>
                                         <th className="px-6 py-3">Type</th>
                                         <th className="px-6 py-3">Date</th>
-                                        <th className="px-6 py-3">Temps</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {log.map((entry) => (
-                                        <tr key={entry.id} className="bg-gray-800 border-b border-gray-600">
-                                            <td className="px-6 py-4 text-white">{entry.name}</td>
-                                            <td className="px-6 py-4">{entry.type}</td>
-                                            <td className="px-6 py-4">{entry.date}</td>
-                                            <td className="px-6 py-4">{entry.time}</td>
+                                    {log.map((log) => (
+                                        <tr key={log.id} className="bg-gray-800 border-b border-gray-600">
+                                            <td className="px-6 py-4 text-white">{log.name}</td>
+                                            <td className="px-6 py-4">{log.type === 'CREATE' ?
+                                                <span
+                                                    className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Create</span> :
+                                                log.type === 'UPDATE' ? <span
+                                                        className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-300">Update</span> :
+                                                    log.type === 'DELETE' ? <span
+                                                            className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Delete</span> :
+                                                        log.type === 'DELETE_ALL' ? <span
+                                                                className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-purple-900 dark:text-purple-300">Del_all</span> :
+                                                            log.type === 'DELETE_BY_CATEGORY' ? <span
+                                                                className="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-pink-900 dark:text-pink-300">Delete_by_category</span> : log.type
+                                            }</td>
+                                            <td className="px-6 py-4">{log.date} - {log.time}</td>
                                         </tr>
                                     ))}
                                     </tbody>

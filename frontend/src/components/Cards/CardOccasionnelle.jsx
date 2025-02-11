@@ -7,7 +7,7 @@ import {
     faCreditCard, faEllipsis, faEraser,
     faFilter, faGift,
     faHouse, faPenToSquare, faPlane,
-    faPlusCircle, faSquareCaretDown, faSquareCaretUp, faTable, faThumbtack,
+    faPlusCircle, faSave, faSquareCaretDown, faSquareCaretUp, faTable, faThumbtack,
     faTicket, faTrash,
     faUmbrella
 } from "@fortawesome/free-solid-svg-icons";
@@ -21,6 +21,7 @@ import ModalDatatable from "../Modals/ModalDatatable.jsx";
 import ModalChartOccasionnellePie from "../Modals/ModalChartOccasionnellePie.jsx";
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartOccasionnelleBar from "../Modals/ModalChartOccasionnelleBar.jsx";
+import useTemplateStore from "../../store/useTemplateStore.js";
 
 
 // ICON CATEGORIES
@@ -73,6 +74,7 @@ const CardOccasionnelle = () => {
         month,
         year,
     } = usePeriodStore();
+    const { applyTemplateToCategory } = useTemplateStore();
 
     // STATE
     const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -172,6 +174,14 @@ const CardOccasionnelle = () => {
     const closeModal = () => {
         setCurrentModal(null);
     };
+    // MODAL USETEMPLATE
+    const modalUseTemplate = async (categoryId) => {
+        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        if (confirm) {
+            await applyTemplateToCategory(categoryId);
+            await fetchOccasByPeriod(month, year);
+        }
+    };
 
     // HANDLER AJOUTER
     const handleAddTransaction = async (data) => {
@@ -223,6 +233,13 @@ const CardOccasionnelle = () => {
                                 {card.name}
                             </h5>
                             <div className="px-0 py-0 flex gap-4">
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                    title="Utiliser un template"
+                                    onClick={() => modalUseTemplate(card.id)}
+                                >
+                                    <FontAwesomeIcon icon={faSave}/>
+                                </button>
                                 {/* Btn Afficher sous-transaction */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"

@@ -139,9 +139,20 @@ const useTransacRevenuStore = create((set) => ({
             /*console.log("Transaction supprimée :", response.data);*/
 
             // Re-fetch
-            const refreshResponse = await axios.get("http://localhost:3000/trans/getRevenu", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            // Récupère la période actuelle depuis usePeriodStore
+            const { month, year } = usePeriodStore.getState();
+
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getRevenuByPeriod",
+                { month, year },  // 📌 Utilisation de la période enregistrée dans le store
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
             set({ categories: refreshResponse.data });
             // AJOUTER LOG
             await useLogHistoryStore.getState().addLogHistory({

@@ -97,6 +97,13 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: "CASCADE",
             onUpdate: "CASCADE"
         });
+        // Un utilisateur peut avoir plusieurs tickets
+        User.hasMany(models.Ticket, {
+            foreignKey: "userId",
+            as: "tickets",
+            onDelete: "CASCADE"
+        });
+
     };
 
 

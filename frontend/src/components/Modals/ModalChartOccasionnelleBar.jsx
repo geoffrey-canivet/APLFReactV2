@@ -39,8 +39,8 @@ const ModalChartOccasionnelleBar = ({closeModal, dataChart}) => {
                             <button id="close-modal-btn" class="close-btn">&times;</button>
                         </div>
                         
-                        <h3>Graphique Bart</h3>
-                        <p>(Catégorie)</p>
+                        <h3>Graphique Bar</h3>
+                 <!--       <p>(Catégorie)</p>-->
                         
                     </div>
                     <div id="chart-container"></div>

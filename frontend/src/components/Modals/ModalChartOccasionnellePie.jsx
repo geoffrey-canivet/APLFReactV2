@@ -23,7 +23,7 @@ const ModalChartOccasionnellePie = ({closeModal, dataChart}) => {
 
     useEffect(() => {
         MySwal.fire({
-            title: "Graphique",
+            /*title: "Graphique",*/
             padding: 0,
             customClass: {
                 popup: "custom-popup",

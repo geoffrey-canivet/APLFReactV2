@@ -104,7 +104,7 @@ const Login = () => {
                                         Email</label>
                                     <input onChange={(e) => setEmail(e.target.value)} type="email" name="email"
                                            id="email"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                            placeholder="exemple@email.com" required=""/>
                                 </div>
                                 <div>
@@ -113,7 +113,7 @@ const Login = () => {
                                         mot de passe</label>
                                     <input onChange={(e) => setMotDePasse(e.target.value)} type="password"
                                            name="password" id="password" placeholder="••••••••"
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                            required=""/>
                                 </div>
                                 <div className="flex items-center justify-between">
@@ -134,7 +134,11 @@ const Login = () => {
                                 </div>
                                 {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
                                 <button type="submit"
-                                        className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        className="text-white w-full bg-[#3b5998] hover:bg-[#3b5998]/90
+               focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50
+               font-medium rounded-lg text-sm px-5 py-2.5
+               text-center flex items-center justify-center gap-2
+               dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white pr-2" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                                          viewBox="0 0 24 24">

@@ -23,7 +23,7 @@ const ModalDatatable = ({closeModal, dataDatatable}) => {
 
     useEffect(() => {
         MySwal.fire({
-            title: "DataTable",
+            title: "Détails transactions",
             padding: 0,
             customClass: {
                 popup: "custom-popup",

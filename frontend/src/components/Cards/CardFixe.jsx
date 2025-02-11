@@ -6,7 +6,7 @@ import {
     faEllipsis, faEllipsisVertical, faEraser, faFilter,
     faHouse,
     faPenToSquare,
-    faPlusCircle,
+    faPlusCircle, faSave,
     faTicket,
     faTrash,
     faUmbrella,
@@ -19,6 +19,8 @@ import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/Mod
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartBar from "../Modals/ModalChartBar.jsx";
+import useTemplateStore from "../../store/useTemplateStore.js";
+
 
 // ICON CATEGORIES
 const iconMap = {
@@ -50,7 +52,7 @@ const CardFixe = () => {
         month,
         year,
     } = usePeriodStore();
-
+    const { applyTemplateToCategory } = useTemplateStore();
 
     // STATE
     const [openDropdownId, setOpenDropdownId] = useState(null);
@@ -122,6 +124,16 @@ const CardFixe = () => {
     const closeModal = () => {
         setCurrentModal(null);
     };
+    // MODAL USETEMPLATE
+    const modalUseTemplate = async (categoryId) => {
+        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        if (confirm) {
+            await applyTemplateToCategory(categoryId);
+            await fetchFixeByPeriod(month, year);
+        }
+    };
+
+
 
     // HANDLER AJOUTER
     const handleAddTransaction = async (data) => {
@@ -188,12 +200,12 @@ const CardFixe = () => {
                             <div className="px-0 py-0 flex gap-4">
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Filtre"
-                                    id={card.id}
-
+                                    title="Utiliser un template"
+                                    onClick={() => modalUseTemplate(card.id)}
                                 >
-                                    <FontAwesomeIcon icon={faFilter}/>
+                                    <FontAwesomeIcon icon={faSave}/>
                                 </button>
+
 
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
@@ -202,6 +214,14 @@ const CardFixe = () => {
                                     onClick={modalAddTransaction}
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
+                                </button>
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                    title="Filtre"
+                                    id={card.id}
+                                    onClick={modalDeleteAllTransactionByCategory}
+                                >
+                                    <FontAwesomeIcon icon={faEraser}/>
                                 </button>
                                 <div className="relative inline-block dropdown">
                                     <button
@@ -232,12 +252,12 @@ const CardFixe = () => {
                                                 <FontAwesomeIcon icon={faChartColumn}/>
                                             </button>
                                             <button
-                                                className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                disabled={true}
+                                                className="text-gray-600"
                                                 title="Filtre"
                                                 id={card.id}
-                                                onClick={modalDeleteAllTransactionByCategory}
                                             >
-                                                <FontAwesomeIcon icon={faEraser}/>
+                                                <FontAwesomeIcon icon={faFilter}/>
                                             </button>
                                         </div>
                                     )}
@@ -248,7 +268,7 @@ const CardFixe = () => {
                         {/* Transactions */}
                         <div className="relative w-full h-64 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <tbody>
+                                <tbody>
                                 {card.transactions?.length > 0 ? (
                                     card.transactions.map((transaction, i) => (
                                         <tr

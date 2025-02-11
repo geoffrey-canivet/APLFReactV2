@@ -10,7 +10,7 @@ import {
     faEllipsis, faEraser, faFilter,
     faHouse, faMoneyBill, faMoneyBillWave,
     faPenToSquare,
-    faPlusCircle, faSackDollar, faThumbtack, faTicket,
+    faPlusCircle, faSackDollar, faSave, faThumbtack, faTicket,
     faTrash, faUmbrella
 } from "@fortawesome/free-solid-svg-icons";
 import ModalAddTransaction from "../Modals/ModalsTransaction/ModalAddTransaction.jsx";
@@ -20,6 +20,7 @@ import ModalDeleteAllTransactionByCategory from "../Modals/ModalsTransaction/Mod
 import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTransaction.jsx";
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartBar from "../Modals/ModalChartBar.jsx";
+import useTemplateStore from "../../store/useTemplateStore.js";
 
 // CALCULE TOTAL CATEGORIES
 const calculateTotal = (transactions) => {
@@ -44,6 +45,7 @@ const CardRevenu = () => {
         month,
         year,
     } = usePeriodStore();
+    const { applyTemplateToCategory } = useTemplateStore();
 
     // ICON CATEGORIES
     const iconMap = {
@@ -121,6 +123,14 @@ const CardRevenu = () => {
     const closeModal = () => {
         setCurrentModal(null);
     };
+    // MODAL USETEMPLATE
+    const modalUseTemplate = async (categoryId) => {
+        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        if (confirm) {
+            await applyTemplateToCategory(categoryId);
+            await fetchRevenuByPeriod(month, year);
+        }
+    };
 
     // Handler pour l'ajout
     const handleAddTransaction = async (data) => {
@@ -178,6 +188,13 @@ const CardRevenu = () => {
                             </div>
 
                             <div className="px-0 py-0 flex gap-4">
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
+                                    title="Utiliser un template"
+                                    onClick={() => modalUseTemplate(card.id)}
+                                >
+                                    <FontAwesomeIcon icon={faSave}/>
+                                </button>
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
                                     title="Filtre"

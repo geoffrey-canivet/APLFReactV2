@@ -140,15 +140,26 @@ const useTransacFixeStore = create((set, get) => ({
             console.log("Transaction supprimée :", response.data);
 
             // Re-fetch
-            const refreshResponse = await axios.get("http://localhost:3000/trans/getFixe", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            // Récupère la période actuelle depuis usePeriodStore
+            const { month, year } = usePeriodStore.getState();
+
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getFixeByPeriod",
+                { month, year },  // 📌 Utilisation de la période enregistrée dans le store
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
             set({ categories: refreshResponse.data });
             // AJOUTER LOG
             await useLogHistoryStore.getState().addLogHistory({
                 name: "Transaction fixe",
                 date: new Date().toISOString(),
-                type: "Delete",
+                type: "DELETE",
                 time: new Date().toLocaleTimeString(),
             });
             return response.data;

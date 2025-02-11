@@ -140,7 +140,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                     <li>
                                         <a
                                             href="#"
-                                            onClick={handleDellAllTransactions}
+
                                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-yellow-400 dark:hover:text-white"
                                         >
                                             <FontAwesomeIcon className="mr-3" icon={faTriangleExclamation}/>
@@ -149,6 +149,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                     </li>
                                     <li>
                                         <a
+                                            onClick={handleDellAllTransactions}
                                             href="#"
                                             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-red-400 dark:hover:text-white"
                                         >

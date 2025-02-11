@@ -1,4 +1,8 @@
+import {useState} from "react";
+import useTicketStore from "../../store/useTicketStore.js";
+
 const TitreOutils = () => {
+
     return (
         <>
             <div className="pt-2 px-3">

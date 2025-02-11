@@ -1,7 +1,10 @@
-import {faChartLine,faBullseye} from "@fortawesome/free-solid-svg-icons";
+import {faChartLine, faBullseye, faSkullCrossbones, faClone} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import CardData from "../../utils/DB.js";
+import ToolDetailsMoisContainer from "../Tools/ToolDetailsMoisContainer.jsx";
+import ToolComparContainer from "../Tools/ToolComparContainer.jsx";
+import CardTemplate from "../Cards/CardTemplate.jsx";
 
 const AccordionsTools = () => {
 
@@ -12,8 +15,9 @@ const AccordionsTools = () => {
     }
 
     const accordions = [
-        {id: 4, title: "Détails du mois", content: "aaaaaa", icon: faBullseye},
-        {id: 5, title: "Comparer les mois", content: "aaaaaaa", icon: faChartLine}
+        {id: 4, title: "Détails du mois", content: <ToolDetailsMoisContainer/>, icon: faBullseye},
+        {id: 5, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
+        {id: 6, title: "Templates", content:<CardTemplate/>, icon: faClone}
     ];
 
     return (
@@ -42,7 +46,7 @@ const AccordionsTools = () => {
                                     {item.title}
                                 </span>
                                     <svg
-                                        data-accordion-icon
+                                       /* data-accordion-icon*/
                                         className={`w-3 h-3 transform transition-transform duration-300 ${
                                             openAccordion === item.id ? "rotate-180" : ""
                                         }`}

@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             comment: "Référence à la transaction principale"
         },
+
     }, {
         tableName: 'sub_transactions',
         timestamps: true,
@@ -48,6 +49,13 @@ module.exports = (sequelize, DataTypes) => {
             as: 'transaction',
             onDelete: 'CASCADE'
         });
+        // Une sous-transaction peut avoir plusieurs tickets
+        SubTransaction.hasMany(models.Ticket, {
+            foreignKey: 'subTransactionId',
+            as: 'tickets',
+            onDelete: 'CASCADE'
+        });
+
     };
 
     return SubTransaction;
