@@ -2,16 +2,16 @@ import React from 'react';
 import ReactECharts from "echarts-for-react";
 
 const PieChartOccasionnelle = ({ dataChart }) => {
-    // Vérification : Si dataChart est undefined ou vide, afficher un message
+
     if (!dataChart || !Array.isArray(dataChart) || dataChart.length === 0) {
         return <p>Aucune donnée disponible pour le graphique</p>;
     }
 
     console.log("graph occas -> ", dataChart);
 
-    // Transformer les données pour ECharts en calculant le total des sous-transactions
+
     const formattedData = dataChart.map(item => {
-        // Si l'item possède un tableau de sous-transactions, on les additionne
+
         const totalSubTransactions = Array.isArray(item.subTransactions)
             ? item.subTransactions.reduce((sum, sub) => sum + sub.amount, 0)
             : 0;

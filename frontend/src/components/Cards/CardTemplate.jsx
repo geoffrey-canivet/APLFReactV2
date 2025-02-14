@@ -7,11 +7,12 @@ import useTemplateStore from "../../store/useTemplateStore.js";
 import ModalAddTemplate from "../Modals/ModalsTemplate/ModalAddTemplate.jsx";
 import ModalDeleteTransactionTemplate from "../Modals/ModalsTemplate/ModalDeleteTransactionTemplate.jsx";
 
-// Catégories par défaut (toujours affichées même si aucun template)
+// Catégories par défaut
 const defaultCategories = [
     "Charges", "Crédits", "Assurances", "Abonnements",
+    "Dépenses Courantes", "Loisirs", "Dépenses Occasionnelles", "Dépenses Diverses",
     "Revenu Actif", "Revenu Passif", "Revenu Exceptionnel", "Revenu Divers",
-    "Dépenses Courantes", "Loisirs", "Dépenses Occasionnelles", "Dépenses Diverses"
+
 ].map((name, index) => ({
     id: index + 1,
     name
@@ -27,6 +28,7 @@ const CardTemplate = () => {
     const [templateId, setTemplateId] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
 
     // RECUPERER LES TEMPLATES
     useEffect(() => {
@@ -53,7 +55,7 @@ const CardTemplate = () => {
     // HANDLER AJOUTER UNE TRANSACTION AU TEMPLATE
     const handleAddTransactionToTemplate = async (transactionData) => {
         await addTransactionToTemplate(selectedCategory.id, transactionData);
-        fetchUserTemplates(); // Recharger les templates après ajout
+        fetchUserTemplates();
         closeModal();
     };
     const modalDeleteTransactionTemplate = (transaction, templateId) => {
@@ -94,13 +96,19 @@ const CardTemplate = () => {
             )}
 
 
-            <form className="max-w-sm mx-auto">
-                <select id="countries"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option selected>Mon template</option>
-                    <option value="">Exemple</option>
-                    <option value="">Vide</option>
-                </select>
+            <form className="max-w-sm ml-6">
+                <div className="flex">
+                    <select
+                        onChange={(e) => setSelectedTemplate(e.target.value)}
+                        id="template"
+                        className="w-32 h-9 px-2 py-0 mr-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                        <option defaultValue="">Mon template</option>
+                        <option value="">Exemple</option>
+                        <option value="">Vide</option>
+                    </select>
+                </div>
+
             </form>
 
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center m-5">
@@ -190,7 +198,6 @@ const CardTemplate = () => {
                 ))}
             </div>
 
-            {/* Modals */}
             {/* Modals */}
             {currentModal === "modalAddTransactionTemplate" && (
                 <ModalAddTemplate handleAddTransactionToTemplate={handleAddTransactionToTemplate}

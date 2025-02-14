@@ -33,9 +33,4 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelizeInstance;
 db.Sequelize = Sequelize;
 
-// 📌 Vérifier si les relations sont bien établies
-console.log("📌 Modèles chargés :", Object.keys(db));
-console.log("📌 Relations Transaction -> SubTransaction :", db.Transaction?.associations?.subTransactions);
-console.log("📌 Relations SubTransaction -> Transaction :", db.SubTransaction?.associations?.transaction);
-
 module.exports = db;

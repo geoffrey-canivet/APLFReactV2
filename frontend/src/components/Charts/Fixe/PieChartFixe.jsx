@@ -3,15 +3,15 @@ import ReactECharts from "echarts-for-react";
 const PieChartFixe = ({ dataChart }) => {
 
 
-    // ✅ Vérification : Si dataChart est undefined ou vide, afficher un message
+
     if (!dataChart || !Array.isArray(dataChart) || dataChart.length === 0) {
         return <p>Aucune donnée disponible pour le graphique</p>;
     }
 
-    // Transformer les données pour le format attendu par ECharts
+
     const formattedData = dataChart.map(item => ({
         name: item.name,
-        value: item.amount  // 'amount' doit être converti en 'value'
+        value: item.amount
     }));
 
 
@@ -27,17 +27,17 @@ const PieChartFixe = ({ dataChart }) => {
             textStyle: {
                 color: "#fff"
             },
-            itemGap: 10,           // 🔹 Espacement entre les éléments de la légende
+            itemGap: 10,
             bottom: '0%',
-            margin: [0, 0, 0, 0],  // 🔹 Ajoute un espace (haut, droite, bas, gauche)
+            margin: [0, 0, 0, 0],
         },
         grid: {
-            bottom: '20%' // ✅ Ajoute encore plus d’espace en bas
+            bottom: '20%'
         },
         title: {
             text: `Total\n\n${total.toFixed(2)} €`,
-            left: '50%',       // ✅ Centre horizontalement
-            top: '50%',        // ✅ Centre verticalement
+            left: '50%',
+            top: '50%',
             textAlign: 'center',
             textVerticalAlign: 'middle',
             textStyle: {
@@ -84,8 +84,8 @@ const PieChartFixe = ({ dataChart }) => {
     };
 
     return (
-        <div style={{ width: '400px', height: '450px', margin: '0 auto', paddingBottom: '30px' }}> {/* ✅ Ajuste la taille */}
-            <ReactECharts option={option} style={{ width: '100%', height: '100%' }} /> {/* ✅ Empêche le débordement */}
+        <div style={{ width: '400px', height: '450px', margin: '0 auto', paddingBottom: '30px' }}>
+            <ReactECharts option={option} style={{ width: '100%', height: '100%' }} />
         </div>
     );
 };

@@ -2,49 +2,65 @@ import DataTable from "react-data-table-component";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleInfo, faImage, faPaperclip, faPenToSquare, faTrashCan} from "@fortawesome/free-solid-svg-icons";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
-import ModalDatatable from "../Modals/ModalDatatable.jsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ModalUpdateSubTransaction from "../Modals/ModalsTransaction/ModalUpdateSubTransaction.jsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Datatable = ({dataDatatable}) => {
     console.log("datatable -> ", dataDatatable.transactions);
 
     // STORE
-    const { updateSubTransaction, deleteSubTransaction } = useTransacOccasStore();
-    const data = dataDatatable.transactions;
+    const {updateSubTransaction, deleteSubTransaction, fetchSubTransactionById} = useTransacOccasStore();
 
-    const [modalUpdateSubTransactionIsOpen, setModalUpdateSubTransactionIsOpen] =
-        useState(false);
+    const data = useTransacOccasStore(state => state.categories).find(cat => cat.id === dataDatatable.id)?.transactions || [];
+
+    const [modalInfoIsOpen, setModalInfoIsOpen] = useState(false);
+    const [tiroirUpdateSubTransactionIsOpen, setTiroirUpdateSubTransactionIsOpen] = useState(false);
     const [subCatId, setSubCatId] = useState(0);
+    const [fetchedSubTransaction, setFetchedSubTransaction] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    // 🔹 Fonction pour obtenir le total des sous-transactions d'une transaction
+    useEffect(() => {
+        if (modalInfoIsOpen && subCatId) {
+            fetchSubTransactionById(subCatId)
+                .then((data) => setFetchedSubTransaction(data))
+                .catch((error) => console.error("Erreur lors de la récupération :", error));
+        } else {
+            setFetchedSubTransaction(null);
+        }
+    }, [modalInfoIsOpen, subCatId, fetchSubTransactionById]);
+
+
+    // total des sous-transactions d'une transaction
     const getTotalSubTransactions = (row) =>
         row.subTransactions.reduce((sum, sub) => sum + sub.amount, 0);
 
-    // 🔹 Calculer le total général des transactions
+    // total général des transactions
     const totalGeneral = data.reduce((sum, row) => sum + getTotalSubTransactions(row), 0);
 
-    // 🔹 Calculer le pourcentage d'une transaction par rapport au total général
+    // pourcentage d'une transaction par rapport au total général
     const getTransactionPercentage = (row) => {
         const transactionTotal = getTotalSubTransactions(row);
         return totalGeneral > 0 ? ((transactionTotal / totalGeneral) * 100).toFixed(2) : 0;
     };
 
-    // 🔹 Fermer la modal
-    const closeModal = () => setModalUpdateSubTransactionIsOpen(false);
-
-    // 🔹 Ouvrir la modal
-    const modalUpdateSubTransaction = (id) => {
+    // modal
+    const tiroirUpdateSubTransaction = (id) => {
         setSubCatId(id);
-        setModalUpdateSubTransactionIsOpen(true);
+        setTiroirUpdateSubTransactionIsOpen(true);
+    };
+
+    const modalInfoSubTransaction = (id) => {
+        setSubCatId(id);
+        setModalInfoIsOpen(true);
     };
 
     const handleUpdateSubTransaction = (updateData) => {
-        console.log("id: ",subCatId, "amount: ", updateData.amount, "commerce: ", updateData.commerce, "comment: ", updateData.myComment, "date: ", updateData.date);
+        console.log("id: ", subCatId, "amount: ", updateData.amount, "commerce: ", updateData.commerce, "comment: ", updateData.myComment, "date: ", updateData.date);
         updateSubTransaction(subCatId, updateData.amount, updateData.date, updateData.commerce)
     }
 
-    // 🔹 Générer une couleur aléatoire
+    // couleur aléatoire
     const generateRandomColor = () => {
         const letters = "0123456789ABCDEF";
         let color = "#";
@@ -54,24 +70,33 @@ const Datatable = ({dataDatatable}) => {
         return color;
     };
 
+    // Recherche du sous-transaction dans toutes les transactions
+    const foundSubTransaction = data.reduce((acc, transaction) => {
+        const sub = transaction.subTransactions.find((sub) => sub.id === subCatId);
+        console.log(sub)
+        return sub ? sub : acc;
+    }, null);
 
+    console.log(foundSubTransaction);
 
     const columns = [
-        { name: "", cell: (row) => (
+        {
+            name: "", cell: (row) => (
                 <span
                     className="px-1.5 py-1.5 rounded-full"
                     style={{
-                        backgroundColor: generateRandomColor(), // Couleur dynamique
+                        backgroundColor: generateRandomColor(),
                     }}
                 ></span>
             ),
             sortable: true,
             $grow: 0
         },
-        { name: "Nb", selector: (row) => row.subTransactions.length, sortable: true, $grow: 0 },
-        { name: "Nom", selector: (row) => row.name, sortable: true, $grow: 1 },
-        { name: "Total", selector: (row) => `${getTotalSubTransactions(row).toFixed(2)} €`, sortable: true, $grow: 0 },
-        { name: "Commerce", cell: (row) => (
+        {name: "Nb", selector: (row) => row.subTransactions.length, sortable: true, $grow: 0},
+        {name: "Nom", selector: (row) => row.name, sortable: true, $grow: 1},
+        {name: "Total", selector: (row) => `${getTotalSubTransactions(row).toFixed(2)} €`, sortable: true, $grow: 0},
+        {
+            name: "Commerce", cell: (row) => (
                 <span
                     className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Carrefour</span>
             ),
@@ -87,8 +112,8 @@ const Datatable = ({dataDatatable}) => {
                             className="h-2.5 rounded-full"
                             style={{
                                 width: `${pourcentage}%`,
-                                backgroundColor: generateRandomColor(), // Couleur dynamique
-                                transition: "width 0.5s ease-in-out" // Animation fluide
+                                backgroundColor: generateRandomColor(),
+                                transition: "width 0.5s ease-in-out"
                             }}
 
                         ></div>
@@ -112,30 +137,39 @@ const Datatable = ({dataDatatable}) => {
 
         {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
         {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
-        {name: "Prix", selector: (row) => row.amount, sortable: true, $grow: 0 },
-        { name: "Commerce", cell: (row) => (
+        {name: "Prix", selector: (row) => row.amount, sortable: true, $grow: 0},
+        {
+            name: "Commerce", cell: (row) => (
                 <span
                     className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">{row.commerce}</span>
             ),
             sortable: true,
             $grow: 1
         },
-        { name: "Actions", cell: (row) => (
+        {
+            name: "Actions", cell: (row) => (
                 <div className="px-0 py-0 flex gap-4">
                     <button
-                        className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
-                        onClick={() => modalUpdateSubTransaction(row.id)}
+                        className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Modifier"
+                        onClick={() => tiroirUpdateSubTransaction(row.id)}
                     >
                         <FontAwesomeIcon icon={faPenToSquare}/>
                     </button>
                     <button
+                        onClick={() => modalInfoSubTransaction(row.id)}
                         className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
-                        title="Supprimer la sous-transaction"
+                        title="Détails"
+                    >
+                        <FontAwesomeIcon icon={faCircleInfo}/>
+                    </button>
+                    <button
+                        className="text-gray-700 hover:text-blue-500 dark:hover:text-red-400"
+                        title="Supprimer"
                         onClick={() => deleteSubTransaction(row.id)}
                     >
                         <FontAwesomeIcon icon={faTrashCan}/>
                     </button>
-                    <button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
+                    {/*<button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400" title="Graphique"
                     >
                         <FontAwesomeIcon icon={faPaperclip}/>
                     </button>
@@ -143,12 +177,8 @@ const Datatable = ({dataDatatable}) => {
                             title="Ajouter un élément"
                     >
                         <FontAwesomeIcon icon={faImage}/>
-                    </button>
-                    <button className="text-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
-                            title="Ajouter un élément"
-                    >
-                        <FontAwesomeIcon icon={faCircleInfo} />
-                    </button>
+                    </button>*/}
+
                 </div>
             ),
             sortable: true,
@@ -166,43 +196,43 @@ const Datatable = ({dataDatatable}) => {
             customStyles={{
                 table: {
                     style: {
-                        borderSpacing: "0", // Supprime les espacements entre les cellules
-                        margin: "0", // Supprime les marges du tableau
+                        borderSpacing: "0",
+                        margin: "0",
                         backgroundColor: "transparent",
-                        borderBottomLeftRadius: "0px", // Pas d'arrondi sur la dernière ligne
-                        borderBottomRightRadius: "0px", // Pas d'arrondi sur la dernière ligne
+                        borderBottomLeftRadius: "0px",
+                        borderBottomRightRadius: "0px",
                         "&:last-child": {
-                            borderBottomLeftRadius: "0px", // Forcé pour la dernière ligne
+                            borderBottomLeftRadius: "0px",
                             borderBottomRightRadius: "0px",
                         },
                     },
                 },
                 headRow: {
                     style: {
-                        borderBottom: "none", // Supprime la bordure sous la ligne d'en-tête
-                        borderTopLeftRadius: "0px", // Arrondi coin haut gauche
-                        borderTopRightRadius: "0px", // Arrondi coin haut droit
-                        overflow: "hidden", // Assure que l'arrondi est visible
+                        borderBottom: "none",
+                        borderTopLeftRadius: "0px",
+                        borderTopRightRadius: "0px",
+                        overflow: "hidden",
                         backgroundColor: "transparent",
                     },
                 },
                 rows: {
                     style: {
 
-                        borderBottomLeftRadius: "0px", // Pas d'arrondi sur la dernière ligne
-                        borderBottomRightRadius: "0px", // Pas d'arrondi sur la dernière ligne
+                        borderBottomLeftRadius: "0px",
+                        borderBottomRightRadius: "0px",
                         "&:last-child": {
-                            borderBottomLeftRadius: "0px", // Forcé pour la dernière ligne
+                            borderBottomLeftRadius: "0px",
                             borderBottomRightRadius: "0px",
                         },
                         minHeight: "72px",
                         transition: "background-color 0.3s ease",
-                        backgroundColor: "#55657c", // Fond vert par défaut
+                        backgroundColor: "#55657c",
                         '&:hover': {
-                            backgroundColor: "#7c92b3", // Fond rouge vif au survol
+                            backgroundColor: "#7c92b3",
                         },
                         svg: {
-                            fill: "#fff", // Couleur des chevrons
+                            fill: "#fff",
                         },
                     },
                 },
@@ -234,21 +264,27 @@ const Datatable = ({dataDatatable}) => {
 
     return (
         <>
+
             <DataTable
                 columns={columns}
                 data={data}
                 expandableRows
+                noDataComponent={
+                    <div className="text-gray-400 text-center p-4 bg-gray-900 rounded-md">
+                        <p>Aucune transaction trouvée.</p>
+                    </div>
+                }
                 expandOnRowClicked
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
                 expandableRowsHideExpander
 
                 paginationComponentOptions={{
-                    rowsPerPageText: "Lignes par page :", // Texte pour la sélection du nombre de lignes
-                    rangeSeparatorText: "de", // Texte entre les numéros de page
-                    noRowsPerPage: false, // Affiche ou cache le sélecteur du nombre de lignes
-                    selectAllRowsItem: true, // Ajoute une option "Toutes les lignes"
-                    selectAllRowsItemText: "Toutes", // Texte pour l'option "Toutes les lignes"
+                    rowsPerPageText: "Lignes par page :",
+                    rangeSeparatorText: "de",
+                    noRowsPerPage: false,
+                    selectAllRowsItem: true,
+                    selectAllRowsItemText: "Toutes",
                 }}
                 responsive
                 dense
@@ -256,43 +292,43 @@ const Datatable = ({dataDatatable}) => {
                 customStyles={{
                     table: {
                         style: {
-                            borderSpacing: "0", // Supprime les espacements entre les cellules
-                            margin: "0", // Supprime les marges du tableau
+                            borderSpacing: "0",
+                            margin: "0",
                             backgroundColor: "transparent",
-                            borderBottomLeftRadius: "0px", // Pas d'arrondi sur la dernière ligne
-                            borderBottomRightRadius: "0px", // Pas d'arrondi sur la dernière ligne
+                            borderBottomLeftRadius: "0px",
+                            borderBottomRightRadius: "0px",
                             "&:last-child": {
-                                borderBottomLeftRadius: "0px", // Forcé pour la dernière ligne
+                                borderBottomLeftRadius: "0px",
                                 borderBottomRightRadius: "0px",
                             },
                         },
                     },
                     headRow: {
                         style: {
-                            borderBottom: "none", // Supprime la bordure sous la ligne d'en-tête
-                            borderTopLeftRadius: "0px", // Arrondi coin haut gauche
-                            borderTopRightRadius: "0px", // Arrondi coin haut droit
-                            overflow: "hidden", // Assure que l'arrondi est visible
+                            borderBottom: "none",
+                            borderTopLeftRadius: "0px",
+                            borderTopRightRadius: "0px",
+                            overflow: "hidden",
                             backgroundColor: "transparent",
                         },
                     },
                     rows: {
                         style: {
 
-                            borderBottomLeftRadius: "0px", // Pas d'arrondi sur la dernière ligne
-                            borderBottomRightRadius: "0px", // Pas d'arrondi sur la dernière ligne
+                            borderBottomLeftRadius: "0px",
+                            borderBottomRightRadius: "0px",
                             "&:last-child": {
-                                borderBottomLeftRadius: "0px", // Forcé pour la dernière ligne
+                                borderBottomLeftRadius: "0px",
                                 borderBottomRightRadius: "0px",
                             },
                             minHeight: "72px",
                             transition: "background-color 0.3s ease",
-                            backgroundColor: "#1F2937", // Fond vert par défaut
+                            backgroundColor: "#1F2937",
                             '&:hover': {
-                                backgroundColor: "#374151", // Fond rouge vif au survol
+                                backgroundColor: "#374151",
                             },
                             svg: {
-                                fill: "#fff", // Couleur des chevrons
+                                fill: "#fff",
                             },
                         },
                     },
@@ -318,28 +354,28 @@ const Datatable = ({dataDatatable}) => {
                     },
                     expanderCell: {
                         style: {
-                            backgroundColor: "#d2195a", // Fond bleu pour la colonne des chevrons
+                            backgroundColor: "#d2195a",
                         },
                     },
                     expanderButton: {
                         style: {
-                            backgroundColor: "inherit", // Pas de fond spécifique pour le bouton
+                            backgroundColor: "inherit",
                             svg: {
-                                fill: "#fff", // Icônes SVG en blanc pour cohérence
+                                fill: "#fff",
                             },
                         },
                     },
                     pagination: {
                         style: {
                             backgroundColor: "#374151",
-                            color: "#fff", // Couleur du texte
-                            borderTop: "0px solid #374151", // Bordure supérieure
-                            borderBottomLeftRadius: "8px", // Forcé pour la dernière ligne
+                            color: "#fff",
+                            borderTop: "0px solid #374151",
+                            borderBottomLeftRadius: "8px",
                             borderBottomRightRadius: "8px",
                         },
                         pageButtonsStyle: {
-                            backgroundColor: "#374151", // Fond des boutons
-                            color: "#fff", // Couleur du texte des boutons
+                            backgroundColor: "#374151",
+                            color: "#fff",
                             fontSize: "5px",
                             paddingLeft: "7px",
                             width: "30px",
@@ -347,25 +383,111 @@ const Datatable = ({dataDatatable}) => {
                             borderRadius: "4px",
                             margin: "4px",
                             '&:hover': {
-                                backgroundColor: "#4B5563", // Fond des boutons au survol
+                                backgroundColor: "#4B5563",
                             },
                             '&:focus': {
                                 outline: "none",
-                                backgroundColor: "#6B7280", // Fond des boutons actifs
+                                backgroundColor: "#6B7280",
                             },
                             svg: {
-                                fill: "#fff", // Définit la couleur des icônes SVG (blanc)
-                                width: "16px", // Largeur des SVGs
-                                height: "16px", // Hauteur des SVGs
+                                fill: "#fff",
+                                width: "16px",
+                                height: "16px",
                             },
                         },
                     },
                 }}
             />
 
-            {/* MODAL Datatable */}
-            {modalUpdateSubTransactionIsOpen === true && (
-                <ModalUpdateSubTransaction closeModal={closeModal} subCatId={subCatId} handleUpdateSubTransaction={handleUpdateSubTransaction} />
+
+
+            {/* MODAL pour afficher les détails et l'image */}
+            <AnimatePresence>
+                {modalInfoIsOpen && (
+                    <motion.div
+                        className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+                        onClick={() => setModalInfoIsOpen(false)}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="bg-gray-800 text-white p-6 rounded-lg shadow-lg relative"
+                            initial={{ scale: 0.5 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.5 }}
+                        >
+                            <h2 className="text-lg font-bold mb-2">Détails de la sous-transaction</h2>
+                            {fetchedSubTransaction ? (
+                                <>
+                                    <p>{fetchedSubTransaction.date}</p>
+                                    <p>{fetchedSubTransaction.amount} €</p>
+                                    <p>{fetchedSubTransaction.commerce}</p>
+
+                                    {/* IMAGE CLIQUABLE */}
+                                    {fetchedSubTransaction.photo && (
+                                        <img
+                                            src={fetchedSubTransaction.photo}
+                                            alt="Détails de la sous-transaction"
+                                            className="max-w-32 cursor-pointer m-auto mt-3 rounded-lg shadow-md hover:scale-105 transition-transform duration-200"
+                                            onClick={() => setSelectedImage(fetchedSubTransaction.photo)}
+                                        />
+                                    )}
+                                </>
+                            ) : (
+                                <p>Chargement...</p>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {/* MODAL POUR AFFICHER L'IMAGE EN GRAND */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <motion.div
+                        className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+                        onClick={() => setSelectedImage(null)}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.img
+                            src={selectedImage}
+                            alt="Image agrandie"
+                            className="max-w-3/4 max-h-3/4 rounded-lg shadow-lg"
+                            initial={{ scale: 0.5 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.5 }}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* MODAL pour modifier sous transaction */}
+            {tiroirUpdateSubTransactionIsOpen && (
+                <div
+                    className="p-4 bg-gray-800 text-white fixed inset-0 flex flex-col items-center justify-center z-50">
+                    <h2 className="text-lg font-bold mb-2">Modifier la sous-transaction</h2>
+
+                    <form className="max-w-sm mx-auto">
+                        <div className="grid grid-cols-1 gap-2 max-w-md mx-auto mt-3">
+                            <div className="relative">
+                                <input type="text" id="inputAmount"
+                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                       placeholder="Montant"/>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div className="mt-4 flex gap-2">
+                        <button
+                            onClick={() => setTiroirUpdateSubTransactionIsOpen(false)}
+                            className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded"
+                        >
+                            Fermer
+                        </button>
+                    </div>
+                </div>
             )}
         </>
     );

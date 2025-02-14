@@ -1,10 +1,11 @@
-import {faChartLine, faBullseye, faSkullCrossbones, faClone} from "@fortawesome/free-solid-svg-icons";
+import {faChartLine, faBullseye, faSkullCrossbones, faClone, faCalendar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
 import CardData from "../../utils/DB.js";
 import ToolDetailsMoisContainer from "../Tools/ToolDetailsMoisContainer.jsx";
 import ToolComparContainer from "../Tools/ToolComparContainer.jsx";
 import CardTemplate from "../Cards/CardTemplate.jsx";
+import ToolCalendar from "../Tools/ToolCalendar.jsx";
 
 const AccordionsTools = () => {
 
@@ -15,9 +16,10 @@ const AccordionsTools = () => {
     }
 
     const accordions = [
-        {id: 4, title: "Détails du mois", content: <ToolDetailsMoisContainer/>, icon: faBullseye},
+        {id: 4, title: "Templates", content:<CardTemplate/>, icon: faClone},
         {id: 5, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
-        {id: 6, title: "Templates", content:<CardTemplate/>, icon: faClone}
+        {id: 6, title: "Détails du mois", content: <ToolDetailsMoisContainer/>, icon: faBullseye},
+        {id: 7, title: "Calendrier", content:<ToolCalendar/>, icon: faCalendar}
     ];
 
     return (

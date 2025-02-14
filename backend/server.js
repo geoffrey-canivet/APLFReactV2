@@ -5,7 +5,7 @@ const { sequelize } = require('./models');
 const models = require('./models');
 const morgan = require("morgan");
 const app = express();
-
+const commercesOption = require('./seeds/commerceOption');
 const PORT = 3000;
 
 // Utilisation de Morgan en mode 'dev' (affiche des logs colorés)
@@ -14,6 +14,7 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms"))
 app.use(cors());
 app.use(express.json());
 app.use('/', router);
+
 app.get('/', (req, res) => {
     res.send('Server running!');
 });
@@ -22,8 +23,6 @@ app.get('/', (req, res) => {
 (async () => {
     try {
         await sequelize.sync(); // Pas de { force: true } pour éviter de tout réinitialiser
-
-        console.log("Base de données synchronisée 🟢");
 
         const categories = [
             {name: "charges", icon: "faHouse", color: "#74C0FC"},
@@ -42,11 +41,22 @@ app.get('/', (req, res) => {
             {name: "revenus_divers", icon: "faSackDollar", color: "#48AE6F"},
         ];
 
+        // Insertion dans la table Commerce uniquement si elle est vide
+        const commerceCount = await models.Commerce.count();
+        if (commerceCount === 0) {
+            for (const option of commercesOption) {
+                await models.Commerce.create(option);
+                console.log(`Commerce ajouté : ${option.label}`);
+            }
+        } else {
+            console.log("Les commerces existent déjà, pas d'insertion.");
+        }
+
         // Ajout des catégories
         for (const data of categories) {
             const [category, created] = await models.Category.findOrCreate({
                 where: { name: data.name },
-                defaults: data, // On passe l'objet complet qui contient name, icon, et color
+                defaults: data,
             });
 
             if (created) {
@@ -66,13 +76,11 @@ app.get('/', (req, res) => {
             }
         }
 
-        console.log("Initialisation terminée 🟢");
+        console.log("Base de données synchronisée 🟢");
     } catch (error) {
         console.error("Erreur lors de l'initialisation :", error);
     }
 })();
-
-
 
 app.listen(PORT, () => {
     console.log(`Serveur ok 🟢 -> http://localhost:${PORT}`);

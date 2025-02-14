@@ -21,7 +21,7 @@ const NavBar = ({ handleDrawerOpen }) => {
 
     const navigate = useNavigate();
 
-    const { user, fetchUser, updateUser, loading, error } = useUserStore();
+    const { avatar_url, user, fetchUser, updateUser, loading, error } = useUserStore();
 
     const handleDellAllTransactions = async () => {
         console.log("click")
@@ -47,13 +47,9 @@ const NavBar = ({ handleDrawerOpen }) => {
         setDrawerOpen(!drawerOpen)
     };
 
-    // ACTION DROPDOWN
     // DECONNEXION
     const handleLogout = () => {
-        // Supprimer le token du localStorage
         localStorage.removeItem("token");
-
-        // Rediriger vers la page de connexion
         navigate("/login");
     };
 
@@ -63,8 +59,8 @@ const NavBar = ({ handleDrawerOpen }) => {
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-20 backdrop-blur-sm"
                     onClick={() => {
-                        setDrawerOpen(false); // Ferme le drawer
-                        setNavDropdown(false); // Ferme le dropdown utilisateur
+                        setDrawerOpen(false);
+                        setNavDropdown(false);
                     }}
                 ></div>
             )}
@@ -90,7 +86,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                     <div
                         onClick={toggleNavDropdown}
                         className="cursor-pointer relative flex items-center dark:text-white">
-                        <img className="mr-4 hidden sm:block w-10 h-10 rounded" src={avat} alt="User avatar"/>
+                        <img className="mr-4 hidden sm:block w-10 h-10 rounded" src={user?.avatar_url || avat} alt="User avatar"/> {/*avatar de l'utilisateur ici doit s'afficher et changer quand je modifie via le profile*/}
                         <div className="text-center">
                             <p className="font-bold text-center text-sm">{user?.firstName}</p>
                             <span

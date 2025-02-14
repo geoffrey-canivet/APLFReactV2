@@ -11,9 +11,8 @@ const useLogHistoryStore = create((set, get) => ({
         set({ loading: true, error: null });
 
         try {
-            // ✅ Vérification de localStorage et récupération du token
             const token = localStorage.getItem("token");
-            console.log("Token récupéré depuis localStorage :", token); // Vérifie si le token est bien stocké
+            console.log("Token récupéré depuis localStorage :", token);
 
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
@@ -24,14 +23,10 @@ const useLogHistoryStore = create((set, get) => ({
                 time: log.time,
             };
 
-            console.log("Données envoyées au backend :", logData);
-            console.log("Token envoyé dans le header :", token);
-
             const response = await axios.post("http://localhost:3000/logHistory/addLogHistory", logData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            // ✅ Mise à jour du store après succès
             set((state) => ({ log: [...state.log, response.data] }));
 
         } catch (error) {
@@ -58,18 +53,15 @@ const useLogHistoryStore = create((set, get) => ({
             set({ log: response.data });
         } catch (error) {
             console.error("Erreur lors de la récupération des logs :", error);
-
-            // Vérification si error.response existe avant d'y accéder
             if (error.response) {
                 set({ error: error.response.data || "Une erreur est survenue." });
             } else {
-                set({ error: "Impossible de se connecter au serveur. Vérifiez votre connexion." });
+                set({ error: "Impossible de se connecter au serveur." });
             }
         } finally {
             set({ loading: false });
         }
     },
-
 
     // Retrouver un log par type
     findLogHistoryByType: async (type) => {

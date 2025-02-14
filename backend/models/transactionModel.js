@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         periodId: {
             type: DataTypes.INTEGER,
-            allowNull: true,  // Peut être null si pas de période associée
+            allowNull: true,
             comment: "Référence à la période (si applicable)"
         },
     }, {
@@ -39,11 +39,10 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Transaction.associate = (models) => {
-        // Relation avec l'utilisateur
         Transaction.belongsTo(models.User, {
             foreignKey: 'userId',
             as: 'user',
-            onDelete: 'CASCADE'  // Supprimer les transactions si user supprimé
+            onDelete: 'CASCADE'
         });
         // Relation avec la catégorie
         Transaction.belongsTo(models.Category, {
@@ -59,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
         Transaction.hasMany(models.SubTransaction, {
             foreignKey: 'transactionId',
             as: 'subTransactions',
-            onDelete: 'CASCADE'  // Supprimer les sous-transactions si transaction supprimée
+            onDelete: 'CASCADE'
         });
     };
 

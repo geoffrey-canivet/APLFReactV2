@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
+        commerceId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            comment: "Référence au commerce"
+        },
         photo: {
             type: DataTypes.STRING,
             allowNull: true,
@@ -34,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         transactionId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            comment: "Référence à la transaction principale"
+            comment: "Référence à la transaction"
         },
 
     }, {
@@ -49,11 +54,10 @@ module.exports = (sequelize, DataTypes) => {
             as: 'transaction',
             onDelete: 'CASCADE'
         });
-        // Une sous-transaction peut avoir plusieurs tickets
-        SubTransaction.hasMany(models.Ticket, {
-            foreignKey: 'subTransactionId',
-            as: 'tickets',
-            onDelete: 'CASCADE'
+        SubTransaction.belongsTo(models.Commerce, {
+            foreignKey: 'commerceId',
+            as: 'commerceData',
+            onDelete: 'SET NULL'
         });
 
     };

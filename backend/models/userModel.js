@@ -83,26 +83,19 @@ module.exports = (sequelize, DataTypes) => {
             comment: "Table des utilisateurs"
         });
 
-    // Définir les associations dans une fonction associate
+    // associations
     User.associate = (models) => {
         User.hasMany(models.Transaction, {
             foreignKey: 'userId',
             as: 'transactions',
         });
-
-        // ✅ Un utilisateur a plusieurs logs
         User.hasMany(models.LogHistory, {
             foreignKey: "userId",
             as: "logs",
             onDelete: "CASCADE",
             onUpdate: "CASCADE"
         });
-        // Un utilisateur peut avoir plusieurs tickets
-        User.hasMany(models.Ticket, {
-            foreignKey: "userId",
-            as: "tickets",
-            onDelete: "CASCADE"
-        });
+
 
     };
 

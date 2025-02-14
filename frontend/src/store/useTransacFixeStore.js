@@ -7,7 +7,6 @@ const useTransacFixeStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    // Récupérer les catégories de type "fixe"
     fetchFixe: async () => {
         set({ loading: true, error: null });
         try {
@@ -21,9 +20,9 @@ const useTransacFixeStore = create((set, get) => ({
             });
 
             set({ categories: response.data });
-            console.log("fetchFixe -> cat : ", response.data);
+
         } catch (error) {
-            console.error("Erreur lors de la récupération des catégories :", error);
+
             set({ error: error.message || "Impossible de récupérer les catégories." });
         } finally {
             set({ loading: false });
@@ -36,42 +35,35 @@ const useTransacFixeStore = create((set, get) => ({
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
-           /* console.log(`🔍 Fetching transactions for Month: ${month}, Year: ${year}`);*/
-
             const response = await axios.post(
                 "http://localhost:3000/trans/getFixeByPeriod",
-                { month, year },  // 📌 Envoi du mois et de l'année dans le body
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
             );
 
             set({ categories: response.data });
-            /*console.log(`✅ Transactions récupérées pour ${month}/${year}:`, response.data);*/
+
         } catch (error) {
-            console.error("❌ Erreur fetchFixeByPeriod :", error);
+            console.error("Erreur fetchFixeByPeriod :", error);
             set({ error: error.message || "Impossible de récupérer les catégories." });
         } finally {
             set({ loading: false });
         }
     },
 
-    // Ajouter une transaction fixe
     addTransactionFixe: async (categoryId, data) => {
         set({ loading: true, error: null });
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
-            // ✅ Récupérer le mois et l'année depuis le store `usePeriodStore`
             const { month, year } = usePeriodStore.getState();
 
-            console.log(`🟢 Ajout d'une transaction pour ${month}/${year}`);
-
-            // 🔹 Trouver le periodId correspondant dans ta base de données
             const periodResponse = await axios.post("http://localhost:3000/period/findPeriod", {
                 month,
                 year
@@ -79,7 +71,7 @@ const useTransacFixeStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            const periodId = periodResponse.data.id; // Récupération du periodId
+            const periodId = periodResponse.data.id;
 
             console.log(`📅 Période trouvée: ${periodId}`);
 
@@ -96,10 +88,10 @@ const useTransacFixeStore = create((set, get) => ({
 
             const refreshResponse = await axios.post(
                 "http://localhost:3000/trans/getFixeByPeriod",
-                { month, year },  // 📌 Envoi du mois et de l'année dans le body
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
@@ -137,18 +129,15 @@ const useTransacFixeStore = create((set, get) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            console.log("Transaction supprimée :", response.data);
 
-            // Re-fetch
-            // Récupère la période actuelle depuis usePeriodStore
             const { month, year } = usePeriodStore.getState();
 
             const refreshResponse = await axios.post(
                 "http://localhost:3000/trans/getFixeByPeriod",
-                { month, year },  // 📌 Utilisation de la période enregistrée dans le store
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
@@ -187,9 +176,7 @@ const useTransacFixeStore = create((set, get) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            console.log("Transactions supprimée :", response.data);
 
-            // Re-fetch
             const refreshResponse = await axios.get("http://localhost:3000/trans/getFixe", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -231,9 +218,7 @@ const useTransacFixeStore = create((set, get) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            console.log("Transactions maj :", response.data);
 
-            // Re-fetch
             const refreshResponse = await axios.get("http://localhost:3000/trans/getFixe", {
                 headers: { Authorization: `Bearer ${token}` },
             });

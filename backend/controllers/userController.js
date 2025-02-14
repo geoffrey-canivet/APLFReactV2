@@ -1,14 +1,13 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "secret_pour_jwt"; // TODO .ENV
+const SECRET_KEY = process.env.SECRET_KEY;
+const cloudinary = require('../config/cloudinary');
 
 const userController = {
     // INSCRIPTION
     create: async (req, res) => {
         try {
-            console.log("Données reçues pour inscription :", req.body); // Log des données entrantes
-
             const { password, firstName, ...userData } = req.body;
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -18,7 +17,6 @@ const userController = {
                 password: hashedPassword,
             });
 
-            console.log("Utilisateur créé :", user); // Log de l'utilisateur créé
             res.status(201).json({
                 id: user.id,
                 email: user.email,
@@ -28,7 +26,6 @@ const userController = {
             });
 
         } catch (err) {
-            console.error("Erreur lors de l'inscription :", err); // Log des erreurs
             if (err.name === 'ValidationError') {
                 return res.status(400).json({
                     error: "Données invalides",
@@ -39,64 +36,58 @@ const userController = {
                 });
             }
             res.status(500).json({
-                error: "Erreur serveur",
+                error: "Erreur serveur lors de l'inscription",
             });
         }
     },
+
     // LOGIN
     login: async (req, res) => {
         const { email, password } = req.body;
-        console.log("Données reçues pour login :", req.body); // Log des données entrantes
 
         try {
             // Vérifie si l'utilisateur existe
             const user = await User.findOne({ where: { email } });
-            console.log("Utilisateur trouvé :", user); // Log de l'utilisateur trouvé ou null
 
             if (!user) {
                 return res.status(401).json({ error: "Utilisateur ou mot de passe invalide" });
             }
 
-            // Vérifie le mot de passe
             const passwordMatch = await bcrypt.compare(password, user.password);
-            console.log("Mot de passe valide :", passwordMatch); // Log de la comparaison de mot de passe
 
             if (!passwordMatch) {
                 return res.status(401).json({ error: "Utilisateur ou mot de passe invalide" });
             }
 
-            // Génère un token JWT
             const token = jwt.sign(
-                { id: user.id, email: user.email }, // Payload
-                SECRET_KEY, // Clé secrète
-                { expiresIn: "1h" } // Expiration
+                { id: user.id, email: user.email },
+                SECRET_KEY,
+                { expiresIn: "1h" }
             );
 
-            console.log("Token généré :", token); // Log du token généré
             res.status(200).json({ message: "Connexion réussie", token, userData: {
                     id: user.id,
                     name: user.name,
-                    email: user.email
+                    email: user.email,
                 }
             });
 
         } catch (error) {
-            console.error("Erreur lors de la connexion :", error); // Log des erreurs
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
 
-    // RECUPER USER
+    // RECUPER INFOS USER
     getUserInfo: async (req, res) => {
         try {
             const id = req.userId;
-            const user = await User.findByPk(id); // Utilisez votre méthode pour trouver l'utilisateur
+            const user = await User.findByPk(id);
 
             if (!user) {
                 return res.status(404).json({ error: "Utilisateur non trouvé" });
             }
 
-            console.log("le urse est ->", user)
+            console.log("user ->", user)
 
             res.status(200).json({
                 id: user.id,
@@ -104,32 +95,29 @@ const userController = {
                 firstName: user.firstName,
                 updatedAt: user.updatedAt,
                 email: user.email,
+                avatar_url: user.avatar_url
 
             });
         } catch (err) {
-            console.error("Erreur lors de la récupération des informations utilisateur :", err);
-            res.status(500).json({ error: "Erreur serveur" });
+            res.status(500).json({ error: "Erreur serveur lors de la récupération des informations utilisateur" });
         }
     },
 
-    // UPDATE USER
+    // MODIFIER USER
     updateUser: async (req, res) => {
         try {
             const { name, firstName, email } = req.body;
-            const userId = req.userId; // Récupère l'ID de l'utilisateur connecté depuis le middleware
+            const userId = req.userId;
 
-            // Vérifier que tous les champs sont présents
             if (!name || !firstName || !email) {
-                return res.status(400).json({ error: "Tous les champs sont requis (name, firstName, email)" });
+                return res.status(400).json({ error: "Tous les champs sont requis)" });
             }
 
-            // Trouver l'utilisateur
             const user = await User.findByPk(userId);
             if (!user) {
                 return res.status(404).json({ error: "Utilisateur non trouvé" });
             }
 
-            // Mettre à jour les informations
             user.name = name;
             user.firstName = firstName;
             user.email = email;
@@ -146,39 +134,40 @@ const userController = {
             });
 
         } catch (error) {
-            console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
-            res.status(500).json({ error: "Erreur serveur", details: error.message });
+            res.status(500).json({ error: "Erreur serveur lors de la mise à jour de l'utilisateur", details: error.message });
         }
     },
 
-    uploadImage: async (req, res) => {
+    // PHOTO PROFILE
+    uploadAvatar: async (req, res) => {
         try {
             if (!req.file) {
-                return res.status(400).json({ error: "Aucun fichier envoyé" });
+                return res.status(400).json({ message: "Aucun fichier envoyé." });
             }
 
-            // Upload vers Cloudinary
-            cloudinary.uploader.upload_stream({ folder: "profile_pictures" }, async (error, result) => {
-                if (error) {
-                    console.error("Erreur lors de l'upload Cloudinary :", error);
-                    return res.status(500).json({ error: "Échec de l'upload" });
-                }
+            const streamUpload = (fileBuffer) => {
+                return new Promise((resolve, reject) => {
+                    const stream = cloudinary.uploader.upload_stream((error, result) => {
+                        if (result) {
+                            resolve(result);
+                        } else {
+                            reject(error);
+                        }
+                    });
+                    stream.end(fileBuffer);
+                });
+            };
 
-                // Mise à jour du profil utilisateur
-                const user = await User.findByPk(req.userId);
-                if (!user) {
-                    return res.status(404).json({ error: "Utilisateur non trouvé" });
-                }
+            const result = await streamUpload(req.file.buffer);
 
-                user.profileImage = result.secure_url;
-                await user.save();
+            await User.update(
+                { avatar_url: result.secure_url },
+                { where: { id: req.userId } }
+            );
 
-                res.status(200).json({ message: "Image de profil mise à jour", url: result.secure_url });
-            }).end(req.file.buffer);
-
-        } catch (err) {
-            console.error("Erreur serveur :", err);
-            res.status(500).json({ error: "Erreur serveur" });
+            return res.status(200).json({ message: "Avatar mis à jour avec succès.", avatar_url: result.secure_url });
+        } catch (error) {
+            return res.status(500).json({ message: "Erreur lors de l'upload de l'avatar.", error: error.message });
         }
     }
 };

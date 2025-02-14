@@ -15,10 +15,10 @@ const DrawerContainer = ({ isDrawerOpen }) => {
                 >
                     Menu
                 </h5>
-                {/* Conteneur principal */}
+
                 <div className="flex flex-col">
                     <DrawerItem/>
-                    {/* Météo en bas */}
+
 
                 </div>
             </div>

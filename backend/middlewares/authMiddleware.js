@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY || "secret_pour_jwt"; // Todo .env
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Récupère le token depuis les headers
+    const token = req.headers.authorization?.split(' ')[1];
 
     console.log("Token reçu :", token);
 
@@ -12,7 +12,7 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, SECRET_KEY);
-        req.userId = decoded.id; // Ajoute userId directement au req
+        req.userId = decoded.id;
         next();
     } catch (err) {
         res.status(401).json({ error: "Token invalide ou expiré." });

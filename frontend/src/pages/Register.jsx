@@ -14,7 +14,6 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Erreur
         if (name === "" || firstName === "" || email === "" || password === "" || confirmPassword === "") {
             setError("Vous devez remplire tout les champs");
             return;
@@ -25,7 +24,6 @@ const Register = () => {
         }
         setError("");
 
-        // Envois des données vers backend
         console.log(name, firstName, email, password);
         try {
             const response = await axios.post("http://localhost:3000/auth/register", {
@@ -34,7 +32,7 @@ const Register = () => {
                 email,
                 password,
             })
-            // Succès
+
             setSuccess("Utilisateur créé avec succès !");
             setName("");
             setFirstName("")
@@ -43,7 +41,7 @@ const Register = () => {
             setConfirmPassword("");
             console.log("Réponse du serveur :", response.data);
         }  catch (err) {
-            // Gestion des erreurs
+
             console.error(err);
             if (err.response && err.response.data) {
                 setError(err.response.data.error || "Erreur inconnue");

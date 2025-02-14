@@ -130,7 +130,7 @@ const ModalChartBar = ({closeModal, dataChart}) => {
              didOpen: () => {
                  document.getElementById("close-modal-btn").addEventListener("click", () => {
                      Swal.close();
-                     closeModal(); // Ferme la modal proprement
+                     closeModal();
                  });
                  const backdrop = document.querySelector(".swal2-backdrop-show");
                  if (backdrop) {
@@ -140,10 +140,10 @@ const ModalChartBar = ({closeModal, dataChart}) => {
                  const chartContainer = document.getElementById("chart-container");
                  if (chartContainer) {
                      if (!rootRef.current) {
-                         // Créer la racine uniquement si elle n'existe pas encore
+
                          rootRef.current = createRoot(chartContainer);
                      }
-                     // Mettre à jour le contenu du graphique
+
                      rootRef.current.render(<BarChartFixe dataChart={dataChart.transactions} />);
                  }
 

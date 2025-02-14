@@ -6,7 +6,13 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true,
             comment: "Identifiant unique du commerce"
         },
-        name: {
+        label: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            comment: "Nom du commerce"
+        },
+        value: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
@@ -17,7 +23,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             comment: "Couleur du commerce"
         },
-    })
+    }, {
+            tableName: 'commerce',
+            timestamps: true,
+            comment: "Table des commerces"
+        }
+
+        )
 
 
 

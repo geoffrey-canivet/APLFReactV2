@@ -4,7 +4,7 @@ const BarChartComparatifFixe = () => {
     const option = {
         legend: {
             textStyle: {
-                color: "#fff"  // 🟢 Légende en blanc
+                color: "#fff"
             }
         },
         tooltip: {},
@@ -19,12 +19,12 @@ const BarChartComparatifFixe = () => {
         },
         xAxis: {
             type: "category",
-            axisLabel: { color: "#fff" } // 🟢 Couleur des labels de l'axe X
+            axisLabel: { color: "#fff" }
         },
         yAxis: {
-            axisLabel: { color: "#fff" } // 🟢 Couleur des labels de l'axe Y
+            axisLabel: { color: "#fff" }
         },
-        series: Array(12).fill({ type: "bar" }) // 🟢 Génère dynamiquement 12 séries pour les 12 mois
+        series: Array(12).fill({ type: "bar" })
     };
 
 

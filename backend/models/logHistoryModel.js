@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
             comment: "Table des log"
         })
 
-    // 🔹 association ici
     LogHistory.associate = (models) => {
         LogHistory.belongsTo(models.User, {
             foreignKey: "userId",

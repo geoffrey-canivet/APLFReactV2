@@ -100,7 +100,7 @@ const ModalDatatable = ({closeModal, dataDatatable}) => {
                 const chartContainer = document.getElementById("chart-container");
                 if (chartContainer) {
                     if (!rootRef.current) {
-                        // Créer la racine uniquement si elle n'existe pas encore
+
                         rootRef.current = createRoot(chartContainer);
                     }
 

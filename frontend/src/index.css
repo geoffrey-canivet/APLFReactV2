@@ -84,3 +84,72 @@
 .react-datepicker__navigation-icon {
     color: red!important;
 }
+
+/*
+CALENDRIER*/
+
+/*.rbc-day-bg {
+    border: 1px solid #111827;
+}
+.rbc-day-bg + .rbc-day-bg {
+    border-left: 1px solid #111827!important;
+}
+.rbc-month-row + .rbc-month-row {
+    border-top: 1px solid #111827!important;
+}
+.rbc-today {
+    background-color: #365683 !important;
+}
+.rbc-off-range-bg {
+    background: #1F2937!important;
+}
+.rbc-header {
+    background: #1F2937!important;
+    border-bottom: 1px solid #111827;
+}
+.rbc-month-view {
+    border: 1px solid #111827!important;
+}
+.rbc-header + .rbc-header {
+    border-left: 1px solid #111827!important;
+    border-bottom: 1px solid #111827!important;
+}*/
+
+.rbc-today {
+    background-color: #365683 !important;
+}
+.rbc-off-range-bg {
+    background: #1F2937!important;
+}
+
+.rbc-toolbar {
+    color: white!important;
+}
+.rbc-btn-group button{
+    color: white!important;
+}
+.rbc-active {
+
+    background-color: #365683!important;
+}
+.rbc-btn-group button:hover{
+
+    background-color: #365683!important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.custom-footer {
+    z-index: 0 !important;
+}

@@ -1,10 +1,12 @@
 
 
 const ToolDetailsMoisContainer = () => {
-    return (
-        <>
 
-        </>
+
+    return (
+        <div>
+            détails du mois
+        </div>
     );
 };
 

@@ -4,10 +4,10 @@ import {
     faAward,
     faBoxArchive,
     faCalculator,
-    faCameraRetro,
-    faCloudSun, faEarthEurope,
-    faGear, faIdCard, faIdCardClip, faLock,
-    faToolbox,
+    faCameraRetro, faCartShopping, faCheck,
+    faCloudSun, faEarthEurope, faEllipsis,
+    faGear, faIdCard, faIdCardClip, faImage, faLock, faRectangleList, faStar,
+    faToolbox, faTrash,
     faUser, faUserPen, faUserTag
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -16,20 +16,58 @@ import ToastNotification from "sweetalert2";
 import Swal from "sweetalert2";
 import axios from "axios";
 import useLogHistoryStore from "../../../store/useLogHistoryStore.js";
+import { HexColorPicker } from "react-colorful";
+import useCommerceStore from '../../../store/useCommerceStore.js';
+
 const trophees = import.meta.glob("../../../assets/trophees/*.png", { eager: true });
 
 const ProfileUser = () => {
 
-    const { user, fetchUser, updateUser, loading, error } = useUserStore();
+    const {deleteCommerce, commerces, fetchCommerces, createCommerce } = useCommerceStore();
+    const { avatar_url, uploadAvatar, user, fetchUser, updateUser, loading, error } = useUserStore();
     const { log, getAllLogHistory } = useLogHistoryStore();
     useEffect(() => {
-        getAllLogHistory(); // Charger les logs au montage du composant
+        getAllLogHistory();
     }, []);
     console.log("Logs stockés dans Zustand :", log);
 
     const [name, setName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
+
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const [color, setColor] = useState("#aabbcc");
+    const [commerceName, setCommerceName] = useState("");
+
+    useEffect(() => {
+        fetchCommerces();
+    }, []);
+
+    // image profile
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
+    // Modifier photo profile
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        if (!selectedFile) return;
+        await uploadAvatar(selectedFile);
+        fetchUser();
+        setSelectedFile(null);
+    };
+
+    // Ajouter un commerce
+    const handleAddCommerce = async () => {
+        const newCommerce = {
+            label: commerceName,
+            value: commerceName,
+            color: color,
+        };
+
+        await createCommerce(newCommerce);
+    };
 
     useEffect(() => {
         if (user) {
@@ -65,10 +103,10 @@ const ProfileUser = () => {
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-            hour12: false, // Format 24h
+            hour12: false,
             timeZone: "Europe/Paris"
         }).format(new Date(user.updatedAt))
-        : "Non disponible"; // Valeur par défaut si `updatedAt` est vide
+        : "Non disponible";
 
     const handleUpdateProfile = async () => {
         try {
@@ -85,18 +123,62 @@ const ProfileUser = () => {
     };
 
 
-    if (loading) return <p>Chargement...</p>;
+
+    if (loading) return <div className="flex items-center justify-center bg-gray-700 min-h-screen">
+        <div role="status">
+            <svg aria-hidden="true"
+                 className="inline w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"/>
+                <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"/>
+            </svg>
+            <span className="sr-only">Loading...</span>
+        </div>
+    </div>;
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
         <>
+            <style>
+                {`
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: #74C0FC; /* Couleur de la barre */
+                    border-radius: 4px; /* Coins arrondis */
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background-color: #58a7e0; /* Couleur au survol */
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background-color: transparent; /* Fond invisible */
+                }
+
+                .hover\\:overflow-y-auto:hover {
+                    overflow-y: auto; /* Activer le scroll au survol */
+                }
+
+                .hover\\:overflow-y-hidden {
+                    overflow-y: hidden; /* Désactiver le scroll par défaut */
+                }
+                `}
+            </style>
             {/*PROFILE*/}
             <div className="pt-20 px-3">
                 <div
                     className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
                     <span>
 
-                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"  icon={faUserTag} />
+                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faUserTag}/>
 
                     </span>
 
@@ -116,7 +198,12 @@ const ProfileUser = () => {
                             <div className="flex items-center">
                                 {/*Photo*/}
                                 <div className="">
-                                    <img src={avat} width="120px" alt="App Logo"/>
+                                    <img src={user?.avatar_url || avat} style={{
+                                        width: "120px",
+                                        height: "120px",
+                                        borderRadius: "15%",
+                                        marginTop: "1rem"
+                                    }} alt="App Logo"/>
                                 </div>
                                 {/*infos*/}
                                 <div className="ml-3">
@@ -138,7 +225,7 @@ const ProfileUser = () => {
                             </div>
                             <hr className="border-t my-4 border-gray-600"/>
 
-                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+                            {/*                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
                                 <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"
                                                  icon={faAward}/>
                                 <span>Trophées</span>
@@ -147,15 +234,43 @@ const ProfileUser = () => {
                                 {Object.values(trophees).map((image, index) => (
                                     <img className="mr-5 mb-5 w-12 h-12" key={index} src={image.default} alt={`Image ${index + 1}`}/>
                                 ))}
+                            </div>*/}
+
+
+                            <div>
+                                <div className="flex  mb-2">
+                                    <h2 className="text-white mr-2">Modifier la photo de profil</h2>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400"
+                                       id="file_input_help">(MAX. 5Mo)</p>
+                                </div>
+
+                                <form onSubmit={handleUpload}>
+                                    <input
+                                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}/>
+
+                                    <button type="submit"
+                                            disabled={loading}
+                                            className="text-white mt-3 justify-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+
+                                        <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faImage}/>
+                                        {loading ? "Uploading..." : "Modifier la photo"}
+
+                                    </button>
+                                </form>
+                                {error && <p style={{color: "red"}}>{error}</p>}
                             </div>
 
                         </div>
                     </div>
                     <div className="px-5 py-4 bg-gray-800 rounded-md ">
                         {/*modifier profil*/}
+
                         <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
 
-                            <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faIdCard} />
+                            <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faIdCard}/>
                             <span>Informations </span>
                         </div>
                         <form>
@@ -196,17 +311,20 @@ const ProfileUser = () => {
                             </div>
                             <hr className="border-t my-4 border-gray-600"/>
                             <div className="flex flex-col">
-                                <button type="button"
-                                        onClick={handleUpdateProfile}
-                                        className="text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
-                                    <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faUserPen}/>
-                                    Modifier
-                                </button>
-                                <button type="button"
-                                        className="text-white justify-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
-                                    <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
-                                    Modifier le mot de passe
-                                </button>
+                                <div className="flex gap-2">
+                                    <button type="button"
+                                            onClick={handleUpdateProfile}
+                                            className="flex-1 text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faUserPen}/>
+                                        Modifier
+                                    </button>
+                                    <button type="button"
+                                            className="flex-1 text-white justify-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                        <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
+                                        Modifier le mot de passe
+                                    </button>
+                                </div>
+
                                 <button type="button"
                                         className="text-white justify-center bg-orange-500 hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
@@ -224,121 +342,98 @@ const ProfileUser = () => {
                 <div
                     className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
                     <span>
-                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"  icon={faGear} />
+                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faGear}/>
 
                     </span>
                     <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">Paramètres</h5>
                 </div>
             </div>
             <div className="pt-0 px-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 px-4 ">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-4 ">
                     <div className="px-5 py-4 bg-gray-800 rounded-md">
                         <div className="">
                             <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon icon={faToolbox}/>
-                                <span>Widgets</span>
+                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faCartShopping}/>
+                                <span>Ajouter un commerce</span>
                             </div>
                             <div className="">
                                 <hr className="border-t my-4 border-gray-600"/>
                             </div>
 
-                            <ul className="grid w-full gap-6 md:grid-cols-3">
-                                <li>
-                                    <input type="checkbox" id="calculatrice-widget" value="" className="hidden peer"
-                                           required=""/>
-                                    <label htmlFor="calculatrice-widget"
-                                           className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <div className="block text-center">
-                                            <FontAwesomeIcon icon={faCalculator} size="xl"/>
-                                            <div className="w-full text-lg font-semibold">Calculatrice</div>
-                                            <div className="w-full text-sm">Simple mais efficace.
-                                            </div>
-                                        </div>
-                                    </label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="meteo-widget" value="" className="hidden peer"/>
-                                    <label htmlFor="meteo-widget"
-                                           className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <div className="block  text-center">
-                                            <FontAwesomeIcon icon={faCloudSun} size="xl"/>
-                                            <div className="w-full text-lg font-semibold">Météo</div>
-                                            <div className="w-full text-sm">Avec l'API open-meteo.com
-                                            </div>
-                                        </div>
-                                    </label>
-                                </li>
-                                <li>
-                                    <input type="checkbox" id="devise-widget" value="" className="hidden peer"/>
-                                    <label htmlFor="devise-widget"
-                                           className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <div className="block  text-center">
-                                            <FontAwesomeIcon icon={faEarthEurope} size="xl"/>
-                                            <div className="w-full text-lg font-semibold">Devise</div>
-                                            <div className="w-full text-sm">Converteur de devise.</div>
-                                        </div>
-                                    </label>
-                                </li>
-                            </ul>
+                            <div className="">
+                                <HexColorPicker color={color} onChange={setColor}
+                                                style={{width: "150px", height: "150px", margin: "auto"}}/>
+                            </div>
+                            <input type="text" id="Prénom"
+                                   onChange={(e) => setCommerceName(e.target.value)}
+                                   placeholder="Nom du commerce"
+                                   className="block w-full p-2 mt-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+                            <button type="button"
+                                    onClick={handleAddCommerce}
+                                    className="flex-1 mt-3 text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+
+                                <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faCheck}/>
+                                Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    <div className="px-5 py-4 bg-gray-800 rounded-md">
+                        <div className="">
+                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faRectangleList}/>
+                                <span>Liste de commerces</span>
+                            </div>
+                            <div className="">
+                                <hr className="border-t my-4 border-gray-600"/>
+                            </div>
+
+                            <div
+                                className="relative w-full h-64 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
+                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <tbody>
+                                    {commerces.map((commerce) => (
+                                        <tr>
+                                            <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {commerce.label}
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                <span
+                                                    style={{backgroundColor: commerce.color}}
+                                                    className="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"
+                                                >
+                                                  {commerce.color}
+                                                </span>
+
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                <button
+                                                    onClick={() => {
+                                                        deleteCommerce(commerce.id)
+                                                    }}
+                                                    className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                >
+                                                    <FontAwesomeIcon icon={faTrash} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
 
                         </div>
                     </div>
                     <div className="px-5 py-4 bg-gray-800 rounded-md">
                         <div className="">
                             <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon icon={faGear}/>
-                                <span>Préférences</span>
+                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faStar}/>
+                                <span>Mes commerces</span>
                             </div>
                             <div className="">
                                 <hr className="border-t my-4 border-gray-600"/>
                             </div>
-                            <label className="inline-flex items-center mb-5 cursor-pointer">
-                                <input type="checkbox" value="" className="sr-only peer"/>
-                                <div
-                                    className="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-                                <span
-                                    className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Small toggle</span>
-                            </label>
-                            <label className="inline-flex items-center mb-5 cursor-pointer">
-                                <input type="checkbox" value="" className="sr-only peer"/>
-                                <div
-                                    className="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-                                <span
-                                    className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Small toggle</span>
-                            </label>
 
-                            <div className="flex">
-                                <div className="flex items-center me-4">
-                                    <input id="inline-radio" type="radio" value="" name="inline-radio-group"
-                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                    <label htmlFor="inline-radio"
-                                           className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inline
-                                        1</label>
-                                </div>
-                                <div className="flex items-center me-4">
-                                    <input id="inline-2-radio" type="radio" value="" name="inline-radio-group"
-                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                    <label htmlFor="inline-2-radio"
-                                           className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inline
-                                        2</label>
-                                </div>
-                                <div className="flex items-center me-4">
-                                    <input id="inline-checked-radio" type="radio" value=""
-                                           name="inline-radio-group"
-                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                    <label htmlFor="inline-checked-radio"
-                                           className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inline
-                                        checked</label>
-                                </div>
-                                <div className="flex items-center">
-                                    <input disabled id="inline-disabled-radio" type="radio" value=""
-                                           name="inline-radio-group"
-                                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                    <label htmlFor="inline-disabled-radio"
-                                           className="ms-2 text-sm font-medium text-gray-400 dark:text-gray-500">Inline
-                                        disabled</label>
-                                </div>
-                            </div>
 
                         </div>
                     </div>
@@ -350,7 +445,7 @@ const ProfileUser = () => {
                     className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
                     <span>
 
-                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"  icon={faBoxArchive} />
+                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faBoxArchive}/>
                     </span>
                     <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">historique</h5>
                 </div>

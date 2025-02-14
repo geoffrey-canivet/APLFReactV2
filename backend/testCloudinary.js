@@ -1,16 +1,17 @@
-const cloudinary = require("./config/cloudinary");
+// testCloudinary.js
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
-async function testCloudinaryConnection() {
-    try {
-        const result = await cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/sample.jpg", {
-            folder: "test_uploads"
-        });
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-        console.log("✅ Cloudinary fonctionne !");
-        console.log("📂 URL de l'image :", result.secure_url);
-    } catch (error) {
-        console.error("❌ Erreur de connexion à Cloudinary :", error);
+cloudinary.api.ping((error, result) => {
+    if (error) {
+        console.error("Erreur lors du ping vers Cloudinary :", error);
+    } else {
+        console.log("Ping réussi :", result);
     }
-}
-
-testCloudinaryConnection();
+});

@@ -1,4 +1,4 @@
-require('dotenv').config(); // Charger les variables d'environnement
+require('dotenv').config();
 
 module.exports = {
     dialect: process.env.DB_DIALECT,
@@ -8,6 +8,6 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     option: {
-        trustServerCertificate: true
+        trustServerCertificate: true // Sécurité - pas pris en compte avec postgres
     }
 };

@@ -9,7 +9,7 @@ const useTransacRevenuStore = create((set) => ({
     loading: false,
     error: null,
 
-    // Récupérer les catégories de type "fixe"
+    // Récupérer les catégories
     fetchRevenu: async () => {
         set({ loading: true, error: null });
         try {
@@ -23,7 +23,6 @@ const useTransacRevenuStore = create((set) => ({
             });
 
             set({ categories: response.data });
-            /*console.log("fetchRevenu -> cat : ", response.data);*/
         } catch (error) {
             console.error("Erreur lors de la récupération des catégories :", error);
             set({ error: error.message || "Impossible de récupérer les catégories." });
@@ -32,7 +31,7 @@ const useTransacRevenuStore = create((set) => ({
         }
     },
 
-    // Récupérer les catégories de type "fixe"
+    // Récupérer les catégories par periode
     fetchRevenuByPeriod: async (month, year) => {
         set({ loading: true, error: null });
         try {
@@ -41,38 +40,33 @@ const useTransacRevenuStore = create((set) => ({
 
             const response = await axios.post(
                 "http://localhost:3000/trans/getRevenuByPeriod",
-                { month, year },  // 📌 Envoi du mois et de l'année dans le body
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
             );
 
             set({ categories: response.data });
-            /*console.log(`✅ Transactions récupérées pour ${month}/${year}:`, response.data);*/
         } catch (error) {
-            console.error("❌ Erreur fetchFixeByPeriod :", error);
+            console.error("Erreur fetchFixeByPeriod :", error);
             set({ error: error.message || "Impossible de récupérer les catégories." });
         } finally {
             set({ loading: false });
         }
     },
 
-    // Ajouter une transaction fixe
+    // Ajouter une transaction revenu
     addTransactionRevenu: async (categoryId, data) => {
         set({ loading: true, error: null });
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
-            // ✅ Récupérer le mois et l'année depuis le store `usePeriodStore`
             const { month, year } = usePeriodStore.getState();
 
-            console.log(`🟢 Ajout d'une transaction pour ${month}/${year}`);
-
-            // 🔹 Trouver le periodId correspondant dans ta base de données
             const periodResponse = await axios.post("http://localhost:3000/period/findPeriod", {
                 month,
                 year
@@ -80,9 +74,7 @@ const useTransacRevenuStore = create((set) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            const periodId = periodResponse.data.id; // Récupération du periodId
-
-            console.log(`📅 Période trouvée: ${periodId}`);
+            const periodId = periodResponse.data.id;
 
             const transactionData = {
                 categoryId,
@@ -97,10 +89,10 @@ const useTransacRevenuStore = create((set) => ({
 
             const refreshResponse = await axios.post(
                 "http://localhost:3000/trans/getRevenuByPeriod",
-                { month, year },  // 📌 Envoi du mois et de l'année dans le body
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
@@ -136,18 +128,15 @@ const useTransacRevenuStore = create((set) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            /*console.log("Transaction supprimée :", response.data);*/
 
-            // Re-fetch
-            // Récupère la période actuelle depuis usePeriodStore
             const { month, year } = usePeriodStore.getState();
 
             const refreshResponse = await axios.post(
                 "http://localhost:3000/trans/getRevenuByPeriod",
-                { month, year },  // 📌 Utilisation de la période enregistrée dans le store
+                { month, year },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // ✅ Ajoute le token dans les headers
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
@@ -186,9 +175,7 @@ const useTransacRevenuStore = create((set) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            /*console.log("Transactions supprimée :", response.data);*/
 
-            // Re-fetch
             const refreshResponse = await axios.get("http://localhost:3000/trans/getRevenu", {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -230,9 +217,7 @@ const useTransacRevenuStore = create((set) => ({
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            /*console.log("Transactions maj :", response.data);*/
 
-            // Re-fetch
             const refreshResponse = await axios.get("http://localhost:3000/trans/getRevenu", {
                 headers: { Authorization: `Bearer ${token}` },
             });

@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     TemplateTransaction.associate = (models) => {
-        // Relation avec Template
         TemplateTransaction.belongsTo(models.Template, {
             foreignKey: 'templateId',
             as: 'template',

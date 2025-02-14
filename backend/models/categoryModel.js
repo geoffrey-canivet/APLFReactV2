@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     Category.associate = (models) => {
         Category.hasMany(models.Transaction, {
             foreignKey: 'categoryId',
-            as: 'transactions' // Alias
+            as: 'transactions'
         });
     };
 

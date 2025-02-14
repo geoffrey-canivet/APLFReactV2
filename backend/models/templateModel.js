@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            comment: "Nom du template (ex: Budget Mensuel, Charges fixes)"
+            comment: "Nom du template"
         },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            comment: "Référence à l'utilisateur propriétaire"
+            comment: "Référence à l'utilisateur"
         },
         categoryId: {
             type: DataTypes.INTEGER,
@@ -30,8 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     Template.associate = (models) => {
         Template.belongsTo(models.User, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
         Template.belongsTo(models.Category, { foreignKey: 'categoryId', as: 'category' });
-
-        // Relation avec TemplateTransaction
         Template.hasMany(models.TemplateTransaction, {
             foreignKey: 'templateId',
             as: 'transactions',

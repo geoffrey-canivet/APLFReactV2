@@ -26,12 +26,11 @@ const Login = () => {
                         },
                     });
 
-                    // Si le token est valide, mettez à jour l'utilisateur et redirigez
                     setUser(response.data);
                     navigate("/dashboard");
                 } catch (error) {
                     console.error("Token invalide ou expiré :", error);
-                    localStorage.removeItem("token"); // Supprimez le token si invalide
+                    localStorage.removeItem("token");
                 }
             }
         };
@@ -57,18 +56,18 @@ const Login = () => {
 
             console.log("Réponse de l'API :", response);
 
-            // Récupération du token et redirection si succès
+
             if (response.status === 200) {
                 const { token, userData } = response.data;
                 console.log("Connexion réussie, token :", token);
 
-                // Stocke les informations utilisateur dans le store
+
                 setUser(userData);
 
-                // Stocke le token dans localStorage pour les futures requêtes
+
                 localStorage.setItem('token', token);
 
-                // Redirection vers le tableau de bord
+
                 navigate('/dashboard', { state: userData });
             }
         } catch (error) {

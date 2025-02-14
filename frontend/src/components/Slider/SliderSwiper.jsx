@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react'; // Importation des composants de Swiper
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 
 
@@ -55,7 +55,6 @@ const SwiperDashboard = () => {
         <div className="pt-0 mt px-3">
             <Swiper
                 className="swiper-container"
-                // Modules que vous utilisez
                 modules={[Navigation, Pagination, Scrollbar, Autoplay]}
                 navigation={false}
                 pagination={false}
@@ -76,22 +75,22 @@ const SwiperDashboard = () => {
                 breakpoints={{
                     // Mobile (>= 320px)
                     320: {
-                        slidesPerView: 2, // 1 slide visible
-                        spaceBetween: 10, // Moins d'espace entre les slides
+                        slidesPerView: 2,
+                        spaceBetween: 10,
                     },
                     // Tablette (>= 640px)
                     640: {
-                        slidesPerView: 4, // 2 slides visibles
+                        slidesPerView: 4,
                         spaceBetween: 15,
                     },
                     // Desktop (>= 1024px)
                     1024: {
-                        slidesPerView: 5, // 3 slides visibles
+                        slidesPerView: 5,
                         spaceBetween: 20,
                     },
                     // Grand écran (>= 1440px)
                     1440: {
-                        slidesPerView: 10, // 5 slides visibles
+                        slidesPerView: 10,
                         spaceBetween: 20,
                     },
                 }}

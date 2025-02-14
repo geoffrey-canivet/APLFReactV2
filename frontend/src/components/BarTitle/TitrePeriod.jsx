@@ -28,12 +28,10 @@ const TitrePeriod = () => {
     // DATEPIKER - Initialisation avec la date actuelle
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-    // ✅ Récupération du mois et de l'année
-    const selectedMonth = selectedDate.getMonth() + 1; // Mois (ajouter +1 car getMonth() commence à 0)
-    const selectedYear = selectedDate.getFullYear(); // Année
+    // Récupération du mois et de l'année
+    const selectedMonth = selectedDate.getMonth() + 1;
+    const selectedYear = selectedDate.getFullYear();
 
-/*    console.log("📅 Mois sélectionné :", selectedMonth);
-    console.log("📅 Année sélectionnée :", selectedYear);*/
 
     const renderMonthContent = (month, shortMonth, longMonth, day) => {
         const fullYear = new Date(day).getFullYear();
@@ -67,8 +65,8 @@ const TitrePeriod = () => {
                         renderMonthContent={renderMonthContent}
                         showMonthYearPicker
                         dateFormat="MM/yyyy"
-                        className="custom-date-picker" // Classe pour l'input
-                        calendarClassName="custom-calendar" // Classe pour le calendrier
+                        className="custom-date-picker"
+                        calendarClassName="custom-calendar"
                         showMonthYearDropdown
                     />
                     <FontAwesomeIcon className="text-blue-300" icon={faChevronDown} />

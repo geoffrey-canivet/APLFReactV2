@@ -100,10 +100,10 @@ const ModalChartOccasionnellePie = ({closeModal, dataChart}) => {
                 const chartContainer = document.getElementById("chart-container");
                 if (chartContainer) {
                     if (!rootRef.current) {
-                        // Créer la racine uniquement si elle n'existe pas encore
+
                         rootRef.current = createRoot(chartContainer);
                     }
-                    // Mettre à jour le contenu du graphique
+
                     rootRef.current.render(<PieChartOccasionnelle dataChart={dataChart.transactions} />);
                 }
 

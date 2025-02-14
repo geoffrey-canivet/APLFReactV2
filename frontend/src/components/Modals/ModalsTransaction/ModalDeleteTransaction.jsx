@@ -99,7 +99,7 @@ const ModalDeleteTransaction = ({closeModal, handleDelete}) => {
                 const backdrop = document.querySelector(".swal2-backdrop-show");
                 if (backdrop) {
                     backdrop.style.backdropFilter = "blur(5px)";
-                    backdrop.style.backgroundColor = "rgba(4,19,35,0.7)"; // Gris foncé avec 90% d'opacité
+                    backdrop.style.backgroundColor = "rgba(4,19,35,0.7)";
                 }
                 const validationMessage = document.querySelector(".swal2-validation-message");
                 if (validationMessage) {

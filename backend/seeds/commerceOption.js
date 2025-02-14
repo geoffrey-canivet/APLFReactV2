@@ -1,4 +1,4 @@
-const commerceOptions = [
+module.exports = [
     { label: "Commerce", value: "Autre", color: "#374151" },
     { label: "Carrefour", value: "Carrefour", color: "#0078C1" },
     { label: "Delhaize", value: "Delhaize", color: "#D71920" },
@@ -52,5 +52,3 @@ const commerceOptions = [
     { label: "JBC", value: "JBC", color: "#FFCC00" },
     { label: "E5 Mode", value: "E5 Mode", color: "#8A2BE2" }
 ];
-
-export default commerceOptions;

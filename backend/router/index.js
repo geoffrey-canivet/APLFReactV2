@@ -7,7 +7,7 @@ const subTransactionRoute = require('./subTransactionRoute');
 const periodRoute = require("./periodRoute");
 const logHistoryRoute = require("./logHistoryRoute");
 const templateRoute = require("./templateRoute");
-
+const commerceRoute = require('./commerceRoute');
 
 router.use('/auth', userRouter);
 
@@ -24,6 +24,8 @@ router.use("/period", periodRoute);
 router.use("/logHistory", logHistoryRoute)
 
 router.use("/template", templateRoute);
+
+router.use("/commerce", commerceRoute);
 
 
 

@@ -14,12 +14,12 @@ const BarChartOccasionnelle = ({dataChart}) => {
         "#FFDAC1"  // Pêche pastel
     ];
 
-    // ✅ Vérification : Si dataChart est undefined ou vide, afficher un message
+
     if (!dataChart || !Array.isArray(dataChart) || dataChart.length === 0) {
         return <p>Aucune donnée disponible pour le graphique</p>;
     }
 
-    // Transformer les données pour ECharts en calculant le total des sous-transactions
+    // Transformer pour ECharts et calculant le total des sous-transactions
     const formattedData = dataChart.map((item, index) => {
         const totalSubTransactions = Array.isArray(item.subTransactions)
             ? item.subTransactions.reduce((sum, sub) => sum + sub.amount, 0)
@@ -29,7 +29,7 @@ const BarChartOccasionnelle = ({dataChart}) => {
             name: item.name,
             value: totalSubTransactions,
             itemStyle: {
-                color: colorPalette[index % colorPalette.length] // 🔹 Associe une couleur différente en boucle
+                color: colorPalette[index % colorPalette.length]
             }
         };
     });
@@ -54,7 +54,7 @@ const BarChartOccasionnelle = ({dataChart}) => {
         },
         xAxis: {
             type: 'category',
-            data: formattedData.map(item => item.name),  // 🟢 Utilisation des noms réels des catégories
+            data: formattedData.map(item => item.name),
             axisLabel: {
                 rotate: 25 ,
                 color: '#fff'
@@ -66,9 +66,7 @@ const BarChartOccasionnelle = ({dataChart}) => {
             type: 'value',
             axisLabel: { color: "#fff" },
             splitLine: false,
-            /*            splitLine: {
-                            lineStyle: { color: "rgba(62,62,62,0.67)" } // 🔹 Lignes de grille plus discrètes
-                        },*/
+
         },
 
         series: [
@@ -78,7 +76,7 @@ const BarChartOccasionnelle = ({dataChart}) => {
                 showBackground: true,
                 backgroundStyle: {
                     color: 'rgba(149,149,149,0.2)',
-                    borderRadius: [6, 6, 0, 0]  // 🔹 Ajoute un border-radius au fond des barres
+                    borderRadius: [6, 6, 0, 0]
                 },
             }
         ]

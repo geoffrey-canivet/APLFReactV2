@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import MySwal from "sweetalert2";
-import commerceOptions from "../../../utils/commerceOptions.js";
+
 import usePeriodStore from "../../../store/usePeriodStore.js";
 import flatpickr from "flatpickr";
 import useTransacOccasStore from "../../../store/useTransacOccasStore.js";
@@ -11,9 +11,9 @@ const ModalUpdateSubTransaction = ({ closeModal, handleUpdateSubTransaction, sub
     const { month, year } = usePeriodStore();
     const { fetchSubTransactionById } = useTransacOccasStore();
 
-    // État pour stocker la sous-transaction
+
     const [subTransaction, setSubTransaction] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false); // ✅ Empêche la boucle infinie
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,9 +24,9 @@ const ModalUpdateSubTransaction = ({ closeModal, handleUpdateSubTransaction, sub
     }, [subCatId, fetchSubTransactionById]);
 
     useEffect(() => {
-        // Vérifier si la sous-transaction est bien chargée avant d'afficher le modal
+
         if (!subTransaction || isModalOpen) return;
-        setIsModalOpen(true); // ✅ Empêche la boucle infinie
+        setIsModalOpen(true);
 
         MySwal.fire({
             title: "Modifier sous-transaction",
@@ -50,9 +50,7 @@ const ModalUpdateSubTransaction = ({ closeModal, handleUpdateSubTransaction, sub
                         </div>
                         <div class="relative">
                             <select id="inputCommerce" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ps-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                ${commerceOptions
-                .map(option => `<option value="${option.value}">${option.label}</option>`)
-                .join("")}
+                                
                             </select>
                         </div>
                     </div>
@@ -66,18 +64,18 @@ const ModalUpdateSubTransaction = ({ closeModal, handleUpdateSubTransaction, sub
             cancelButtonText: "Annuler",
             didOpen: () => {
                 setTimeout(() => {
-                    // ✅ Ajouter les valeurs après l'affichage du modal
+
                     document.getElementById("inputDate").value = subTransaction?.date || "";
                     document.getElementById("inputAmount").value = subTransaction?.amount || "";
                     document.getElementById("inputCommerce").value = subTransaction?.commerce || "Autre";
                     document.getElementById("inputCommentaire").value = subTransaction?.comments || "";
 
-                    // ✅ Initialisation du datepicker
+
                     flatpickr(document.getElementById("inputDate"), {
                         dateFormat: "d/m/Y",
                         defaultDate: subTransaction?.date || new Date(year, month - 1, 1),
                     });
-                }, 100); // ✅ Attendre 100ms pour éviter les erreurs de rendu
+                }, 100);
             },
             preConfirm: () => {
                 const date = document.getElementById("inputDate").value;

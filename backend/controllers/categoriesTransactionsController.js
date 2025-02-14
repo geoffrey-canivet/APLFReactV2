@@ -2,18 +2,18 @@ const { Category, Transaction, SubTransaction, Period } = require('../models');
 
 const categoriesTransactionsController = {
 
+    // RECUPERER TOUTES LES CATEGORIES + TRANSACTOION
     getAll: async (req, res) => {
         try {
             const userId = req.userId;
 
-            // Récupérer toutes les catégories avec leurs transactions
             const categories = await Category.findAll({
                 include: [
                     {
                         model: Transaction,
                         as: 'transactions',
                         where: { userId },
-                        required: false, // Inclure les catégories sans transactions
+                        required: false,
                     },
                 ],
             });
@@ -21,48 +21,45 @@ const categoriesTransactionsController = {
             res.status(200).json(categories);
         } catch (error) {
             console.error("Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error });
         }
     },
 
+    // RECUPERER TOUT LES TRANSACTIONS FIXES
     getFixe: async (req, res) => {
         try {
             const userId = req.userId;
 
-            // Récupérer uniquement les catégories avec les ID spécifiques
             const categories = await Category.findAll({
                 where: {
-                    id: [1, 2, 3, 4], // Limite aux ID 1, 2, 3 et 4
+                    id: [1, 2, 3, 4],
                 },
                 include: [
                     {
                         model: Transaction,
                         as: 'transactions',
-                        where: { userId }, // Filtrer les transactions par utilisateur connecté
-                        required: false, // Inclure les catégories même si elles n'ont pas de transactions
+                        where: { userId },
+                        required: false,
                     },
                 ],
             });
 
             res.status(200).json(categories);
         } catch (error) {
-            console.error("Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error });
         }
     },
 
+    // RECUPERER FIXE PAR PERIODE
     getFixeByPeriod: async (req, res) => {
         try {
-            const userId = req.userId; // ✅ Récupère l'ID de l'utilisateur via le middleware
-            const { month, year } = req.body; // ✅ Récupère les paramètres du body
+            const userId = req.userId;
+            const { month, year } = req.body;
 
             if (!month || !year) {
                 return res.status(400).json({ message: "Mois et année requis." });
             }
 
-            console.log("📡 Requête reçue pour le mois:", month, "et l'année:", year, "de l'utilisateur:", userId);
-
-            // 🔍 Récupère les transactions du mois et de l'année demandés
             const categories = await Category.findAll({
                 where: { id: [1, 2, 3, 4] },
                 include: [
@@ -75,26 +72,24 @@ const categoriesTransactionsController = {
                             {
                                 model: Period,
                                 as: "period",
-                                where: { month, year }, // 📌 Filtrer par période
+                                where: { month, year },
                             },
                         ],
                     },
                 ],
             });
 
-            console.log(`✅ Catégories récupérées pour ${month}/${year}:`, categories);
             res.status(200).json(categories);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error: error.message });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error: error.message });
         }
     },
 
+    // RECUPERER TOUTES LES OCCAS
     getOccasionnelle: async (req, res) => {
         try {
-            const userId = req.userId;
 
-            // 🔍 Récupération des catégories avec transactions et sous-transactions
+            const userId = req.userId;
             const categories = await Category.findAll({
                 where: {
                     id: [5, 6, 7, 8],
@@ -103,76 +98,70 @@ const categoriesTransactionsController = {
                     {
                         model: Transaction,
                         as: "transactions",
-                        where: { userId }, // 🔹 Filtrer par utilisateur
-                        required: false, // 🔹 Inclure même si pas de transactions
+                        where: { userId },
+                        required: false,
                         include: [
                             {
-                                model: SubTransaction, // 🔥 Ajoute les sous-transactions
+                                model: SubTransaction,
                                 as: "subTransactions",
-                                required: false, // 🔹 Inclure même si pas de sous-transactions
+                                required: false,
                             },
                         ],
                     },
                 ],
             });
 
-            console.log("✅ Catégories récupérées avec transactions et sous-transactions :", categories);
             res.status(200).json(categories);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error: error.message });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error: error.message });
         }
     },
 
+    // RECUPERER OCCAS PAR PERIODE
     getOccasionnelleByPeriod: async (req, res) => {
         try {
-            const userId = req.userId; // ✅ Récupère l'ID de l'utilisateur via le middleware
-            const { month, year } = req.body; // ✅ Récupère les paramètres du body
+            const userId = req.userId;
+            const { month, year } = req.body;
 
             if (!month || !year) {
                 return res.status(400).json({ message: "Mois et année requis." });
             }
 
-            console.log("📡 Requête reçue pour le mois:", month, "et l'année:", year, "de l'utilisateur:", userId);
-
-            // 🔍 Récupération des catégories occasionnelles avec transactions et sous-transactions filtrées par période
             const categories = await Category.findAll({
-                where: { id: [5, 6, 7, 8] }, // 📌 Sélectionne uniquement les catégories occasionnelles
+                where: { id: [5, 6, 7, 8] },
                 include: [
                     {
                         model: Transaction,
                         as: "transactions",
-                        where: { userId }, // 🔹 Filtre par utilisateur
-                        required: false, // 🔹 Inclure même si pas de transactions
+                        where: { userId },
+                        required: false,
                         include: [
                             {
                                 model: Period,
                                 as: "period",
-                                where: { month, year }, // 📌 Filtrer par période (mois et année)
+                                where: { month, year },
                             },
                             {
-                                model: SubTransaction, // 🔥 Ajoute les sous-transactions
+                                model: SubTransaction,
                                 as: "subTransactions",
-                                required: false, // 🔹 Inclure même si pas de sous-transactions
+                                required: false,
                             },
                         ],
                     },
                 ],
             });
 
-            console.log(`✅ Catégories récupérées pour ${month}/${year}:`, categories);
             res.status(200).json(categories);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error: error.message });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error: error.message });
         }
     },
 
+    // RECUPERER TOUT LES REVENUS
     getRevenu: async (req, res) => {
         try {
             const userId = req.userId;
 
-            // Récupérer uniquement les catégories avec les ID spécifiques
             const categories = await Category.findAll({
                 where: {
                     id: [9,10,11,12],
@@ -181,31 +170,28 @@ const categoriesTransactionsController = {
                     {
                         model: Transaction,
                         as: 'transactions',
-                        where: { userId }, // Filtrer les transactions par utilisateur connecté
-                        required: false, // Inclure les catégories même si elles n'ont pas de transactions
+                        where: { userId },
+                        required: false,
                     },
                 ],
             });
 
             res.status(200).json(categories);
         } catch (error) {
-            console.error("Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error });
         }
     },
 
+    // RECUPERER TOUT LES REVENU PAR PERDIODE
     getRevenuByPeriod: async (req, res) => {
         try {
-            const userId = req.userId; // ✅ Récupère l'ID de l'utilisateur via le middleware
-            const { month, year } = req.body; // ✅ Récupère les paramètres du body
+            const userId = req.userId;
+            const { month, year } = req.body;
 
             if (!month || !year) {
                 return res.status(400).json({ message: "Mois et année requis." });
             }
 
-            console.log("📡 Requête reçue pour le mois:", month, "et l'année:", year, "de l'utilisateur:", userId);
-
-            // 🔍 Récupère les transactions du mois et de l'année demandés
             const categories = await Category.findAll({
                 where: { id: [9, 10, 11, 12] },
                 include: [
@@ -218,18 +204,16 @@ const categoriesTransactionsController = {
                             {
                                 model: Period,
                                 as: "period",
-                                where: { month, year }, // 📌 Filtrer par période
+                                where: { month, year },
                             },
                         ],
                     },
                 ],
             });
 
-            console.log(`✅ Catégories récupérées pour ${month}/${year}:`, categories);
             res.status(200).json(categories);
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des catégories :", error);
-            res.status(500).json({ message: "Erreur serveur.", error: error.message });
+            res.status(500).json({ message: "Erreur serveur lors de la récupération des catégories", error: error.message });
         }
     },
 

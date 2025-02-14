@@ -2,7 +2,7 @@ import ReactECharts from "echarts-for-react";
 
 const BarChartFixe = ({ dataChart }) => {
 
-    // ✅ Vérification : Si dataChart est undefined ou vide, afficher un message
+
     if (!dataChart || !Array.isArray(dataChart) || dataChart.length === 0) {
         return <p>Aucune donnée disponible pour le graphique</p>;
     }
@@ -21,13 +21,13 @@ const BarChartFixe = ({ dataChart }) => {
     ];
 
 
-    // 🎯 Transformer les données pour le format attendu par ECharts
+
     const formattedData = dataChart.map((item, index) => ({
         value: item.amount,
         name: item.name,
         itemStyle: {
-            color: colorPalette[index % colorPalette.length], // 🔹 Applique une couleur différente en boucle
-            borderRadius: [6, 6, 0, 0], // 🔹 Arrondi les coins supérieurs
+            color: colorPalette[index % colorPalette.length],
+            borderRadius: [6, 6, 0, 0],
         }
     }));
 
@@ -46,7 +46,7 @@ const BarChartFixe = ({ dataChart }) => {
         },
         xAxis: {
             type: 'category',
-            data: formattedData.map(item => item.name),  // 🟢 Utilisation des noms réels des catégories
+            data: formattedData.map(item => item.name),
             axisLabel: {
                 rotate: 25 ,
                 color: '#fff'
@@ -70,7 +70,7 @@ const BarChartFixe = ({ dataChart }) => {
                 showBackground: true,
                 backgroundStyle: {
                     color: 'rgba(149,149,149,0.2)',
-                    borderRadius: [6, 6, 0, 0]  // 🔹 Ajoute un border-radius au fond des barres
+                    borderRadius: [6, 6, 0, 0]
                 },
             }
         ]
