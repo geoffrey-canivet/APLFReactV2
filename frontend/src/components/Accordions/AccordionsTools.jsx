@@ -1,7 +1,7 @@
 import {faChartLine, faBullseye, faSkullCrossbones, faClone, faCalendar} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useState} from "react";
-import CardData from "../../utils/DB.js";
+import useTemplateStore from "../../store/useTemplateStore.js";
 import ToolDetailsMoisContainer from "../Tools/ToolDetailsMoisContainer.jsx";
 import ToolComparContainer from "../Tools/ToolComparContainer.jsx";
 import CardTemplate from "../Cards/CardTemplate.jsx";
@@ -15,11 +15,14 @@ const AccordionsTools = () => {
         setOpenAccordion(openAccordion === id ? null : id);
     }
 
+    const { selectedTemplateType } = useTemplateStore();
+
     const accordions = [
         {id: 4, title: "Templates", content:<CardTemplate/>, icon: faClone},
-        {id: 5, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
-        {id: 6, title: "Détails du mois", content: <ToolDetailsMoisContainer/>, icon: faBullseye},
-        {id: 7, title: "Calendrier", content:<ToolCalendar/>, icon: faCalendar}
+        {id: 5, title: "Calendrier", content:<ToolCalendar/>, icon: faCalendar},
+        {id: 6, title: "Détails du mois", content:<ToolComparContainer/>, icon: faBullseye},
+        {id: 7, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
+
     ];
 
     return (
@@ -46,7 +49,15 @@ const AccordionsTools = () => {
                                         className="w-4 h-4 mr-3 text-gray-300"
                                     />
                                     {item.title}
+                                    {item.id === 4 && (
+                                        <span
+                                            className={`flex ml-2 w-3 h-3 text-xs rounded-full ${
+                                                selectedTemplateType === "perso" ? "bg-blue-500" : "bg-orange-500"
+                                            }`}
+                                        ></span>
+                                    )}
                                 </span>
+
                                     <svg
                                        /* data-accordion-icon*/
                                         className={`w-3 h-3 transform transition-transform duration-300 ${

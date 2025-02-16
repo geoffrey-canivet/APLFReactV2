@@ -136,8 +136,12 @@ const Datatable = ({dataDatatable}) => {
     const columnDetail = [
 
         {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
-        {name: "Date", selector: (row) => row.date, sortable: true, $grow: 0},
-        {name: "Prix", selector: (row) => row.amount, sortable: true, $grow: 0},
+        {
+            name: "Prix",
+            cell: (row) => `${row.amount} €`,
+            sortable: true,
+            $grow: 0
+        },
         {
             name: "Commerce", cell: (row) => (
                 <span

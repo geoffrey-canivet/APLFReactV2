@@ -45,19 +45,22 @@ const templateController = {
             const { templateId } = req.body;
             const userId = req.userId;
 
-            const template = await Template.findOne({ where: { id: templateId, userId } });
+            const template = await Template.findOne({ where: { id: templateId } });
 
             if (!template) {
-                return res.status(404).json({ message: "Template introuvable ou non autorisé." });
+                return res.status(404).json({ message: "Template introuvable." });
             }
 
-            await Transaction.destroy({ where: { templateId } });
+            if (template.isDefault) {
+                return res.status(403).json({ message: "Les templates par défaut ne peuvent pas être supprimés." });
+            }
 
+            await TemplateTransaction.destroy({ where: { templateId } });
             await template.destroy();
 
             return res.status(200).json({ message: "Template supprimé avec succès." });
         } catch (error) {
-            res.status(500).json({ message: "Une erreur est survenue lors de la suppression du template", error });
+            res.status(500).json({ message: "Erreur lors de la suppression du template", error });
         }
     },
 
@@ -155,7 +158,7 @@ const templateController = {
         try {
             const userId = req.userId;
             const templates = await Template.findAll({
-                where: { userId },
+                where: { userId, isDefault: false },
                 include: [
                     { model: Category, as: 'category', attributes: ['id', 'name'] },
                     { model: TemplateTransaction, as: 'transactions', attributes: ['id', 'name', 'amount'] }
@@ -164,7 +167,7 @@ const templateController = {
 
             return res.status(200).json(templates);
         } catch (error) {
-            res.status(500).json({ message: "Une erreur est survenue lors de la récupération des templates", error });
+            res.status(500).json({ message: "Erreur lors de la récupération des templates utilisateur", error });
         }
     },
 
@@ -192,7 +195,7 @@ const templateController = {
         }
     },
 
-    // UTILISER UN TEMPLATE
+    // UTILISER UN TEMPLATE PERSO
     applyTemplateToCategory: async (req, res) => {
         try {
             const { categoryId } = req.body;
@@ -246,7 +249,86 @@ const templateController = {
         } catch (error) {
             res.status(500).json({ message: "Une erreur est survenue lors de l'application du template", error });
         }
-    }
+    },
+
+    // UTILISER TEMPLATE PAR DEFAUT
+        applyDefaultTemplateToCategory: async (req, res) => {
+            try {
+                const { categoryId, month, year } = req.body;
+                const userId = req.userId; // 🔥 Récupération du userId depuis le token
+                console.log("📡 Requête reçue pour appliquer un template par défaut ->", { categoryId, month, year, userId });
+
+                // Vérification du template par défaut
+                const template = await Template.findOne({
+                    where: { categoryId, isDefault: true },
+                    include: [{ model: TemplateTransaction, as: "transactions" }]
+                });
+
+                if (!template) {
+                    console.error("❌ Aucun template par défaut trouvé pour cette catégorie:", categoryId);
+                    return res.status(404).json({ message: "Aucun template par défaut trouvé pour cette catégorie." });
+                }
+
+                if (!template.transactions || template.transactions.length === 0) {
+                    console.error("⚠️ Le template par défaut existe mais ne contient aucune transaction !");
+                    return res.status(404).json({ message: "Le template par défaut ne contient aucune transaction." });
+                }
+
+                // Vérification de la période
+                const period = await Period.findOne({ where: { month, year } });
+                if (!period) {
+                    console.error("❌ Période non trouvée pour le mois et l'année demandés ->", { month, year });
+                    return res.status(404).json({ message: "Période non trouvée." });
+                }
+
+                console.log("✅ Période trouvée:", period.id);
+
+                // Suppression des transactions existantes
+                await Transaction.destroy({ where: { categoryId, userId, periodId: period.id } });
+                console.log("🗑 Transactions existantes supprimées pour la catégorie", categoryId);
+
+                // Création des transactions avec userId 🔥
+                const transactionsToInsert = template.transactions.map(transaction => ({
+                    categoryId,
+                    userId, // ✅ Ajout du userId ici
+                    periodId: period.id,
+                    name: transaction.name,
+                    amount: transaction.amount,
+                }));
+
+                const newTransactions = await Transaction.bulkCreate(transactionsToInsert);
+
+                console.log("✅ Transactions insérées avec succès :", newTransactions.length);
+
+                return res.status(201).json({
+                    message: "Template par défaut appliqué avec succès.",
+                    transactions: newTransactions,
+                });
+
+            } catch (error) {
+                console.error("❌ Erreur lors de l'application du template par défaut :", error);
+                res.status(500).json({ message: "Une erreur est survenue lors de l'application du template par défaut", error });
+            }
+        },
+
+
+    // RECUPERER LES TEMPLATE PAR DEFAUT
+    getDefaultTemplates: async (req, res) => {
+        try {
+            const templates = await Template.findAll({
+                where: { isDefault: true },
+                include: [
+                    { model: Category, as: 'category', attributes: ['id', 'name'] },
+                    { model: TemplateTransaction, as: 'transactions', attributes: ['id', 'name', 'amount'] }
+                ]
+            });
+
+            return res.status(200).json(templates);
+        } catch (error) {
+            res.status(500).json({ message: "Erreur lors de la récupération des templates par défaut", error });
+        }
+    },
+
 
 
 

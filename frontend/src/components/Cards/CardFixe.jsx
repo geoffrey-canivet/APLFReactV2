@@ -138,12 +138,14 @@ const CardFixe = () => {
     };
     // MODAL USETEMPLATE
     const modalUseTemplate = async (categoryId) => {
-        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template sélectionné. Continuer ?");
+
         if (confirm) {
-            await applyTemplateToCategory(categoryId);
-            await fetchFixeByPeriod(month, year);
+            await applyTemplateToCategory(categoryId); // ✅ Gère les templates perso et par défaut automatiquement
         }
     };
+
+
 
 
 
@@ -327,7 +329,7 @@ const CardFixe = () => {
                                             <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {transaction.name}
                                             </td>
-                                            <td className="px-4 py-2">{transaction.amount}</td>
+                                            <td className="px-4 py-2">{transaction.amount} €</td>
                                             <td className="px-4 py-2 relative">
                                                 <button
                                                     onClick={() => toggleDropdown(`${card.id}-${i}`)}

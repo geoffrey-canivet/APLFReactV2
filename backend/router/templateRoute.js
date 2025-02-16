@@ -12,11 +12,16 @@ router.post("/addTransactionToTemplate", authMiddleware, templateController.addT
 
 router.get("/getUserTemplates", authMiddleware, templateController.getUserTemplates);
 
+router.get('/default', templateController.getDefaultTemplates);
+
 router.delete("/deleteTransactionFromTemplate", authMiddleware, templateController.deleteTransactionFromTemplate);
 
 router.get("/getTemplateById/:templateId", authMiddleware, templateController.getTemplateById);
 
 router.post("/useTemplate", authMiddleware, templateController.applyTemplateToCategory);
+
+router.post("/useDefaultTemplate", authMiddleware, templateController.applyDefaultTemplateToCategory);
+
 
 
 

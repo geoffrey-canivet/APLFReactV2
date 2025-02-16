@@ -38,7 +38,7 @@ const ModalAddTemplate = ({ closeModal, handleAddTransactionToTemplate }) => {
                     </div>
                     <!-- Montant -->
                     <div class="relative">
-                        <input type="number" id="inputTransactionAmount" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Montant">
+                        <input type="number" id="inputTransactionAmount" value="0" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Montant">
                     </div>
                 </div>
             </form>
@@ -49,7 +49,7 @@ const ModalAddTemplate = ({ closeModal, handleAddTransactionToTemplate }) => {
             preConfirm: () => {
                 const name = document.getElementById("inputTransactionName").value;
                 const amount = document.getElementById("inputTransactionAmount").value;
-                if (!name || !amount) {
+                if (!name || amount === "") {
                     Swal.showValidationMessage("Veuillez remplir tous les champs.");
                     return null;
                 }

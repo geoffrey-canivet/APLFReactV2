@@ -7,12 +7,14 @@ import usePeriodStore from "./usePeriodStore.js";
 
 const useTemplateStore = create((set, get) => ({
     templates: [],
+    defaultTemplates: [],
     loading: false,
     error: null,
+    selectedTemplateType: "perso", // 🔥 Type de template sélectionné (perso ou default)
 
     // Récupérer tous les templates de l'utilisateur
+    // 🔥 Récupérer les templates personnalisés de l'utilisateur
     fetchUserTemplates: async () => {
-        set({ loading: true, error: null });
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant.");
@@ -22,8 +24,6 @@ const useTemplateStore = create((set, get) => ({
             set({ templates: response.data });
         } catch (error) {
             set({ error: error.message || "Impossible de récupérer les templates." });
-        } finally {
-            set({ loading: false });
         }
     },
 
@@ -72,18 +72,17 @@ const useTemplateStore = create((set, get) => ({
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            const existingTemplate = get().templates.find(t => t.categoryId === categoryId);
+            const newTransaction = response.data.transaction; // ✅ Transaction ajoutée
 
             set((state) => ({
-                templates: existingTemplate
-                    ?
-                    state.templates.map(template =>
-                        template.categoryId === categoryId
-                            ? { ...template, transactions: [...template.transactions, response.data.transaction] }
-                            : template
-                    )
-                    :
-                    [...state.templates, { categoryId, transactions: [response.data.transaction] }]
+                templates: state.templates.map(template =>
+                    template.categoryId === categoryId
+                        ? {
+                            ...template,
+                            transactions: [...template.transactions, newTransaction] // ✅ Mise à jour immédiate
+                        }
+                        : template
+                )
             }));
 
         } catch (error) {
@@ -138,6 +137,7 @@ const useTemplateStore = create((set, get) => ({
                 headers: { Authorization: `Bearer ${token}` },
             });
 
+            // 🔥 Met à jour immédiatement le store en supprimant la transaction
             set((state) => ({
                 templates: state.templates.map(template =>
                     template.id === templateId
@@ -149,12 +149,8 @@ const useTemplateStore = create((set, get) => ({
                 )
             }));
 
-            await useLogHistoryStore.getState().addLogHistory({
-                name: "Template Transaction",
-                date: new Date().toISOString(),
-                type: "DELETE_TRANSACTION",
-                time: new Date().toLocaleTimeString(),
-            });
+            // 🔥 Recharge complètement les templates pour garantir la cohérence des données
+            await get().fetchUserTemplates();
 
         } catch (error) {
             console.error("Erreur deleteTransactionFromTemplate :", error);
@@ -224,22 +220,28 @@ const useTemplateStore = create((set, get) => ({
     // Utilier un template
     applyTemplateToCategory: async (categoryId) => {
         set({ loading: true, error: null });
+
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant.");
 
             const { month, year } = usePeriodStore.getState();
+            const { selectedTemplateType } = get(); // 🔥 Vérifie si c'est un template perso ou par défaut
 
-            console.log("📡 Envoi de la requête avec categoryId :", categoryId, " Mois :", month, " Année :", year);
+            const endpoint =
+                selectedTemplateType === "perso"
+                    ? "http://localhost:3000/template/useTemplate"
+                    : "http://localhost:3000/template/useDefaultTemplate"; // 🔥 Endpoint spécifique pour les templates par défaut
+
+            console.log(`📡 Envoi de la requête vers ${endpoint} avec categoryId :`, categoryId, " Mois :", month, " Année :", year);
 
             const response = await axios.post(
-                "http://localhost:3000/template/useTemplate",
+                endpoint,
                 { categoryId, month, year },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             console.log("✅ Template appliqué avec succès :", response.data);
-
 
             await useTransacFixeStore.getState().fetchFixeByPeriod(month, year);
 
@@ -249,7 +251,40 @@ const useTemplateStore = create((set, get) => ({
         } finally {
             set({ loading: false });
         }
-    }
+    },
+
+
+    // 🔥 Récupérer les templates par défaut
+    fetchDefaultTemplates: async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/template/default");
+            set({ defaultTemplates: response.data });
+        } catch (error) {
+            set({ error: error.message || "Impossible de récupérer les templates par défaut." });
+        }
+    },
+
+    // 🔥 Changer le type de template sélectionné et recharger
+    setSelectedTemplateType: async (type) => {
+        set({ selectedTemplateType: type });
+        await get().loadTemplates(); // Recharge les bons templates
+    },
+
+    // 🔥 Charger les templates en fonction du type sélectionné
+    loadTemplates: async () => {
+        set({ loading: true, error: null });
+        try {
+            if (get().selectedTemplateType === "perso") {
+                await get().fetchUserTemplates();
+            } else {
+                await get().fetchDefaultTemplates();
+            }
+        } catch (error) {
+            set({ error: error.message || "Impossible de charger les templates." });
+        } finally {
+            set({ loading: false });
+        }
+    },
 
 }));
 

@@ -6,6 +6,7 @@ const models = require('./models');
 const morgan = require("morgan");
 const app = express();
 const commercesOption = require('./seeds/commerceOption');
+const seedTemplates = require('./seeds/defaultTemplates');
 const PORT = 3000;
 
 // Utilisation de Morgan en mode 'dev' (affiche des logs colorés)
@@ -76,8 +77,29 @@ app.get('/', (req, res) => {
             }
         }
 
-        // Ajout de template prédéfini ici.
-        // ...
+        const ensureCategoriesExist = async () => {
+            const categoriesToCheck = ["Charges", "Loisirs"];
+
+            for (const categoryName of categoriesToCheck) {
+                const category = await models.Category.findOne({ where: { name: categoryName } });
+                if (!category) {
+                    await models.Category.create({ name: categoryName, color: "#FF5733", icon: "fa-money-bill" });
+                    console.log(`✅ Catégorie ajoutée : ${categoryName}`);
+                }
+            }
+        };
+
+
+        // Ajout de template prédéfini
+        sequelize.sync({ force: false }).then(async () => {
+            console.log("Base de données synchronisée !");
+
+            await ensureCategoriesExist(); // ✅ Ajoute les catégories d'abord
+            await seedTemplates(); // ✅ Puis ajoute les templates par défaut
+
+            console.log("✅ Toutes les données initiales sont en place !");
+        });
+
 
 
         console.log("Base de données synchronisée 🟢");

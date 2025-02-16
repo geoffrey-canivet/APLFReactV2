@@ -13,13 +13,19 @@ module.exports = (sequelize, DataTypes) => {
         },
         userId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             comment: "Référence à l'utilisateur"
         },
         categoryId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             comment: "Référence à la catégorie du template"
+        },
+        isDefault: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+            comment: "Indique si c'est un template par défaut"
         }
     }, {
         tableName: 'templates',
