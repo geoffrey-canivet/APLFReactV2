@@ -163,40 +163,60 @@ const useTransacRevenuStore = create((set) => ({
     // Supprimer toutes les transactions d'une catégorie
     deleteAllTransactionsByCategory: async (categoryId) => {
         set({ loading: true, error: null });
-
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
+            // Récupérer le mois et l'année sélectionnés
+            const { month, year } = usePeriodStore.getState();
+
+            // Récupérer l'ID de la période
+            const periodResponse = await axios.post(
+                "http://localhost:3000/period/findPeriod",
+                { month, year },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const periodId = periodResponse.data.id;
+
+            // Envoyer categoryId et periodId au backend
             const response = await axios.post(
                 "http://localhost:3000/add/delAllByCat",
-                { categoryId },
+                { categoryId, periodId },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
-            const refreshResponse = await axios.get("http://localhost:3000/trans/getRevenu", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            // Recharger les transactions pour la période sélectionnée
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getRevenuByPeriod",
+                { month, year },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
             set({ categories: refreshResponse.data });
-            // AJOUTER LOG
+
+            // AJOUTER LOG (optionnel)
             await useLogHistoryStore.getState().addLogHistory({
-                name: "Transaction fixe ajoutée",
+                name: "Transaction revenu",
                 date: new Date().toISOString(),
                 type: "DELETE_BY_CATEGORY",
                 time: new Date().toLocaleTimeString(),
             });
             return response.data;
-
-        }catch (error) {
+        } catch (error) {
             console.error("Erreur lors de la suppression des transactions :", error);
             set({ error: error.message });
             throw error;
-        }finally {
+        } finally {
             set({ loading: false });
         }
     },
+
 
     // UPDATE TRANSACTION (NOM + AMOUNT)
     updateTransaction: async (transactionId, name, amount) => {
@@ -218,9 +238,20 @@ const useTransacRevenuStore = create((set) => ({
                 }
             );
 
-            const refreshResponse = await axios.get("http://localhost:3000/trans/getRevenu", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            // Récupérer le mois et l'année sélectionnés
+            const { month, year } = usePeriodStore.getState();
+
+            // Recharger les transactions en fonction du mois et de l'année sélectionnés
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getRevenuByPeriod",
+                { month, year },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
             set({ categories: refreshResponse.data });
             // AJOUTER LOG
             await useLogHistoryStore.getState().addLogHistory({

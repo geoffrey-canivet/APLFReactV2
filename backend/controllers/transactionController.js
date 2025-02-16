@@ -54,37 +54,35 @@ const transactionController = {
         }
     },
 
-    // SUPPRIMER TOUTES LES TRANSACTION D UNE CATEGORIE
+    // SUPPRIMER TOUTES LES TRANSACTIONS D'UNE CATEGORIE POUR UNE PERIODE DONNÉE
     deleteAllTransactionsByCategory: async (req, res) => {
-
         try {
+            const { categoryId, periodId } = req.body;
 
-            const { categoryId } = req.body;
-
-            if (!categoryId) {
-                return res.status(400).json({ message: "L'ID de la catégorie est requis" });
+            if (!categoryId || !periodId) {
+                return res.status(400).json({ message: "L'ID de la catégorie et l'ID de la période sont requis." });
             }
 
             const category = await Category.findByPk(categoryId);
             if (!category) {
-                return res.status(404).json({ message: "Catégorie non trouvée" });
+                return res.status(404).json({ message: "Catégorie non trouvée." });
             }
 
             const deletedCount = await Transaction.destroy({
-                where: { categoryId }
+                where: { categoryId, periodId }
             });
 
             if (deletedCount === 0) {
-                return res.status(404).json({ message: "Aucune transaction trouvée pour cette catégorie" });
+                return res.status(404).json({ message: "Aucune transaction trouvée pour cette catégorie et cette période." });
             }
 
-            return res.status(200).json({ message: `Toutes les transactions de la catégorie ${categoryId} ont été supprimées` });
-
+            return res.status(200).json({ message: `Les transactions de la catégorie ${categoryId} pour la période ${periodId} ont été supprimées.` });
         } catch (error) {
             console.error("Erreur lors de la suppression des transactions :", error);
             return res.status(500).json({ message: "Erreur interne du serveur" });
         }
     },
+
 
     // MODIFIER UNE TRANSACTION (NOM + AMOUNT)
     updateTransaction: async (req, res) => {

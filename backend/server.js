@@ -76,6 +76,10 @@ app.get('/', (req, res) => {
             }
         }
 
+        // Ajout de template prédéfini ici.
+        // ...
+
+
         console.log("Base de données synchronisée 🟢");
     } catch (error) {
         console.error("Erreur lors de l'initialisation :", error);

@@ -23,13 +23,28 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             comment: "Couleur du commerce"
         },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            comment: "Identifiant de l'utilisateur associé",
+            references: {
+                model: 'users', // Nom de la table utilisateur
+                key: 'id'
+            }
+        },
     }, {
             tableName: 'commerce',
             timestamps: true,
             comment: "Table des commerces"
-        }
+    })
 
-        )
+    // Association : chaque commerce appartient à un utilisateur
+    Commerce.associate = (models) => {
+        Commerce.belongsTo(models.User, {
+            foreignKey: 'userId',
+            as: 'user'
+        });
+    };
 
 
 

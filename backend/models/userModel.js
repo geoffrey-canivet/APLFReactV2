@@ -95,6 +95,11 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: "CASCADE",
             onUpdate: "CASCADE"
         });
+        // Association ajoutée : un utilisateur peut avoir plusieurs commerces
+        User.hasMany(models.Commerce, {
+            foreignKey: 'userId',
+            as: 'commerces'
+        });
 
 
     };

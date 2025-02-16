@@ -198,35 +198,36 @@ const templateController = {
             const { categoryId } = req.body;
             const userId = req.userId;
 
+            // Recherche du template pour la catégorie et l'utilisateur
             const template = await Template.findOne({
                 where: { categoryId, userId },
                 include: [{ model: TemplateTransaction, as: "transactions" }]
             });
 
+            // Si aucun template n'est trouvé, renvoi d'une erreur 404
             if (!template) {
                 return res.status(404).json({ message: "Aucun template trouvé pour cette catégorie." });
             }
 
+            // Si le template existe mais qu'il est vide, renvoi d'une erreur 404
             if (!template.transactions || template.transactions.length === 0) {
                 return res.status(404).json({ message: "Le template ne contient aucune transaction." });
             }
 
-            console.log("📌 Transactions du template :", JSON.stringify(template.transactions, null, 2));
-
             const { month, year } = req.body;
-
             if (!month || !year) {
                 return res.status(400).json({ message: "Le mois et l'année sont requis." });
             }
 
             const period = await Period.findOne({ where: { month, year } });
-
             if (!period) {
                 return res.status(404).json({ message: "Période non trouvée." });
             }
 
+            // Suppression des transactions existantes pour la catégorie, l'utilisateur et la période
             await Transaction.destroy({ where: { categoryId, userId, periodId: period.id } });
 
+            // Création de nouvelles transactions basées sur le template
             const transactionsToInsert = template.transactions.map((transaction) => ({
                 categoryId,
                 userId,
@@ -246,6 +247,7 @@ const templateController = {
             res.status(500).json({ message: "Une erreur est survenue lors de l'application du template", error });
         }
     }
+
 
 
 

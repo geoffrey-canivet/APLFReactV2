@@ -75,7 +75,7 @@ const Dashboard = () => {
             <div className="dark:bg-gray-900 min-h-screen">
                 <NavigationContainer/>
                 <div className="pt-16">
-                    <SliderSwiper/>
+                    {/*<SliderSwiper/>*/}
                     <TitrePeriod/>
                     <AccordionsCards/>
                     <TitreOutils/>

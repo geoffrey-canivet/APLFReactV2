@@ -29,6 +29,7 @@ const CardTemplate = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [selectedTemplateType, setSelectedTemplateType] = useState("perso");
 
     // RECUPERER LES TEMPLATES
     useEffect(() => {
@@ -87,7 +88,6 @@ const CardTemplate = () => {
     });
 
 
-    console.log("📌 Merged Categories:", mergedCategories);
     return (
         <>
             {openDropdownId && (
@@ -103,9 +103,8 @@ const CardTemplate = () => {
                         id="template"
                         className="w-32 h-9 px-2 py-0 mr-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
-                        <option defaultValue="">Mon template</option>
-                        <option value="">Exemple</option>
-                        <option value="">Vide</option>
+                        <option defaultValue="">template perso</option>
+                        <option value="">template par défaut</option>
                     </select>
                 </div>
 
