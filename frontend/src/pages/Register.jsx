@@ -1,8 +1,14 @@
 import {useState} from 'react';
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-small.png";
+import Toast from "sweetalert2";
+
 
 const Register = () => {
+
+    const navigate = useNavigate();
 
     const [name, setName] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -24,14 +30,32 @@ const Register = () => {
         }
         setError("");
 
-        console.log(name, firstName, email, password);
         try {
             const response = await axios.post("http://localhost:3000/auth/register", {
                 name,
                 firstName,
                 email,
                 password,
-            })
+            });
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            await Toast.fire({
+                icon: "success",
+                title: "Inscription réussie !",
+                background: "#1F2937",
+                color: "#ffffff"
+            });
 
             setSuccess("Utilisateur créé avec succès !");
             setName("");
@@ -39,10 +63,12 @@ const Register = () => {
             setEmail("");
             setPassword("");
             setConfirmPassword("");
-            console.log("Réponse du serveur :", response.data);
-        }  catch (err) {
 
-            console.error(err);
+            localStorage.setItem("registeredEmail", email);
+
+            navigate("/login")
+
+        }  catch (err) {
             if (err.response && err.response.data) {
                 setError(err.response.data.error || "Erreur inconnue");
             } else {
@@ -69,35 +95,35 @@ const Register = () => {
                             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
                                 <div>
                                     <label htmlFor="nom"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Votre
-                                        nom</label>
+                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Nom</label>
                                     <input type="text" name="nom"
                                            id="nom"
                                            value={name}
                                            onChange={(e) => setName(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                           placeholder="Nom" required=""/>
+                                           placeholder="Votre nom" required=""/>
                                 </div>
                                 <div>
                                     <label htmlFor="prénom"
-                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Votre
+                                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Prénom</label>
                                     <input type="text" name="prénom"
                                            id="prénom"
                                            value={firstName}
                                            onChange={(e) => setFirstName(e.target.value)}
                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                           placeholder="Prénom" required=""/>
+                                           placeholder="Votre prénom" required=""/>
                                 </div>
                                 <div>
                                     <label htmlFor="email"
                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse
                                         Email</label>
-                                    <input type="text" name="email"
+                                    <input type="email" name="email"
                                            id="email"
                                            value={email}
                                            onChange={(e) => setEmail(e.target.value)}
-                                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                           className="bg-gray-50 border autofill:bg-gray-800 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                            placeholder="email@mail.com" required=""/>
                                 </div>
                                 <div>

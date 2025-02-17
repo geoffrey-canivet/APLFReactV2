@@ -224,19 +224,6 @@ const ProfileUser = () => {
                                 </div>
                             </div>
                             <hr className="border-t my-4 border-gray-600"/>
-
-                            {/*                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400"
-                                                 icon={faAward}/>
-                                <span>Trophées</span>
-                            </div>
-                            <div className="flex flex-wrap">
-                                {Object.values(trophees).map((image, index) => (
-                                    <img className="mr-5 mb-5 w-12 h-12" key={index} src={image.default} alt={`Image ${index + 1}`}/>
-                                ))}
-                            </div>*/}
-
-
                             <div>
                                 <div className="flex  mb-2">
                                     <h2 className="text-white mr-2">Modifier la photo de profil</h2>
@@ -370,7 +357,7 @@ const ProfileUser = () => {
                                    className="block w-full p-2 mt-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
                             <button type="button"
                                     onClick={handleAddCommerce}
-                                    className="flex-1 mt-3 text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                    className=" flex-1 mt-3 text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
 
                                 <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faCheck}/>
                                 Ajouter

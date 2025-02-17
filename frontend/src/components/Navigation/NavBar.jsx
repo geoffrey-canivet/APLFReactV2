@@ -112,7 +112,7 @@ const NavBar = ({ handleDrawerOpen }) => {
                                 >
                                     <li>
                                         <a
-                                            className="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            className="block opacity-50  px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         >
                                             <FontAwesomeIcon className="mr-3" icon={faCircleHalfStroke}/>
                                             Mode
