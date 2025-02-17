@@ -1,6 +1,17 @@
 import ReactECharts from "echarts-for-react";
+import useTransacFixeStore from "../../../store/useTransacFixeStore.js";
+import useTransacRevenuStore from "../../../store/useTransacRevenuStore.js";
+import useTransacOccasStore from "../../../store/useTransacOccasStore.js";
+
+
 
 const ComparatifCategoriesByMoisAnnee = () => {
+
+
+
+
+
+
     const option = {
         legend: {
             textStyle: {

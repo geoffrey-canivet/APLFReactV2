@@ -20,7 +20,7 @@ const AccordionsTools = () => {
     const accordions = [
         {id: 4, title: "Templates", content:<CardTemplate/>, icon: faClone},
         {id: 5, title: "Calendrier", content:<ToolCalendar/>, icon: faCalendar},
-        {id: 6, title: "Détails du mois", content:<ToolComparContainer/>, icon: faBullseye},
+        {id: 6, title: "Détails du mois", content:<ToolDetailsMoisContainer/>, icon: faBullseye},
         {id: 7, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
 
     ];

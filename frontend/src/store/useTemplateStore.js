@@ -10,10 +10,8 @@ const useTemplateStore = create((set, get) => ({
     defaultTemplates: [],
     loading: false,
     error: null,
-    selectedTemplateType: "perso", // 🔥 Type de template sélectionné (perso ou default)
+    selectedTemplateType: "perso",
 
-    // Récupérer tous les templates de l'utilisateur
-    // 🔥 Récupérer les templates personnalisés de l'utilisateur
     fetchUserTemplates: async () => {
         try {
             const token = localStorage.getItem("token");
@@ -72,14 +70,14 @@ const useTemplateStore = create((set, get) => ({
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            const newTransaction = response.data.transaction; // ✅ Transaction ajoutée
+            const newTransaction = response.data.transaction;
 
             set((state) => ({
                 templates: state.templates.map(template =>
                     template.categoryId === categoryId
                         ? {
                             ...template,
-                            transactions: [...template.transactions, newTransaction] // ✅ Mise à jour immédiate
+                            transactions: [...template.transactions, newTransaction]
                         }
                         : template
                 )
@@ -267,7 +265,7 @@ const useTemplateStore = create((set, get) => ({
     // 🔥 Changer le type de template sélectionné et recharger
     setSelectedTemplateType: async (type) => {
         set({ selectedTemplateType: type });
-        await get().loadTemplates(); // Recharge les bons templates
+        await get().loadTemplates();
     },
 
     // 🔥 Charger les templates en fonction du type sélectionné

@@ -201,18 +201,17 @@ const templateController = {
             const { categoryId } = req.body;
             const userId = req.userId;
 
-            // Recherche du template pour la catégorie et l'utilisateur
             const template = await Template.findOne({
                 where: { categoryId, userId },
                 include: [{ model: TemplateTransaction, as: "transactions" }]
             });
 
-            // Si aucun template n'est trouvé, renvoi d'une erreur 404
+
             if (!template) {
                 return res.status(404).json({ message: "Aucun template trouvé pour cette catégorie." });
             }
 
-            // Si le template existe mais qu'il est vide, renvoi d'une erreur 404
+
             if (!template.transactions || template.transactions.length === 0) {
                 return res.status(404).json({ message: "Le template ne contient aucune transaction." });
             }
@@ -227,10 +226,10 @@ const templateController = {
                 return res.status(404).json({ message: "Période non trouvée." });
             }
 
-            // Suppression des transactions existantes pour la catégorie, l'utilisateur et la période
+
             await Transaction.destroy({ where: { categoryId, userId, periodId: period.id } });
 
-            // Création de nouvelles transactions basées sur le template
+
             const transactionsToInsert = template.transactions.map((transaction) => ({
                 categoryId,
                 userId,
@@ -255,7 +254,7 @@ const templateController = {
         applyDefaultTemplateToCategory: async (req, res) => {
             try {
                 const { categoryId, month, year } = req.body;
-                const userId = req.userId; // 🔥 Récupération du userId depuis le token
+                const userId = req.userId;
                 console.log("📡 Requête reçue pour appliquer un template par défaut ->", { categoryId, month, year, userId });
 
                 // Vérification du template par défaut
@@ -265,32 +264,32 @@ const templateController = {
                 });
 
                 if (!template) {
-                    console.error("❌ Aucun template par défaut trouvé pour cette catégorie:", categoryId);
+                    console.error("Aucun template par défaut trouvé pour cette catégorie:", categoryId);
                     return res.status(404).json({ message: "Aucun template par défaut trouvé pour cette catégorie." });
                 }
 
                 if (!template.transactions || template.transactions.length === 0) {
-                    console.error("⚠️ Le template par défaut existe mais ne contient aucune transaction !");
+                    console.error("⚠Le template par défaut existe mais ne contient aucune transaction !");
                     return res.status(404).json({ message: "Le template par défaut ne contient aucune transaction." });
                 }
 
                 // Vérification de la période
                 const period = await Period.findOne({ where: { month, year } });
                 if (!period) {
-                    console.error("❌ Période non trouvée pour le mois et l'année demandés ->", { month, year });
+                    console.error("Période non trouvée pour le mois et l'année demandés ->", { month, year });
                     return res.status(404).json({ message: "Période non trouvée." });
                 }
 
-                console.log("✅ Période trouvée:", period.id);
+                console.log("Période trouvée:", period.id);
 
                 // Suppression des transactions existantes
                 await Transaction.destroy({ where: { categoryId, userId, periodId: period.id } });
                 console.log("🗑 Transactions existantes supprimées pour la catégorie", categoryId);
 
-                // Création des transactions avec userId 🔥
+
                 const transactionsToInsert = template.transactions.map(transaction => ({
                     categoryId,
-                    userId, // ✅ Ajout du userId ici
+                    userId,
                     periodId: period.id,
                     name: transaction.name,
                     amount: transaction.amount,

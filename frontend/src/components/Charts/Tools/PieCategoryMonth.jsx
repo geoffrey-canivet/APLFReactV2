@@ -1,13 +1,51 @@
 import React from 'react';
 import ReactECharts from "echarts-for-react";
+import useTransacFixeStore from "../../../store/useTransacFixeStore.js";
+import useTransacRevenuStore from "../../../store/useTransacRevenuStore.js";
+import useTransacOccasStore from "../../../store/useTransacOccasStore.js";
 
 const PieCategoryMonth = () => {
+
+
+    // STORE
+    const { categories: categoriesFixe } = useTransacFixeStore();
+    const { categories: categoriesOccasionnelle } = useTransacOccasStore();
+    const { categories: categoriesRevenu } = useTransacRevenuStore();
+
+
+// Calcule total d'une catégorie fixe et revenu
+    const calculateTotalFixedCategory = (category) => {
+        return category.transactions.reduce((total, transaction) => total + transaction.amount, 0);
+    };
+
+// Calcule total des catégories fixes et revenus
+    const calculateTotalFixedCategories = (categories) => {
+        return categories.reduce((total, category) => total + calculateTotalFixedCategory(category), 0);
+    };
+
+// Calcule total sous transaction occasionnelle
+    const calculateTotalOccas = (categories) => {
+        return categories.reduce((totalCategory, category) => {
+            return totalCategory + category.transactions.reduce((totalTransaction, transaction) => {
+                return totalTransaction + transaction.subTransactions.reduce((totalSub, subTransaction) => {
+                    return totalSub + subTransaction.amount;
+                }, 0);
+            }, 0);
+        }, 0);
+    };
+
+    const totalFixe = calculateTotalFixedCategories(categoriesFixe);
+    const totalRevenu = calculateTotalFixedCategories(categoriesRevenu);
+    const totalOccas = calculateTotalOccas(categoriesOccasionnelle);
+
+
+
     const option = {
         tooltip: {
 
         },
         legend: {
-            show: false,
+            show: true,
             orient: 'horizontal',
             left: 'center',
             top: 'bottom',
@@ -20,7 +58,7 @@ const PieCategoryMonth = () => {
         },
 
         title: {
-            text: `Total €`,
+            text: `{revenu|+ ${totalRevenu} €}\n{fixe|- ${(totalFixe + totalOccas).toFixed(2)} €}`,
             left: '50%',
             top: '50%',
             textAlign: 'center',
@@ -28,9 +66,25 @@ const PieCategoryMonth = () => {
             textStyle: {
                 fontSize: 18,
                 fontWeight: 'bold',
-                color: "#fff"
+                color: "#fff",  // Couleur par défaut si non spécifiée
+                rich: {
+                    revenu: {
+                        color: '#4CAF50', // Vert pour les revenus
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        lineHeight: 30  // Ajoute un espacement plus grand
+                    },
+                    fixe: {
+                        color: '#FF5252', // Rouge pour les dépenses
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        lineHeight: 30  // Même espacement pour l'alignement
+                    }
+                }
             }
         },
+
+
         avoidLabelOverlap: false,
         toolbox: {
             show: false,
@@ -61,12 +115,17 @@ const PieCategoryMonth = () => {
 
                 },
                 data: [
-                    { value: 30, name: 'Fixes' },
-                    { value: 50, name: 'Occasionnelles' },
-                    { value: 20, name: 'Revenus' },
+                    { value:
+                        totalFixe,
+                        name: 'Fixes',
+                        itemStyle: { color: '#74C0FC' }
+                    },
+                    { value: totalOccas, name: 'Occasionnelles', itemStyle: { color: '#F28500' }  },
+                    { value: totalRevenu, name: 'Revenus', itemStyle: { color: '#48AE6F' }  },
 
                 ],
                 label: {
+                    show: false,
                     color: "#fff"
                 },
                 emphasis: {
