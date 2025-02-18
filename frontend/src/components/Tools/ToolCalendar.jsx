@@ -4,7 +4,7 @@ import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
-import enUS from "date-fns/locale/en-US";
+import fr from "date-fns/locale/fr";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
 import usePeriodStore from "../../store/usePeriodStore.js";
@@ -12,7 +12,7 @@ import usePeriodStore from "../../store/usePeriodStore.js";
 
 
 const locales = {
-    "en-US": enUS,
+    "fr": fr,
 };
 
 const localizer = dateFnsLocalizer({
@@ -76,9 +76,9 @@ const ToolCalendar = () => {
                             backgroundColor,
                             color: "#fff",
                             borderRadius: "8px",
-                            padding: "8px",
+                            padding: "4px",
                             fontWeight: "bold",
-                            fontSize: "12px",
+                            fontSize: "10px",
                             textAlign: "center",
                             textTransform: "capitalize",
                         }

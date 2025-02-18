@@ -6,6 +6,8 @@ import ToolDetailsMoisContainer from "../Tools/ToolDetailsMoisContainer.jsx";
 import ToolComparContainer from "../Tools/ToolComparContainer.jsx";
 import CardTemplate from "../Cards/CardTemplate.jsx";
 import ToolCalendar from "../Tools/ToolCalendar.jsx";
+import FinancialAnimation from "../Animation.jsx";
+import CustomFullCalendar from "../Tools/CustomFullCalendar.jsx";
 
 const AccordionsTools = () => {
 
@@ -19,9 +21,10 @@ const AccordionsTools = () => {
 
     const accordions = [
         {id: 4, title: "Templates", content:<CardTemplate/>, icon: faClone},
-        {id: 5, title: "Calendrier", content:<ToolCalendar/>, icon: faCalendar},
+        {id: 5, title: "Calendrier", content:<CustomFullCalendar/>, icon: faCalendar},
         {id: 6, title: "Détails du mois", content:<ToolDetailsMoisContainer/>, icon: faBullseye},
         {id: 7, title: "Comparer les mois", content:<ToolComparContainer/>, icon: faChartLine},
+        {id: 8, title: "Animation", content:<FinancialAnimation/>, icon: faChartLine},
 
     ];
 

@@ -87,35 +87,8 @@
 
 /*
 CALENDRIER*/
-
-/*.rbc-day-bg {
-    border: 1px solid #111827;
-}
-.rbc-day-bg + .rbc-day-bg {
-    border-left: 1px solid #111827!important;
-}
-.rbc-month-row + .rbc-month-row {
-    border-top: 1px solid #111827!important;
-}
-.rbc-today {
-    background-color: #365683 !important;
-}
-.rbc-off-range-bg {
-    background: #1F2937!important;
-}
-.rbc-header {
-    background: #1F2937!important;
-    border-bottom: 1px solid #111827;
-}
-.rbc-month-view {
-    border: 1px solid #111827!important;
-}
-.rbc-header + .rbc-header {
-    border-left: 1px solid #111827!important;
-    border-bottom: 1px solid #111827!important;
-}*/
-
-.rbc-today {
+/*1e version*/
+/*.rbc-today {
     background-color: #365683 !important;
 }
 .rbc-off-range-bg {
@@ -137,9 +110,83 @@ CALENDRIER*/
     background-color: #365683!important;
 }
 
+!* Réduction de la taille et affichage côte à côte des events dans la vue Mois *!
+.rbc-month-view .rbc-event {
+    display: inline-block;       !* Affiche les événements sur la même ligne *!
+    max-width: 45%;              !* Limite la largeur pour éviter qu'ils occupent toute la case *!
+    padding: 2px 4px;            !* Réduit l'espace intérieur *!
+    font-size: 10px;             !* Taille de police réduite *!
+    margin-right: 2px;           !* Petit espacement entre les événements *!
+    white-space: nowrap;         !* Empêche le retour à la ligne *!
+    overflow: hidden;
+    text-overflow: ellipsis;
+}*/
+
+/*CALLENDRIER 2e VERSION*/
+
+/* Fusionner les bordures du tableau et supprimer l'espacement */
+.fc .fc-scrollgrid table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+/* Appliquer des bordures vertes sur toutes les cellules du calendrier */
+.fc .fc-scrollgrid-section td,
+.fc .fc-scrollgrid-section th {
+    border: 1px solid #455764 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Désactiver d'éventuelles bordures par défaut sur le cadre des cellules */
+.fc .fc-daygrid-day-frame {
+    border: none !important;
+}
+
+.fc .fc-scrollgrid {
+    border: none !important;
+}
+
+.fc-theme-standard .fc-popover {
+    background-color: #303030 !important;
+    border-radius: 10px!important;
+    border: none!important;
+}
+
+
+.fc-day-today {
+    background-color: #374151 !important;
+}
+
+
+.fc-highlight {
+    background-color: #374151 !important;
+}
+
+.fc-button {
+    background-color: #374151 !important;
+    border-color: #374151 !important;
+    color: #fff !important;
+}
+
+/* Couleur lors du survol */
+.fc-button:hover {
+    background-color: #0056b3 !important;  
+    border-color: #0056b3 !important;
+    color: #fff !important;
+}
+
+.fc-button:active,
+.fc-button:focus {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+    color: #fff !important;
+}
 
 
 
+
+/*INPUT*/
 
 input:-webkit-autofill {
     background-color: #1a202c !important; /* Fond foncé */
@@ -147,8 +194,6 @@ input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
 }
-
-
 
 input[type="checkbox"] {
     appearance: none;
