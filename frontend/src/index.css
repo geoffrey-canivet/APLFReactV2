@@ -3,6 +3,33 @@
 @tailwind utilities;
 
 
+/* SCROLL*/
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #74C0FC; /* Couleur de la barre */
+    border-radius: 4px; /* Coins arrondis */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #58a7e0; /* Couleur au survol */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent; /* Fond invisible */
+}
+
+.hover\:overflow-y-auto:hover {
+    overflow-y: auto; /* Activer le scroll au survol */
+}
+
+.hover\:overflow-y-hidden {
+    overflow-y: hidden; /* Désactiver le scroll par défaut */
+}
+
 /* DATE PIKER */
 
 /* header */
@@ -44,6 +71,10 @@
     font-size: 1.05rem;
     font-weight: bold;
     width: 90px;
+    left: 10px;
+}
+.react-datepicker-popper {
+    left: 8px!important;
 }
 .custom-date-picker:hover {
     cursor: pointer;
@@ -171,7 +202,7 @@ CALENDRIER*/
 
 /* Couleur lors du survol */
 .fc-button:hover {
-    background-color: #0056b3 !important;  
+    background-color: #0056b3 !important;
     border-color: #0056b3 !important;
     color: #fff !important;
 }

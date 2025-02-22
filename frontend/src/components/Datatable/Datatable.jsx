@@ -95,14 +95,14 @@ const Datatable = ({dataDatatable}) => {
         {name: "Nb", selector: (row) => row.subTransactions.length, sortable: true, $grow: 0},
         {name: "Nom", selector: (row) => row.name, sortable: true, $grow: 1},
         {name: "Total", selector: (row) => `${getTotalSubTransactions(row).toFixed(2)} €`, sortable: true, $grow: 0},
-        {
+/*        {
             name: "Commerce", cell: (row) => (
                 <span
                     className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Carrefour</span>
             ),
             sortable: true,
             $grow: 1
-        },
+        },*/
         {
             name: "Progression", cell: (row) => {
                 const pourcentage = getTransactionPercentage(row);

@@ -19,7 +19,7 @@ const ModalDeleteAllTransactionByCategory = ({closeModal, handleDeleteAllTransac
 
     useEffect(() => {
         MySwal.fire({
-            title: "Supprimer",
+            /*title: "Supprimer",*/
             icon: "warning",
             padding: 0,
             customClass: {
@@ -31,7 +31,7 @@ const ModalDeleteAllTransactionByCategory = ({closeModal, handleDeleteAllTransac
                 cancelButton: "small-cancel-button",
             },
             html: `
-            <p class="alert">Cette action est irréverssible</p>
+            <p class="alert text-md pb-2">Toutes les transactions seront suprimées</p>
 				<style>
 				    .alert {
 				        color: red;

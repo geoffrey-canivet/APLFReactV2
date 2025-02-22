@@ -40,7 +40,7 @@ const ModalAddSubTransaction = ({ closeModal, handleAddSubTransaction }) => {
             setModalOpen(true);
 
             MySwal.fire({
-                title: "Ajouter",
+                title: "Ajouter une sous-transaction",
                 padding: 0,
                 customClass: {
                     popup: "custom-popup",

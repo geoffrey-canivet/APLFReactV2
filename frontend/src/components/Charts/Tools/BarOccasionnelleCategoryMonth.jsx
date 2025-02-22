@@ -139,7 +139,7 @@ const BarOccasionnelleCategoryMonth = () => {
                 <li className=" sm:py-4  px-4 hover:bg-gray-500 rounded-lg">
                     <div className="flex items-center">
                         <div className="p-3 bg-gray-900 rounded-lg mr-3">
-                            <FontAwesomeIcon className="text-blue-400 w-6 h-6" icon={faCashRegister}/>
+                            <FontAwesomeIcon className="text-orange-400 w-6 h-6" icon={faCashRegister}/>
                         </div>
                         <div className="flex-1 min-w-0 ms-4">
                             <p className="text-sm font-medium text-gray-900 truncate dark:text-white">

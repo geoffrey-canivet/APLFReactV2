@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
 
 import {
-    faChartBar, faChartColumn, faChartPie,
+    faChartBar, faChartColumn, faChartPie, faClone,
     faCreditCard,
     faEllipsis, faEraser, faFilter,
     faHouse, faMoneyBill, faMoneyBillWave,
@@ -21,6 +21,7 @@ import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTrans
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartBar from "../Modals/ModalChartBar.jsx";
 import useTemplateStore from "../../store/useTemplateStore.js";
+import ModalUseTemplate from "../Modals/ModalsTemplate/ModalUseTemplate.jsx";
 
 // CALCULE TOTAL CATEGORIES
 const calculateTotal = (transactions) => {
@@ -140,12 +141,18 @@ const CardRevenu = () => {
     };
     // MODAL USETEMPLATE
     const modalUseTemplate = async (categoryId) => {
-        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        /*const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
         if (confirm) {
             await applyTemplateToCategory(categoryId);
             await fetchRevenuByPeriod(month, year);
-        }
+        }*/
+        setCurrentModal("modalUseTemplate");
+        setCategoryId(categoryId);
     };
+
+    const handleUseTemplate = async () => {
+        await applyTemplateToCategory(categoryId);
+    }
 
     // Handler pour l'ajout
     const handleAddTransaction = async (data) => {
@@ -222,23 +229,23 @@ const CardRevenu = () => {
                                     title="Utiliser un template"
                                     onClick={() => modalUseTemplate(card.id)}
                                 >
-                                    <FontAwesomeIcon icon={faSave}/>
+                                    <FontAwesomeIcon icon={faClone}/>
                                 </button>
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Filtre"
-                                    id={card.id}
-
-                                >
-                                    <FontAwesomeIcon icon={faFilter}/>
-                                </button>
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Ajouter un élément"
+                                    title="Ajouter une transaction"
                                     id={card.id}
                                     onClick={modalAddTransaction}
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
+                                </button>
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                    title="Supprimer toutes les transactions"
+                                    id={card.id}
+                                    onClick={modalDeleteAllTransactionByCategory}
+                                >
+                                    <FontAwesomeIcon icon={faEraser}/>
                                 </button>
                                 <div className="relative inline-block dropdown">
                                     <button
@@ -269,13 +276,14 @@ const CardRevenu = () => {
                                                 <FontAwesomeIcon icon={faChartColumn}/>
                                             </button>
                                             <button
-                                                className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                className="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400"
                                                 title="Filtre"
                                                 id={card.id}
-                                                onClick={modalDeleteAllTransactionByCategory}
+
                                             >
-                                                <FontAwesomeIcon icon={faEraser}/>
+                                                <FontAwesomeIcon icon={faFilter}/>
                                             </button>
+
                                         </div>
                                     )}
                                 </div>
@@ -391,6 +399,12 @@ const CardRevenu = () => {
             {/* MODAL Chart Bar */}
             {currentModal === "modalChartBar" && dataChart && (
                 <ModalChartBar closeModal={closeModal} dataChart={dataChart}/>
+            )}
+            {/* MODAL utiliser un template */}
+            {currentModal === "modalUseTemplate" && (
+                <ModalUseTemplate closeModal={closeModal} handleUseTemplate={handleUseTemplate}
+
+                />
             )}
         </>
     );

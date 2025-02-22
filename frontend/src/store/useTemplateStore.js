@@ -3,6 +3,7 @@ import axios from "axios";
 import useLogHistoryStore from "./useLogHistoryStore.js";
 import useTransacFixeStore from "./useTransacFixeStore.js";
 import usePeriodStore from "./usePeriodStore.js";
+import useTransacRevenuStore from "./useTransacRevenuStore.js";
 
 
 const useTemplateStore = create((set, get) => ({
@@ -24,7 +25,6 @@ const useTemplateStore = create((set, get) => ({
             set({ error: error.message || "Impossible de récupérer les templates." });
         }
     },
-
     // Ajouter un template
     addTemplate: async (templateData) => {
         set({ loading: true, error: null });
@@ -77,7 +77,7 @@ const useTemplateStore = create((set, get) => ({
                     template.categoryId === categoryId
                         ? {
                             ...template,
-                            transactions: [...template.transactions, newTransaction]
+                            transactions: [...(template.transactions || []), newTransaction] // Vérification ici
                         }
                         : template
                 )
@@ -250,8 +250,6 @@ const useTemplateStore = create((set, get) => ({
             set({ loading: false });
         }
     },
-
-
     // 🔥 Récupérer les templates par défaut
     fetchDefaultTemplates: async () => {
         try {
@@ -261,13 +259,11 @@ const useTemplateStore = create((set, get) => ({
             set({ error: error.message || "Impossible de récupérer les templates par défaut." });
         }
     },
-
     // 🔥 Changer le type de template sélectionné et recharger
     setSelectedTemplateType: async (type) => {
         set({ selectedTemplateType: type });
         await get().loadTemplates();
     },
-
     // 🔥 Charger les templates en fonction du type sélectionné
     loadTemplates: async () => {
         set({ loading: true, error: null });

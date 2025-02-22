@@ -11,13 +11,19 @@ import CardFixe from "../components/Cards/CardFixe.jsx";
 import AccordionsCards from "../components/Accordions/AccordionsCards.jsx";
 import AccordionsTools from "../components/Accordions/AccordionsTools.jsx";
 import SliderSwiper from "../components/Slider/SliderSwiper.jsx";
+import FloatingDatePicker from "../components/BarTitle/FloatingDatePicker.jsx";
+import FloatingTemplatePicker from "../components/BarTitle/FloatingTemplatePicker.jsx";
 
 const Dashboard = () => {
 
     const navigate = useNavigate();
 
     const setUser = useUserStore((state) => state.setUser);
-    const user = useUserStore((state) => state.user);
+    /*const user = useUserStore((state) => state.user);*/
+
+    const { avatar_url, uploadAvatar, user, showPeriod, fetchUser, updateUser, loading, error } = useUserStore();
+
+    console.log(showPeriod);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -80,6 +86,12 @@ const Dashboard = () => {
                     <AccordionsCards/>
                     <TitreOutils/>
                     <AccordionsTools/>
+
+                        {showPeriod && <FloatingDatePicker/>}
+                        <FloatingTemplatePicker/>
+
+
+
                 </div>
             </div>
         </>

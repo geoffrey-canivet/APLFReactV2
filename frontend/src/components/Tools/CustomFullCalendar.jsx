@@ -1,15 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import FullCalendar from '@fullcalendar/react';           // Composant principal de FullCalendar
 import dayGridPlugin from '@fullcalendar/daygrid';          // Pour la vue mensuelle (day grid)
 import timeGridPlugin from '@fullcalendar/timegrid';        // Pour les vues semaine/jour (time grid)
 import interactionPlugin from '@fullcalendar/interaction';  // Pour la sélection, le glisser-déposer, etc.
 import listPlugin from '@fullcalendar/list';                // Pour la vue liste
-import frLocale from '@fullcalendar/core/locales/fr';       // Locale français (compatible avec la Belgique)
+import frLocale from '@fullcalendar/core/locales/fr';
+import useTransacOccasStore from "../../store/useTransacOccasStore.js";
+import usePeriodStore from "../../store/usePeriodStore.js";       // Locale français (compatible avec la Belgique)
 
 /**
  * Composant FullCalendar personnalisé avec événements en forme de puce colorée.
  */
 const CustomFullCalendar = () => {
+
+    // STORE
+    const {fetchOccasByPeriod, categories} = useTransacOccasStore()
+    const { month, year} = usePeriodStore();
+
+    const [events, setEvents] = useState([]);
+
+    // RECUP CATEGORIES - TRANSACTIONS
+    useEffect(() => {
+        fetchOccasByPeriod(month, year);
+    }, [month, year]);
+
+    useEffect(() => {
+        // Transformation des données pour créer le tableau d'events
+        const newEvents = [];
+        categories.forEach(category => {
+            category.transactions.forEach(transaction => {
+                transaction.subTransactions.forEach(subTx => {
+                    const [day, month, year] = subTx.date.split('/').map(Number);
+                    const dateObj = new Date(year, month - 1, day);
+                    newEvents.push({
+                        title: `${transaction.name} ${subTx.amount} €`,
+                        date: dateObj,
+                        backgroundColor: "#01A3FF",
+                        borderColor: "#01A3FF"
+                    });
+                });
+            });
+        });
+        setEvents(newEvents);
+        console.log(events)
+    }, [categories]);
+
+
+
+
     // Configuration du calendrier avec un maximum d'options
     const calendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -26,56 +64,7 @@ const CustomFullCalendar = () => {
         dayMaxEvents: 3,
 
         // Définition des événements (chaque événement représente une dépense)
-        events: [
-            {
-                title: "Café - 3€",
-                date: "2025-02-10",
-                backgroundColor: "#ff4081",  // Couleur flashy personnalisable
-                borderColor: "#ff4081"
-            },
-            {
-                title: "Café - 3€",
-                date: "2025-02-10",
-                backgroundColor: "#ff4081",  // Couleur flashy personnalisable
-                borderColor: "#ff4081"
-            },
-            {
-                title: "Café - 3€",
-                date: "2025-02-10",
-                backgroundColor: "#ff4081",  // Couleur flashy personnalisable
-                borderColor: "#ff4081"
-            },
-            {
-                title: "Café - 3€",
-                date: "2025-02-10",
-                backgroundColor: "#ff4081",  // Couleur flashy personnalisable
-                borderColor: "#ff4081"
-            },
-            {
-                title: "Café - 3€",
-                date: "2025-02-10",
-                backgroundColor: "#ff4081",  // Couleur flashy personnalisable
-                borderColor: "#ff4081"
-            },
-            {
-                title: "Déjeuner - 15€",
-                date: "2025-02-15",
-                backgroundColor: "#448aff",
-                borderColor: "#448aff"
-            },
-            {
-                title: "Transport - 2.50€",
-                date: "2025-02-20",
-                backgroundColor: "#69f0ae",
-                borderColor: "#69f0ae"
-            },
-            {
-                title: "Bière - 5€",
-                date: "2025-02-22",
-                backgroundColor: "#ffea00",
-                borderColor: "#ffea00"
-            }
-        ],
+        events: events,
 
         selectable: true,  // Permet de sélectionner des plages de dates
         editable: true,    // Active le glisser-déposer et le redimensionnement des événements

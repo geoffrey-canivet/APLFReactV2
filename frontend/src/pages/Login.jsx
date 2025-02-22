@@ -91,6 +91,7 @@ const Login = () => {
                              src={logo}/>
                         APLFinance
                     </a>
+
                     <div
                         className="w-full bg-white rounded-lg dark:border md:mt-0 shadow-md sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-800">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -134,7 +135,8 @@ const Login = () => {
                                     </div>
                                     <a href="#"
                                        className="text-sm font-medium text-primary-600 hover:text-gray-300 dark:text-gray-500">Mot
-                                        de passe oublié?</a>
+                                        de passe oublié?
+                                    </a>
                                 </div>
                                 {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
                                 <button type="submit"
@@ -158,6 +160,36 @@ const Login = () => {
                                                              className="font-medium text-primary-600 hover:underline dark:text-primary-500">Inscription</a>
                                 </p>
                             </form>
+                            <div id="alert-additional-content-3"
+                                 className="p-4 mb-4 text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
+                                 role="alert">
+                                <div className="flex items-center">
+                                    <svg className="shrink-0 w-4 h-4 me-2" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span className="sr-only">Info</span>
+                                    <h3 className="text-lg font-medium">Version de démonstration</h3>
+                                </div>
+                                <div className="mt-2 mb-4 text-sm">
+                                    Cette version de démonstration désactive les outils de modification de l'utilisateur. Tous les autres outils restent disponibles pour évaluer au mieux l'application. Pour vous connecter: <span className="underline">user-demo@email.com</span>  - <span className="underline">admin</span>
+                                </div>
+                                {/*<div className="flex">
+                                    <button type="button"
+                                            className="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 me-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        <svg className="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd"
+                                                  d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z"
+                                                  clip-rule="evenodd"/>
+                                        </svg>
+
+                                        Plus d'info
+                                    </button>
+                                </div>*/}
+                            </div>
                         </div>
                     </div>
                 </div>

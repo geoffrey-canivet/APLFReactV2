@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faChartBar, faChartColumn, faChartPie,
+    faChartBar, faChartColumn, faChartPie, faClone,
     faCreditCard,
     faEllipsis, faEllipsisVertical, faEraser, faFilter,
     faHouse,
@@ -20,6 +20,7 @@ import ModalUpdateTransaction from "../Modals/ModalsTransaction/ModalUpdateTrans
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartBar from "../Modals/ModalChartBar.jsx";
 import useTemplateStore from "../../store/useTemplateStore.js";
+import ModalUseTemplate from "../Modals/ModalsTemplate/ModalUseTemplate.jsx";
 
 
 // ICON CATEGORIES
@@ -138,12 +139,18 @@ const CardFixe = () => {
     };
     // MODAL USETEMPLATE
     const modalUseTemplate = async (categoryId) => {
-        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template sélectionné. Continuer ?");
+        /*const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template sélectionné. Continuer ?");
 
         if (confirm) {
             await applyTemplateToCategory(categoryId); // ✅ Gère les templates perso et par défaut automatiquement
-        }
+        }*/
+        setCurrentModal("modalUseTemplate");
+        setCategoryId(categoryId);
     };
+
+    const handleUseTemplate = async () => {
+        await applyTemplateToCategory(categoryId);
+    }
 
 
 
@@ -198,35 +205,7 @@ const CardFixe = () => {
 
     return (
         <>
-            <style>
-                {`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 8px;
-                    height: 8px;
-                }
 
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: #74C0FC; /* Couleur de la barre */
-                    border-radius: 4px; /* Coins arrondis */
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background-color: #58a7e0; /* Couleur au survol */
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background-color: transparent; /* Fond invisible */
-                }
-
-                .hover\\:overflow-y-auto:hover {
-                    overflow-y: auto; /* Activer le scroll au survol */
-                }
-
-                .hover\\:overflow-y-hidden {
-                    overflow-y: hidden; /* Désactiver le scroll par défaut */
-                }
-                `}
-            </style>
             {openDropdownId && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-20"
@@ -243,8 +222,7 @@ const CardFixe = () => {
                         <div className="flex justify-between px-4 pt-2 pb-2 bg-gray-50 dark:bg-gray-700 rounded-t-lg">
                             <h5 className="text-lg font-semibold text-gray-900 dark:text-white">
                                 {iconMap[card.id] && (
-                                    <FontAwesomeIcon icon={iconMap[card.id]} className="mr-3"
-                                                     style={{color: "#74C0FC"}}/>
+                                    <FontAwesomeIcon icon={iconMap[card.id]} className="mr-3" style={{color: "#74C0FC"}}/>
                                 )}
                                 {card.name}
                             </h5>
@@ -254,13 +232,13 @@ const CardFixe = () => {
                                     title="Utiliser un template"
                                     onClick={() => modalUseTemplate(card.id)}
                                 >
-                                    <FontAwesomeIcon icon={faSave}/>
+                                    <FontAwesomeIcon icon={faClone} />
                                 </button>
 
 
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Ajouter un élément"
+                                    title="Ajouter une transaction"
                                     id={card.id}
                                     onClick={modalAddTransaction}
                                 >
@@ -268,7 +246,7 @@ const CardFixe = () => {
                                 </button>
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
-                                    title="Filtre"
+                                    title="Supprimer toutes les transactions"
                                     id={card.id}
                                     onClick={modalDeleteAllTransactionByCategory}
                                 >
@@ -278,7 +256,7 @@ const CardFixe = () => {
                                     <button
                                         onClick={() => toggleDropdown(`header-${card.id}`)}
                                         className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                        title="Options"
+                                        title="Autres options"
                                         id={`header-${card.id}`}
                                     >
                                         <FontAwesomeIcon icon={faEllipsis}/>
@@ -426,6 +404,12 @@ const CardFixe = () => {
             {/* MODAL Chart Bar */}
             {currentModal === "modalChartBar" && dataChart && (
                 <ModalChartBar closeModal={closeModal} dataChart={dataChart}/>
+            )}
+            {/* MODAL utiliser un template */}
+            {currentModal === "modalUseTemplate" && (
+                <ModalUseTemplate closeModal={closeModal} handleUseTemplate={handleUseTemplate}
+
+                />
             )}
         </>
     );

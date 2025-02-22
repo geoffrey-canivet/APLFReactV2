@@ -3,7 +3,7 @@ import useTransacOccasStore  from "../../store/useTransacOccasStore.js";
 
 import {
     faAppleWhole, faCaretDown, faCaretUp,
-    faChartBar, faChartColumn, faChartPie,
+    faChartBar, faChartColumn, faChartPie, faClone,
     faCreditCard, faEllipsis, faEraser,
     faFilter, faGift,
     faHouse, faPenToSquare, faPlane,
@@ -253,12 +253,12 @@ const CardOccasionnelle = () => {
                                     title="Utiliser un template"
                                     onClick={() => modalUseTemplate(card.id)}
                                 >
-                                    <FontAwesomeIcon icon={faSave}/>
+                                    <FontAwesomeIcon icon={faClone}/>
                                 </button>
                                 {/* Btn Afficher sous-transaction */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Filtre"
+                                    title="Sous transactions"
                                     id={card.id}
                                     onClick={handleViewSubTransactions}
                                 >
@@ -267,14 +267,7 @@ const CardOccasionnelle = () => {
 
 
                                 </button>
-                                {/* Btn Filtre */}
-                                <button
-                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-blue-400"
-                                    title="Filtre"
-                                    id={card.id}
-                                >
-                                    <FontAwesomeIcon icon={faFilter}/>
-                                </button>
+
 
                                 {/* Btn Ajouter transaction */}
                                 <button
@@ -284,6 +277,15 @@ const CardOccasionnelle = () => {
                                     onClick={modalAddTransaction}
                                 >
                                     <FontAwesomeIcon icon={faPlusCircle}/>
+                                </button>
+                                {/* Btn Supprimer toutes les transactions et sous-transactionW */}
+                                <button
+                                    className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                    title="Filtre"
+                                    id={card.id}
+                                    onClick={modalDeleteAllTransactionByCategory}
+                                >
+                                    <FontAwesomeIcon icon={faEraser}/>
                                 </button>
 
                                 <div className="relative inline-block dropdown">
@@ -301,7 +303,7 @@ const CardOccasionnelle = () => {
                                             {/* Btn Datatable */}
                                             <button
                                                 className="text-gray-500 pb-3 hover:text-blue-500 dark:hover:text-blue-400"
-                                                title="Graphique"
+                                                title="Détails"
                                                 id={card.id}
                                                 onClick={modalDatatable}
                                             >
@@ -324,14 +326,14 @@ const CardOccasionnelle = () => {
                                             >
                                                 <FontAwesomeIcon icon={faChartColumn}/>
                                             </button>
-                                            {/* Btn Supprimer toutes les transactions et sous-transactionW */}
+
+                                            {/* Btn Filtre */}
                                             <button
-                                                className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
+                                                className="text-gray-600 hover:text-blue-500 dark:hover:text-blue-400"
                                                 title="Filtre"
                                                 id={card.id}
-                                                onClick={modalDeleteAllTransactionByCategory}
                                             >
-                                                <FontAwesomeIcon icon={faEraser}/>
+                                                <FontAwesomeIcon icon={faFilter}/>
                                             </button>
                                         </div>
                                     )}

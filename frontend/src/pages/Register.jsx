@@ -124,7 +124,7 @@ const Register = () => {
                                            value={email}
                                            onChange={(e) => setEmail(e.target.value)}
                                            className="bg-gray-50 border autofill:bg-gray-800 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                           placeholder="email@mail.com" required=""/>
+                                           placeholder="votre-email@mail.com" required=""/>
                                 </div>
                                 <div>
 
@@ -138,7 +138,7 @@ const Register = () => {
                                                value={password}
                                                onChange={(e) => setPassword(e.target.value)}
                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder=""/>
+                                               placeholder="Mot de passe"/>
                                     </div>
                                     <div>
                                         <label htmlFor="confirmPass"
@@ -147,7 +147,7 @@ const Register = () => {
                                                value={confirmPassword}
                                                onChange={(e) => setConfirmPassword(e.target.value)}
                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                               placeholder=""/>
+                                               placeholder="Mot de passe"/>
                                     </div>
                                 </div>
                                 {error ? <p className="text-red-500">{error}</p> : null}
@@ -155,10 +155,10 @@ const Register = () => {
                                 <button
                                     type="submit"
                                     className="text-white w-full bg-[#3b5998] hover:bg-[#3b5998]/90
-               focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50
-               font-medium rounded-lg text-sm px-5 py-2.5
-               text-center flex items-center justify-center gap-2
-               dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+                                       focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50
+                                       font-medium rounded-lg text-sm px-5 py-2.5
+                                       text-center flex items-center justify-center gap-2
+                                       dark:focus:ring-[#3b5998]/55 me-2 mb-2">
 
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"

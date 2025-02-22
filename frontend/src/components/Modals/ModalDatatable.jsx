@@ -32,7 +32,7 @@ const ModalDatatable = ({closeModal, dataDatatable}) => {
                 actions: "custom-footer",
             },
             html: `
-<div id="chart-container"></div>
+<div class="my-5" id="chart-container"></div>
 
 				<style>
 				    .custom-backdrop {

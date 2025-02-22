@@ -1,48 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import avat from "../../../assets/avat.png";
-import {
-    faAward,
-    faBoxArchive,
-    faCalculator,
-    faCameraRetro, faCartShopping, faCheck,
-    faCloudSun, faEarthEurope, faEllipsis,
-    faGear, faIdCard, faIdCardClip, faImage, faLock, faRectangleList, faStar,
-    faToolbox, faTrash,
-    faUser, faUserPen, faUserTag
-} from "@fortawesome/free-solid-svg-icons";
+import avat from "../../../assets/avatar.png";
+import {faIdCard, faIdCardClip, faImage, faLock, faUserPen, faUserTag} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import useUserStore from "../../../store/useUserStore.js";
-import ToastNotification from "sweetalert2";
 import Swal from "sweetalert2";
-import axios from "axios";
-import useLogHistoryStore from "../../../store/useLogHistoryStore.js";
-import { HexColorPicker } from "react-colorful";
-import useCommerceStore from '../../../store/useCommerceStore.js';
-
-const trophees = import.meta.glob("../../../assets/trophees/*.png", { eager: true });
+import Toast from "sweetalert2";
 
 const ProfileUser = () => {
 
-    const {deleteCommerce, commerces, fetchCommerces, createCommerce } = useCommerceStore();
-    const { avatar_url, uploadAvatar, user, fetchUser, updateUser, loading, error } = useUserStore();
-    const { log, getAllLogHistory } = useLogHistoryStore();
-    useEffect(() => {
-        getAllLogHistory();
-    }, []);
-    console.log("Logs stockés dans Zustand :", log);
+    const { avatar_url, uploadAvatar, showPeriod, user, fetchUser, updateUser, loading, toggleShowPeriod, error } = useUserStore();
 
     const [name, setName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [email, setEmail] = useState("");
-
     const [selectedFile, setSelectedFile] = useState(null);
-
-    const [color, setColor] = useState("#aabbcc");
-    const [commerceName, setCommerceName] = useState("");
-
-    useEffect(() => {
-        fetchCommerces();
-    }, []);
 
     // image profile
     const handleFileChange = (e) => {
@@ -55,18 +26,13 @@ const ProfileUser = () => {
         if (!selectedFile) return;
         await uploadAvatar(selectedFile);
         fetchUser();
+        await Toast.fire({
+            icon: "success",
+            title: "Photo modifiée avec succes !",
+            background: "#1F2937",
+            color: "#ffffff"
+        });
         setSelectedFile(null);
-    };
-
-    // Ajouter un commerce
-    const handleAddCommerce = async () => {
-        const newCommerce = {
-            label: commerceName,
-            value: commerceName,
-            color: color,
-        };
-
-        await createCommerce(newCommerce);
     };
 
     useEffect(() => {
@@ -109,7 +75,7 @@ const ProfileUser = () => {
         : "Non disponible";
 
     const handleUpdateProfile = async () => {
-        try {
+        /*try {
             await updateUser({ name, firstName, email });
             fetchUser();
             ToastNotification.fire({
@@ -119,7 +85,12 @@ const ProfileUser = () => {
         } catch (error) {
             console.error("Erreur lors de la mise à jour :", error);
             alert("Erreur lors de la mise à jour du profil");
-        }
+        }*/
+        await Swal.fire({
+            title: "Version de démonstration",
+            text: "La modification des données utilisateur sont bloquée dans la version de démonstration.",
+            icon: "info"
+        });
     };
 
 
@@ -143,35 +114,7 @@ const ProfileUser = () => {
 
     return (
         <>
-            <style>
-                {`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 8px;
-                    height: 8px;
-                }
 
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background-color: #74C0FC; /* Couleur de la barre */
-                    border-radius: 4px; /* Coins arrondis */
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background-color: #58a7e0; /* Couleur au survol */
-                }
-
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background-color: transparent; /* Fond invisible */
-                }
-
-                .hover\\:overflow-y-auto:hover {
-                    overflow-y: auto; /* Activer le scroll au survol */
-                }
-
-                .hover\\:overflow-y-hidden {
-                    overflow-y: hidden; /* Désactiver le scroll par défaut */
-                }
-                `}
-            </style>
             {/*PROFILE*/}
             <div className="pt-20 px-3">
                 <div
@@ -199,8 +142,10 @@ const ProfileUser = () => {
                                 {/*Photo*/}
                                 <div className="">
                                     <img src={user?.avatar_url || avat} style={{
-                                        width: "120px",
-                                        height: "120px",
+                                        maxWidth: "120px",
+                                        maxHeight: "120px",
+                                        minWidth: "120px",
+                                        minHeight: "120px",
                                         borderRadius: "15%",
                                         marginTop: "1rem"
                                     }} alt="App Logo"/>
@@ -306,6 +251,7 @@ const ProfileUser = () => {
                                         Modifier
                                     </button>
                                     <button type="button"
+                                            onClick={handleUpdateProfile}
                                             className="flex-1 text-white justify-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                         <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
                                         Modifier le mot de passe
@@ -313,6 +259,7 @@ const ProfileUser = () => {
                                 </div>
 
                                 <button type="button"
+                                        onClick={handleUpdateProfile}
                                         className="text-white justify-center bg-orange-500 hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
                                     <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faLock}/>
                                     Désinscription
@@ -324,168 +271,7 @@ const ProfileUser = () => {
                     </div>
                 </div>
             </div>
-            {/*     Settings*/}
-            <div className="pt-4 px-3">
-                <div
-                    className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
-                    <span>
-                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faGear}/>
 
-                    </span>
-                    <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">Paramètres</h5>
-                </div>
-            </div>
-            <div className="pt-0 px-3">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-4 ">
-                    <div className="px-5 py-4 bg-gray-800 rounded-md">
-                        <div className="">
-                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faCartShopping}/>
-                                <span>Ajouter un commerce</span>
-                            </div>
-                            <div className="">
-                                <hr className="border-t my-4 border-gray-600"/>
-                            </div>
-
-                            <div className="">
-                                <HexColorPicker color={color} onChange={setColor}
-                                                style={{width: "150px", height: "150px", margin: "auto"}}/>
-                            </div>
-                            <input type="text" id="Prénom"
-                                   onChange={(e) => setCommerceName(e.target.value)}
-                                   placeholder="Nom du commerce"
-                                   className="block w-full p-2 mt-3 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-                            <button type="button"
-                                    onClick={handleAddCommerce}
-                                    className=" flex-1 mt-3 text-white justify-center text-center bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg mt-1 text-sm px-3 py-2 inline-flex items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
-
-                                <FontAwesomeIcon className=" pr-2 w-4 h-4" icon={faCheck}/>
-                                Ajouter
-                            </button>
-                        </div>
-                    </div>
-                    <div className="px-5 py-4 bg-gray-800 rounded-md">
-                        <div className="">
-                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faRectangleList}/>
-                                <span>Liste de commerces</span>
-                            </div>
-                            <div className="">
-                                <hr className="border-t my-4 border-gray-600"/>
-                            </div>
-
-                            <div
-                                className="relative w-full h-64 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                    <tbody>
-                                    {commerces.map((commerce) => (
-                                        <tr>
-                                            <td className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {commerce.label}
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                <span
-                                                    style={{backgroundColor: commerce.color}}
-                                                    className="text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"
-                                                >
-                                                  {commerce.color}
-                                                </span>
-
-                                            </td>
-                                            <td className="px-4 py-2">
-                                                <button
-                                                    onClick={() => {
-                                                        deleteCommerce(commerce.id)
-                                                    }}
-                                                    className="dropdown text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-
-                        </div>
-                    </div>
-                    <div className="px-5 py-4 bg-gray-800 rounded-md">
-                        <div className="">
-                            <div className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-                                <FontAwesomeIcon className="text-gray-800 dark:text-blue-400" icon={faStar}/>
-                                <span>Mes commerces</span>
-                            </div>
-                            <div className="">
-                                <hr className="border-t my-4 border-gray-600"/>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* Historique*/}
-            <div className="pt-4 px-3">
-                <div
-                    className="dark:bg-gray-800 border  dark:border-gray-700 border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center">
-                    <span>
-
-                        <FontAwesomeIcon className="w-6 h-6 text-gray-800 dark:text-blue-400" icon={faBoxArchive}/>
-                    </span>
-                    <h5 className="text-white ml-4 font-bold text-md tracking-wide uppercase">historique</h5>
-                </div>
-            </div>
-            <div className="pt-0 px-7">
-                <div className="px-5 py-4 bg-gray-800 rounded-md">
-                    <div className="">
-
-                        <div className="relative overflow-x-auto">
-
-                            {loading ? (
-                                <p className="text-white">Chargement des logs...</p>
-                            ) : error ? (
-                                <p className="text-red-500">Erreur : {error}</p>
-                            ) : log.length === 0 ? (
-                                <p className="text-white">Aucun log disponible</p>
-                            ) : (
-                                <table className="w-full text-sm text-left text-gray-400">
-                                    <thead className="text-xs uppercase bg-gray-700 text-gray-300">
-                                    <tr>
-                                        <th className="px-6 py-3">Nom</th>
-                                        <th className="px-6 py-3">Type</th>
-                                        <th className="px-6 py-3">Date</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {log.map((log) => (
-                                        <tr key={log.id} className="bg-gray-800 border-b border-gray-600">
-                                            <td className="px-6 py-4 text-white">{log.name}</td>
-                                            <td className="px-6 py-4">{log.type === 'CREATE' ?
-                                                <span
-                                                    className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-blue-900 dark:text-blue-300">Create</span> :
-                                                log.type === 'UPDATE' ? <span
-                                                        className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-300">Update</span> :
-                                                    log.type === 'DELETE' ? <span
-                                                            className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Delete</span> :
-                                                        log.type === 'DELETE_ALL' ? <span
-                                                                className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-purple-900 dark:text-purple-300">Del_all</span> :
-                                                            log.type === 'DELETE_BY_CATEGORY' ? <span
-                                                                className="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-pink-900 dark:text-pink-300">Delete_by_category</span> : log.type
-                                            }</td>
-                                            <td className="px-6 py-4">{log.date} - {log.time}</td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            )}
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
 
         </>
     );

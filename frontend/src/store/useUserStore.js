@@ -5,10 +5,17 @@ import useLogHistoryStore from "./useLogHistoryStore.js";
 const useUserStore = create((set) => ({
     user: null,
     avatar_url: "",
+    showPeriod: JSON.parse(localStorage.getItem("showPeriod")) ?? true,
     setUser: (userData) => set({ user: userData }),
     clearUser: () => set({ user: null }),
     loading: false,
     error: null,
+
+    toggleShowPeriod: () => set((state) => {
+        const newShowPeriod = !state.showPeriod;
+        localStorage.setItem("showPeriod", JSON.stringify(newShowPeriod)); // Sauvegarde la nouvelle valeur
+        return { showPeriod: newShowPeriod };
+    }),
 
     fetchUser: async () => {
         set({ loading: true, error: null });

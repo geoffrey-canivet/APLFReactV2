@@ -58,31 +58,54 @@ const PieCategoryMonth = () => {
         },
 
         title: {
-            text: `{revenu|+ ${totalRevenu} €}\n{fixe|- ${(totalFixe + totalOccas).toFixed(2)} €}`,
+            text: `{revenu|+ ${totalRevenu.toFixed(2)} €}\n
+{fixe|- ${totalFixe.toFixed(2)} €}\n
+{occas|- ${totalOccas.toFixed(2)} €}\n
+{br|----------------}\n
+{total| ${(totalRevenu - (totalFixe - totalOccas)).toFixed(2)} €}`,
             left: '50%',
-            top: '50%',
+            top: '48%', // Ajuste légèrement la position verticale
             textAlign: 'center',
             textVerticalAlign: 'middle',
+            padding: [0, 0, 0, 0], // Évite les décalages inattendus
             textStyle: {
-                fontSize: 18,
+                fontSize: 14,  // Réduction de la taille globale
                 fontWeight: 'bold',
-                color: "#fff",  // Couleur par défaut si non spécifiée
+                color: "#fff",
                 rich: {
                     revenu: {
-                        color: '#4CAF50', // Vert pour les revenus
+                        color: '#4CAF50',  // Vert pour les revenus
                         fontWeight: 'bold',
-                        fontSize: 18,
-                        lineHeight: 30  // Ajoute un espacement plus grand
+                        fontSize: 13,
+                        lineHeight: 1  // Ajustement de l'espacement
                     },
                     fixe: {
-                        color: '#FF5252', // Rouge pour les dépenses
+                        color: '#FF5252',  // Rouge pour les dépenses fixes
                         fontWeight: 'bold',
-                        fontSize: 18,
-                        lineHeight: 30  // Même espacement pour l'alignement
+                        fontSize: 13,
+                        lineHeight: 1
+                    },
+                    occas: {
+                        color: '#FFA000',  // Orange pour les dépenses occasionnelles
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        lineHeight: 1
+                    },
+                    total: {
+                        color: '#FFFFFF',  // Blanc pour le total
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        lineHeight: 1
+                    },
+                    br: {
+                        fontSize: 13,
+                        lineHeight: 1
                     }
                 }
             }
         },
+
+
 
 
         avoidLabelOverlap: false,
