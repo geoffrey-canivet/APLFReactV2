@@ -1,81 +1,86 @@
 # APLFReactV2
 ## Guide d'Utilisation
 
-Ce guide a pour objectif d'aider l'utilisateur à 
-prendre en main l'application et à comprendre 
-l'ensemble de ses fonctionnalités.
+Ce guide a pour objectif d'aider l'utilisateur à prendre en main l'application et à comprendre l'ensemble de ses fonctionnalités.
+
+### Sommaire
+
+- 1️⃣ Authentification
+- 2️⃣ Navigation Principale
+- 3️⃣ Réglages et Préférences
+- 4️⃣ Gestion des Commerces et Boutons Raccourcis
+- 5️⃣ Gestion des Dépenses Fixes et des Revenus
+
+---
 
 ### 1️⃣ Authentification
-### 2️⃣ Navigation Principale
-### 3️⃣ Réglages et Préférences
-### 4️⃣ Gestion des Commerces et Boutons Raccourcis
-### 5️⃣ Gestion dépenses fixes et revenus
 
-### 1️⃣ Authentification
-
-**Première utilisation:**
-À la première utilisation, l'utilisateur accède à 
-la page de connexion. Une page distincte est également 
-disponible pour l'inscription.
+**Première utilisation :**  
+À la première utilisation, l'utilisateur accède à la page de connexion. Une page distincte est également disponible pour l'inscription.
 
 ![Texte alternatif](/imgReadme/login.png)
 
-Une fois inscrit, l'utilisateur peut se connecter et accéder 
-à son tableau de bord.
+Une fois inscrit, l'utilisateur peut se connecter et accéder à son tableau de bord.
 
 ![Texte alternatif](/imgReadme/dashboard.png)
 
+---
+
 ### 2️⃣ Navigation Principale
 
-L'utilisateur peut, via le menu de navigation, 
-accéder à son profil ainsi qu'à ses paramètres .
+L'utilisateur peut, via le menu de navigation, accéder à son profil ainsi qu'à ses paramètres.
 
 ![Texte alternatif](/imgReadme/regleges.png)
 
+---
+
 ### 3️⃣ Réglages et Préférences
 
-**Accès aux réglages:**
-À partir du menu déroulant, l'utilisateur peut accéder 
-à l'outil « Réglages ». Cet outil permet de modifier ses 
-informations personnelles et ses préférences.
+**Accès aux réglages :**  
+À partir du menu déroulant, l'utilisateur peut accéder à l'outil « Réglages », qui lui permet de modifier ses informations personnelles et ses préférences.
 
-**Modification des informations:**
+**Modification des informations :**  
 L'utilisateur peut ainsi mettre à jour ses données personnelles.
 
 ![Texte alternatif](/imgReadme/settingUser.png)
 
+---
+
 ### 4️⃣ Gestion des Commerces et Boutons Raccourcis
 
-L'utilisateur a également la possibilité d’ajouter ou de supprimer 
-un commerce. De plus, il peut choisir d'afficher ou de masquer 
-certains boutons raccourcis (par exemple, le bouton « Période 
-Flottante » et le bouton « Templates »).
+L'utilisateur a la possibilité d'ajouter ou de supprimer un commerce. De plus, il peut choisir d'afficher ou de masquer certains boutons raccourcis (par exemple, le bouton « Période Flottante » et le bouton « Templates »).
 
 ![Texte alternatif](/imgReadme/prefUser.png)
 
-Sur la même page, un système d'historique qui enregistrera la totalité des 
-actions de l'utilisateur.
+Sur la même page, un système d'historique enregistre l'intégralité des actions de l'utilisateur.
 
 ![Texte alternatif](/imgReadme/logUser.png)
 
-### 5️⃣ Gestion dépenses fixes et revenus
+---
 
-L'utilisateur a également la possibilité d’ajouter ou de 
-supprimer un commerce. De plus, il peut choisir d'afficher 
-ou de masquer certains boutons raccourcis (par exemple, le 
-bouton « Période Flottante » et le bouton « Templates »).
+### 5️⃣ Gestion des Dépenses Fixes et des Revenus
 
-![Texte alternatif](/imgReadme/gestionFixeRevenu.png)
+L'utilisateur peut gérer ses dépenses fixes et ses revenus de manière efficace.
 
-Les cartes permettent de:
-- Utiliser un template
-- Ajouter une transactions
-- Effacer toute les transactions
-- Affichder les graphiques
+Les cartes de gestion permettent de :
+- Utiliser un template,
+- Ajouter une transaction,
+- Effacer toutes les transactions,
+- Afficher des graphiques.
+
+Chaque transaction peut être supprimée ou modifiée individuellement.
 
 ![Texte alternatif](/imgReadme/cardFixeRevenu.png)
 
-Chaque transactions peut etre modifiée ou supprimée individuelement. 
+Pour les transactions occasionnelles, un outil « Détail » est disponible, permettant d'analyser en profondeur chaque sous-transaction.
+
+![Texte alternatif](/imgReadme/cardOccas.png)
+
+**Détails complémentaires :**
+
+![Texte alternatif](/imgReadme/details.png)
+
+
 
 # Titre 1
 ## Titre 2
