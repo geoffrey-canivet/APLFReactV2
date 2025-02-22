@@ -1,11 +1,15 @@
 # APLFReactV2
 ## Guide d'Utilisation
 
-### 1️⃣ Authentification
-
 Ce guide a pour objectif d'aider l'utilisateur à 
 prendre en main l'application et à comprendre 
 l'ensemble de ses fonctionnalités.
+
+### 1️⃣ Authentification
+### 2️⃣ Navigation Principale
+### 3️⃣ Réglages et Préférences
+### 4️⃣ Gestion des Commerces et Boutons Raccourcis
+### 5️⃣ Gestion dépenses fixes et revenus
 
 ### 1️⃣ Authentification
 
