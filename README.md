@@ -14,7 +14,6 @@ disponible pour l'inscription.
 
 ![Texte alternatif](/imgReadme/login.png)
 
-**Inscription et accès au tableau de bord:**
 Une fois inscrit, l'utilisateur peut se connecter et accéder 
 à son tableau de bord.
 
@@ -48,8 +47,27 @@ Flottante » et le bouton « Templates »).
 
 ![Texte alternatif](/imgReadme/prefUser.png)
 
+Sur la même page, un système d'historique qui enregistrera la totalité des 
+actions de l'utilisateur.
 
+![Texte alternatif](/imgReadme/logUser.png)
 
+### 5️⃣ Gestion dépenses fixes et revenus
+
+L'utilisateur a également la possibilité d’ajouter ou de 
+supprimer un commerce. De plus, il peut choisir d'afficher 
+ou de masquer certains boutons raccourcis (par exemple, le 
+bouton « Période Flottante » et le bouton « Templates »).
+
+![Texte alternatif](/imgReadme/gestionFixeRevenu.png)
+
+Les cartes permettent de:
+- Utiliser un template
+- Ajouter une transactions
+- Effacer toute les transactions
+- Affichder les graphiques
+
+![Texte alternatif](/imgReadme/cardFixeRevenu.png)
 
 # Titre 1
 ## Titre 2
