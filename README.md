@@ -1,6 +1,8 @@
 # APLFReactV2
 ## Guide d'Utilisation
 
+### 1️⃣ Authentification
+
 Ce guide a pour objectif d'aider l'utilisateur à 
 prendre en main l'application et à comprendre 
 l'ensemble de ses fonctionnalités.
@@ -68,6 +70,8 @@ Les cartes permettent de:
 - Affichder les graphiques
 
 ![Texte alternatif](/imgReadme/cardFixeRevenu.png)
+
+Chaque transactions peut etre modifiée ou supprimée individuelement. 
 
 # Titre 1
 ## Titre 2
