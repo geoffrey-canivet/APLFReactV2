@@ -3,7 +3,14 @@ import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import useTransacRevenuStore from "../../../store/useTransacRevenuStore.js";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleDown, faCircleUp, faLandmark, faWallet} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCircleDown,
+    faCircleMinus,
+    faCirclePlus,
+    faCircleUp,
+    faLandmark,
+    faWallet
+} from "@fortawesome/free-solid-svg-icons";
 
 const BarRevenuCategoryMonth = () => {
     const chartRef = useRef(null);
@@ -130,16 +137,16 @@ const BarRevenuCategoryMonth = () => {
                                 Revenus
                             </p>
                             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                <FontAwesomeIcon className="text-red-400" icon={faCircleUp}/> {maxExpense.name}
+                                <FontAwesomeIcon className="text-green-400" icon={faCirclePlus}/> {maxExpense.name}
                             </p>
                             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                <FontAwesomeIcon className="text-green-400" icon={faCircleDown}/> {minExpense.name}
+                                <FontAwesomeIcon className="text-green-400" icon={faCircleMinus}/> {minExpense.name}
                             </p>
                         </div>
                         <div
                             className="flex flex-col  text-sm font-semibold text-gray-900 dark:text-white">
 
-                            <div className="text-red-400">{maxExpense.amount} €</div>
+                            <div className="text-green-400">{maxExpense.amount} €</div>
                             <div className="text-green-400">{minExpense.amount} €</div>
 
                         </div>

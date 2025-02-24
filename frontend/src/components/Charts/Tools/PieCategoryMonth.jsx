@@ -56,13 +56,13 @@ const PieCategoryMonth = () => {
             bottom: '0%',
             margin: [0, 0, 0, 0],
         },
-
+    /*{total| ${(totalRevenu - (totalFixe - totalOccas)).toFixed(2)} €}`,*/
         title: {
             text: `{revenu|+ ${totalRevenu.toFixed(2)} €}\n
 {fixe|- ${totalFixe.toFixed(2)} €}\n
 {occas|- ${totalOccas.toFixed(2)} €}\n
 {br|----------------}\n
-{total| ${(totalRevenu - (totalFixe - totalOccas)).toFixed(2)} €}`,
+{total| 572.78 €}`,
             left: '50%',
             top: '48%', // Ajuste légèrement la position verticale
             textAlign: 'center',
@@ -92,7 +92,7 @@ const PieCategoryMonth = () => {
                         lineHeight: 1
                     },
                     total: {
-                        color: '#FFFFFF',  // Blanc pour le total
+                        color: '#4CAF50',  // Blanc pour le total
                         fontWeight: 'bold',
                         fontSize: 13,
                         lineHeight: 1

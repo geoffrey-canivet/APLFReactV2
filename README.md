@@ -10,13 +10,19 @@ Ce guide a pour objectif d'aider l'utilisateur à prendre en main l'application 
 - 3️⃣ Réglages et Préférences
 - 4️⃣ Gestion des Commerces et Boutons Raccourcis
 - 5️⃣ Gestion des Dépenses Fixes et des Revenus
+- 6️⃣ Gestion des périodes
+- 7️⃣ Outil template
+- 8️⃣ Outil calendrier 
+- 9️⃣ Outil détails du mois 
+- 🔟 Outil comparer les mois
 
 ---
 
 ### 1️⃣ Authentification
 
 **Première utilisation :**  
-À la première utilisation, l'utilisateur accède à la page de connexion. Une page distincte est également disponible pour l'inscription.
+Lors de sa première utilisation, l'utilisateur accède à la page de connexion. 
+Une page distincte est également disponible pour l'inscription.
 
 ![Texte alternatif](/imgReadme/login.png)
 
@@ -76,113 +82,54 @@ Pour les transactions occasionnelles, un outil « Détail » est disponible, per
 
 ![Texte alternatif](/imgReadme/cardOccas.png)
 
-**Détails complémentaires :**
+Le détail des sous-transactions est accessible via des tiroirs situés sous chaque opération.
+À cet emplacement, l'utilisateur peut modifier, supprimer ou consulter une pièce jointe (ticket de caisse, facture, etc.).
 
 ![Texte alternatif](/imgReadme/details.png)
 
+Les formulaires d'ajout, ou modification de transactions et de sous-transactions s'affichent sous forme de fenêtres modales.
 
+![Texte alternatif](/imgReadme/AjoutSousTransaction.png)
 
-# Titre 1
-## Titre 2
-### Titre 3
-#### Titre 4
-##### Titre 5
-###### Titre 6
+### 6️⃣ Gestion des périodes
 
-## 2️⃣ Texte
+L'utilisateur peut naviguer entre les mois et les années à l'aide du bouton datePicker, 
+situé en haut du tableau de bord, lui permettant de consulter les transactions des périodes antérieures. 
+Pour encore plus de facilité, il peut également utiliser un bouton flottant, situé en bas à droite de son 
+dashboard.
+Ce bouton peut être désactivé à tout moment via les préférences.
 
-**Gras**
+![Texte alternatif](/imgReadme/periodes.png)
 
-*Italique*
+### 7️⃣ Outil template
 
-~~Barré~~
+L'utilisateur peut choisir de remplir manuellement chaque carte de transaction, mais pour plus de facilité, 
+il peut également utiliser l'outil template.
+Celui-ci permet de sélectionner un modèle de carte déjà structuré, évitant ainsi de recopier 
+chaque mois des opérations récurrentes. Il est tout à fait possible de modifier ou de supprimer ces transactions 
+template si elles ne correspondent pas aux besoins.
+L'outil offre également la possibilité de créer ses propres cartes template pour une meilleure pertinence.
 
-**_Gras et Italique_**
+![Texte alternatif](/imgReadme/templatePerso.png)
+![Texte alternatif](/imgReadme/templateDefaut.png)
 
-> Bloc de citation
+Pour indiquer à l'utilisateur le type de template utilisé, une puce colorée s'affiche en fonction du modèle sélectionné :
+bleu pour les templates personnalisés et orange pour les templates par défaut.
+Un bouton flottant est prévu pour vérifier ou modifier le type de template choisi (bouton désactivable dans les préférences).
 
----
+### 8️⃣ Outil calendrier
 
-## 3️⃣ Listes
+L'utilisateur peut consulter ses transactions classées par jour grâce à l'outil calendrier.
+Les sous-transactions y sont affichées avec la couleur associée à leur opération.
+Il est possible de cliquer sur une sous-transaction pour afficher ses détails ainsi que sa pièce jointe.
 
-### Liste non ordonnée :
-- Élément 1
-- Élément 2
-    - Sous-élément 2.1
-    - Sous-élément 2.2
+![Texte alternatif](/imgReadme/calendrier.png)
 
-### Liste ordonnée :
-1. Premier
-2. Deuxième
-3. Troisième
+### 9️⃣ Outil détails du mois
 
-## 4️⃣ Liens et Images
+L'outil « détails du mois » permet de visualiser les transactions du mois sous forme de graphiques colorés, offrant ainsi un récapitulatif clair 
+de l'ensemble des opérations du mois sélectionné.
 
-[Texte du lien](https://example.com)
+![Texte alternatif](/imgReadme/detailsMois.png)
 
-![Texte alternatif de l'image](https://via.placeholder.com/150)
-
-## 5️⃣ Tableaux
-
-| Colonne 1 | Colonne 2 | Colonne 3 |
-|-----------|-----------|-----------|
-| Valeur 1  | Valeur 2  | Valeur 3  |
-| Valeur A  | Valeur B  | Valeur C  |
-
-## 6️⃣ Code
-
-### Inline Code
-Voici un exemple de `code inline`.
-
-### Bloc de code
-```javascript
-function hello() {
-    console.log("Hello, World!");
-}
-```
-
-## 7️⃣ Tâches
-
-- [x] Tâche terminée
-- [ ] Tâche en attente
-
-## 8️⃣ Emojis
-
-🚀 🔥 🎯 ✅
-
-## 9️⃣ Mathématiques (LaTeX)
-
-$$E = mc^2$$
-
-\( a^2 + b^2 = c^2 \)
-
-## 🔟 Diagrammes
-
-### Graphviz
-```dot
-digraph G {
-    A -> B -> C;
-    A -> D;
-}
-```
-
-### MermaidJS
-```mermaid
-sequenceDiagram
-    participant A as Utilisateur
-    participant B as Serveur
-    A->>B: Requête
-    B->>A: Réponse
-```
-
-## 🔹 HTML en Markdown
-
-<p style="color: red; font-weight: bold;">Texte rouge en HTML</p>
-
-## 🔸 Mentions et Références
-
-@utilisateur pour mentionner quelqu'un.
-
-## 🏁 Conclusion
-
-Voici un modèle Markdown ultra complet pour tout type de document. 🚀
+### 🔟 Outil comparer les mois

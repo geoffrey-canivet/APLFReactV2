@@ -3,7 +3,14 @@ import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 import useTransacOccasStore from "../../../store/useTransacOccasStore.js";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCashRegister, faCircleDown, faCircleUp, faLandmark} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCashRegister,
+    faCircleDown,
+    faCircleMinus,
+    faCirclePlus,
+    faCircleUp,
+    faLandmark
+} from "@fortawesome/free-solid-svg-icons";
 
 const BarOccasionnelleCategoryMonth = () => {
     const chartRef = useRef(null);
@@ -146,17 +153,17 @@ const BarOccasionnelleCategoryMonth = () => {
                                 Dépenses Occasionnelles
                             </p>
                             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                <FontAwesomeIcon className="text-red-400" icon={faCircleUp}/> {maxExpense.name}
+                                <FontAwesomeIcon className="text-red-400" icon={faCirclePlus}/> {maxExpense.name}
                             </p>
                             <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                <FontAwesomeIcon className="text-green-400" icon={faCircleDown}/> {minExpense.name}
+                                <FontAwesomeIcon className="text-yellow-400" icon={faCircleMinus}/> {minExpense.name}
                             </p>
                         </div>
                         <div
                             className="flex flex-col  text-sm font-semibold text-gray-900 dark:text-white">
 
                             <div className="text-red-400">{maxExpense.amount.toFixed(2)} €</div>
-                            <div className="text-green-400">{minExpense.amount.toFixed(2)} €</div>
+                            <div className="text-yellow-400">{minExpense.amount.toFixed(2)} €</div>
 
                         </div>
 
