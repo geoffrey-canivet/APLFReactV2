@@ -5,7 +5,7 @@ import useTransacRevenuStore from "../../store/useTransacRevenuStore.js";
 import useTransacOccasStore from "../../store/useTransacOccasStore.js";
 import usePeriodStore from "../../store/usePeriodStore.js";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronDown, faClone} from "@fortawesome/free-solid-svg-icons";
+import {faCalendarDays, faChevronDown, faClone} from "@fortawesome/free-solid-svg-icons";
 /*import 'react-datepicker/dist/react-datepicker.css';*/
 
 const TitrePeriod = () => {
@@ -53,7 +53,7 @@ const TitrePeriod = () => {
             <div className="pt-2 px-3 ">
                 <div className="dark:bg-gray-800 dark:border-gray-700 text-xs border-gray-300 py-3 px-4  rounded-xl mb-4 flex items-center border">
                     <span>
-                        <FontAwesomeIcon style={{color: "#74C0FC", fontSize: "18px"}} icon={faClone} />
+                        <FontAwesomeIcon style={{color: "#74C0FC", fontSize: "18px"}} icon={faCalendarDays} />
                     </span>
                     <DatePicker
                         selected={selectedDate}

@@ -22,6 +22,7 @@ import ModalChartOccasionnellePie from "../Modals/ModalChartOccasionnellePie.jsx
 import usePeriodStore from "../../store/usePeriodStore.js";
 import ModalChartOccasionnelleBar from "../Modals/ModalChartOccasionnelleBar.jsx";
 import useTemplateStore from "../../store/useTemplateStore.js";
+import ModalUseTemplate from "../Modals/ModalsTemplate/ModalUseTemplate.jsx";
 
 
 // ICON CATEGORIES
@@ -84,6 +85,7 @@ const CardOccasionnelle = () => {
     const [dataChart, setDataChart] = useState(null);
     const [dataDatatable, setDataDatatable] = useState(null);
     const [viewSubTransactions, setViewSubTransactions] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
 
     const [selectedMonth, setSelectedMonth] = useState(month);
     const [selectedYear, setSelectedYear] = useState(year);
@@ -123,9 +125,16 @@ const CardOccasionnelle = () => {
     };
     // MODAL MODIFIER TRANSACTION (NOM - AMOUNT)
     const modalUpadte = (e) => {
-        setCurrentModal("modalUpadte");
-        setTransactionId(Number(e.currentTarget.id));
-    }
+        const transId = Number(e.currentTarget.id);
+        // Recherche dans toutes les catégories la transaction qui a cet id
+        const trans = categories
+            .flatMap((cat) => cat.transactions)
+            .find((t) => t.id === transId);
+        if (trans) {
+            setSelectedTransaction(trans);
+            setCurrentModal("modalUpadte");
+        }
+    };
     // MODAL SUPPRIMER TRANSACTION
     const modalSupprimer = (e) => {
         setCurrentModal("modalDeleteTransaction");
@@ -176,12 +185,19 @@ const CardOccasionnelle = () => {
     };
     // MODAL USETEMPLATE
     const modalUseTemplate = async (categoryId) => {
-        const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
+        /*const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template. Continuer ?");
         if (confirm) {
             await applyTemplateToCategory(categoryId);
             await fetchOccasByPeriod(month, year);
-        }
+        }*/
+        setCurrentModal("modalUseTemplate");
+        setCategoryId(categoryId);
+
     };
+
+    const handleUseTemplate = async () => {
+        await applyTemplateToCategory(categoryId);
+    }
 
     // HANDLER AJOUTER
     const handleAddTransaction = async (data) => {
@@ -193,8 +209,7 @@ const CardOccasionnelle = () => {
     const handleUpdateTransaction = async (data) => {
         console.log(data)
         const name = data.name
-        const amount = data.amount
-        await updateTransaction(transactionId, name, amount);
+        await updateTransaction(selectedTransaction.id, name);
     };
     // HANDLE SUPPRIMER UN TRANSACTION
     const handleDelete = async (transactionId) => {
@@ -281,7 +296,7 @@ const CardOccasionnelle = () => {
                                 {/* Btn Supprimer toutes les transactions et sous-transactionW */}
                                 <button
                                     className="text-gray-500 hover:text-blue-500 dark:hover:text-red-400"
-                                    title="Filtre"
+                                    title="Supprimer toutes les transactions"
                                     id={card.id}
                                     onClick={modalDeleteAllTransactionByCategory}
                                 >
@@ -471,8 +486,12 @@ const CardOccasionnelle = () => {
                 <ModalAddSubTransaction closeModal={closeModal} handleAddSubTransaction={handleAddSubTransaction} />
             )}
             {/* MODAL Upadte */}
-            {currentModal === "modalUpadte" && (
-                <ModalUpdateTransaction closeModal={closeModal} handleUpdateTransaction={handleUpdateTransaction}/>
+            {currentModal === "modalUpadte" && selectedTransaction && (
+                <ModalUpdateTransaction
+                    closeModal={closeModal}
+                    handleUpdateTransaction={handleUpdateTransaction}
+                    transaction={selectedTransaction}
+                />
             )}
             {/* MODAL Supprimer */}
             {currentModal === "modalDeleteTransaction" && (
@@ -502,6 +521,13 @@ const CardOccasionnelle = () => {
             {/* MODAL Datatable */}
             {currentModal === "modalDatatable" && (
                 <ModalDatatable closeModal={closeModal} dataDatatable={dataDatatable} />
+            )}
+
+            {/* MODAL utiliser un template */}
+            {currentModal === "modalUseTemplate" && (
+                <ModalUseTemplate closeModal={closeModal} handleUseTemplate={handleUseTemplate}
+
+                />
             )}
         </>
     );

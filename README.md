@@ -1,5 +1,53 @@
-# APLFReactV2
-## Guide d'Utilisation
+# APLFReactV2 – Application de gestion financière personnalisable
+
+## 🧠 À propos du projet
+
+Ce projet est une application React développée dans le cadre de ma spécialisation front-end. Elle illustre ma capacité à créer une interface utilisateur moderne, responsive et fonctionnelle. Ce projet m’a permis d’approfondir mon approche UX/UI et de mettre en pratique ma passion pour React.
+
+## ⚙️ Stack technique
+
+- React (Vite)
+- React Router
+- CSS Modules
+- JavaScript (ES6+)
+
+
+## 🎯 Objectifs
+
+- Créer une interface intuitive et agréable à utiliser
+- Organiser le code en composants réutilisables
+- Appliquer de bonnes pratiques de développement front-end
+- Préparer un backend API / base de données
+
+## 🚀 Fonctionnalités principales
+
+- 🔐 Authentification avec gestion des profils
+- 🧭 Navigation multi-pages avec React Router
+- ⚙️ Réglages utilisateurs et préférences personnalisables
+- 🏪 Gestion des commerçants et des boutons rapides
+- 💸 Gestion complète des transactions fixes, variables et des revenus
+- 📅 Outil calendrier pour visualiser les dépenses au jour le jour
+- 📊 Statistiques et graphiques mensuels
+- 🧩 Système de templates de transactions
+- 🔁 Historique des actions utilisateur
+- 🪄 Modales pour l'ajout et la modification fluide des données
+- 📂 Gestion de pièces jointes (tickets, factures…)
+- 🧠 Système de navigation par périodes
+
+## 👨‍🎨 Mon approche UX/UI
+
+Formé en infographie et arts plastiques, je porte une attention particulière à l'expérience utilisateur. Mon objectif est de créer des interfaces à la fois esthétiques, lisibles et accessibles.
+
+## 🔜 Améliorations prévues
+
+- Refactorisation en TypeScript
+
+📩 **Je suis actuellement à la recherche d’une opportunité en tant que développeur React junior.**  
+Ce projet reflète mon implication, mon sens du détail et ma passion pour l’UI/UX.
+- 🔗 [Mon portfolio et mon CV](https://geoffreycanivet.netlify.app)
+- 📧 Contact : geoffreycanivet@gmail.com
+
+## Guide d'utilisation
 
 Ce guide a pour objectif d'aider l'utilisateur à prendre en main l'application et à comprendre l'ensemble de ses fonctionnalités.
 
@@ -132,4 +180,4 @@ de l'ensemble des opérations du mois sélectionné.
 
 ![Texte alternatif](/imgReadme/detailsMois.png)
 
-### 🔟 Outil comparer les mois
+

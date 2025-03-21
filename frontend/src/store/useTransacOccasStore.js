@@ -262,41 +262,62 @@ const useTransacOccasStore = create((set, get) => ({
 
     deleteAllTransactionsByCategory: async (categoryId) => {
         set({ loading: true, error: null });
-
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant. Connectez-vous pour continuer.");
 
+            // Récupérer le mois et l'année sélectionnés depuis le store
+            const { month, year } = usePeriodStore.getState();
+
+            // Obtenir l'ID de la période en fonction du mois et de l'année
+            const periodResponse = await axios.post(
+                "http://localhost:3000/period/findPeriod",
+                { month, year },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const periodId = periodResponse.data.id;
+
+            // Envoyer categoryId et periodId à l'endpoint de suppression
             const response = await axios.post(
-                "http://localhost:3000/add/delAllByCat",
-                { categoryId },
+                "http://localhost:3000/add/delAllByCatOccas",
+                { categoryId, periodId },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
-            const refreshResponse = await axios.get("http://localhost:3000/trans/getOccasionnelle", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            // Rafraîchir les données après suppression
+            const refreshResponse = await axios.post(
+                "http://localhost:3000/trans/getOccasionnelleByPeriod",
+                { month, year },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
             set({ categories: refreshResponse.data });
 
-            // AJOUTER LOG
+            // Ajouter une entrée dans l'historique des logs
             await useLogHistoryStore.getState().addLogHistory({
-                name: "Transaction occasionnelle",
+                name: "Transaction fixe",
                 date: new Date().toISOString(),
                 type: "DELETE_BY_CATEGORY",
                 time: new Date().toLocaleTimeString(),
             });
             return response.data;
 
-        }catch (error) {
+        } catch (error) {
             console.error("Erreur lors de la suppression des transactions :", error);
             set({ error: error.message });
             throw error;
-        }finally {
+        } finally {
             set({ loading: false });
         }
     },
+
 
     fetchSubTransactionById: async (subTransactionId) => {
         set({ loading: true, error: null });
@@ -326,15 +347,15 @@ const useTransacOccasStore = create((set, get) => ({
         }
     },
 
-    updateTransaction: async (transactionId, name, amount) => {
+    updateTransaction: async (transactionId, name) => {
         set({ loading: true, error: null });
         try {
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Token manquant.");
 
             const response = await axios.put(
-                "http://localhost:3000/add/update",
-                { transactionId, name, amount },
+                "http://localhost:3000/add/updateName",
+                { transactionId, name},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
@@ -342,7 +363,43 @@ const useTransacOccasStore = create((set, get) => ({
                 categories: state.categories.map((cat) => ({
                     ...cat,
                     transactions: cat.transactions.map((t) =>
-                        t.id === transactionId ? { ...t, name, amount } : t
+                        t.id === transactionId ? { ...t, name} : t
+                    ),
+                })),
+            }));
+            // AJOUTER LOG
+            await useLogHistoryStore.getState().addLogHistory({
+                name: "Transaction occasionnelle",
+                date: new Date().toISOString(),
+                type: "UPDATE",
+                time: new Date().toLocaleTimeString(),
+            });
+        } catch (error) {
+            console.error("Erreur updateTransaction :", error);
+            set({ error: error.message });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    updateTransactionAmount : async (transactionId, amount) => {
+        set({ loading: true, error: null });
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("Token manquant.");
+
+            const response = await axios.put(
+                "http://localhost:3000/add/updateAmount",
+                { transactionId, amount},
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            set((state) => ({
+                categories: state.categories.map((cat) => ({
+                    ...cat,
+                    transactions: cat.transactions.map((t) =>
+                        t.id === transactionId ? { ...t, amount} : t
                     ),
                 })),
             }));

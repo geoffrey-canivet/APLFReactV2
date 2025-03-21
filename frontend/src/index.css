@@ -261,3 +261,18 @@ input[type="checkbox"]:checked::after {
 .custom-footer {
     z-index: 0 !important;
 }
+
+
+
+
+
+/* Personnaliser le fond du cercle de l'icône info */
+.swal2-icon.swal2-info {
+
+    border-color: rgb(249 115 22) !important; /* Change aussi la bordure */
+}
+
+/* Changer la couleur de l'icône elle-même (déjà pris en compte si tu avais suivi l'astuce précédente) */
+.swal2-icon.swal2-info .swal2-icon-content {
+    color: rgb(249 115 22) !important; /* Changer la couleur du "i" */
+}

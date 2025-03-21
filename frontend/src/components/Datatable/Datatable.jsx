@@ -10,7 +10,7 @@ const Datatable = ({dataDatatable}) => {
     console.log("datatable -> ", dataDatatable.transactions);
 
     // STORE
-    const {updateSubTransaction, deleteSubTransaction, fetchSubTransactionById} = useTransacOccasStore();
+    const {updateSubTransaction, updateTransactionAmount, deleteSubTransaction, fetchSubTransactionById} = useTransacOccasStore();
 
     const data = useTransacOccasStore(state => state.categories).find(cat => cat.id === dataDatatable.id)?.transactions || [];
 
@@ -55,10 +55,35 @@ const Datatable = ({dataDatatable}) => {
         setModalInfoIsOpen(true);
     };
 
-    const handleUpdateSubTransaction = (updateData) => {
-        console.log("id: ", subCatId, "amount: ", updateData.amount, "commerce: ", updateData.commerce, "comment: ", updateData.myComment, "date: ", updateData.date);
-        updateSubTransaction(subCatId, updateData.amount, updateData.date, updateData.commerce)
-    }
+    const handleUpdateSubTransaction = async (e) => {
+        e.preventDefault(); // Empêche le rechargement du formulaire
+        const inputElement = document.getElementById("inputAmount");
+        if (!inputElement) {
+            console.error("Champ 'inputAmount' introuvable.");
+            return;
+        }
+        const amountStr = inputElement.value;
+        const newAmount = parseFloat(amountStr);
+
+        console.log("Nouveau montant :", newAmount);
+
+        if (isNaN(newAmount)) {
+            alert("Veuillez saisir un montant valide.");
+            return;
+        }
+        try {
+            // Appeler la fonction du store pour mettre à jour la sous-transaction
+            await updateSubTransaction(subCatId, newAmount);
+            alert("Montant mis à jour avec succès.");
+            setTiroirUpdateSubTransactionIsOpen(false);
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour du montant :", error);
+            alert("Une erreur est survenue lors de la mise à jour du montant.");
+        }
+    };
+
+
+
 
     // couleur aléatoire
     const generateRandomColor = () => {
@@ -473,24 +498,32 @@ const Datatable = ({dataDatatable}) => {
                     className="p-4 bg-gray-800 text-white fixed inset-0 flex flex-col items-center justify-center z-50">
                     <h2 className="text-lg font-bold mb-2">Modifier la sous-transaction</h2>
 
-                    <form className="max-w-sm mx-auto">
+                    <form className="max-w-sm mx-auto" onSubmit={(e) => handleUpdateSubTransaction(e)}>
                         <div className="grid grid-cols-1 gap-2 max-w-md mx-auto mt-3">
                             <div className="relative">
-                                <input type="text" id="inputAmount"
-                                       className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                       placeholder="Montant"/>
+                                <input
+                                    type="number"
+                                    id="inputAmount"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Montant"
+                                />
                             </div>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                            <button type="submit" className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded">
+                                Modifier
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setTiroirUpdateSubTransactionIsOpen(false)}
+                                className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded"
+                            >
+                                Annuler
+                            </button>
                         </div>
                     </form>
 
-                    <div className="mt-4 flex gap-2">
-                        <button
-                            onClick={() => setTiroirUpdateSubTransactionIsOpen(false)}
-                            className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded"
-                        >
-                            Fermer
-                        </button>
-                    </div>
+
                 </div>
             )}
         </>

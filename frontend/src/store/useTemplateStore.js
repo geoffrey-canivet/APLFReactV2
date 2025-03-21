@@ -4,6 +4,7 @@ import useLogHistoryStore from "./useLogHistoryStore.js";
 import useTransacFixeStore from "./useTransacFixeStore.js";
 import usePeriodStore from "./usePeriodStore.js";
 import useTransacRevenuStore from "./useTransacRevenuStore.js";
+import useTransacOccasStore from "./useTransacOccasStore.js";
 
 
 const useTemplateStore = create((set, get) => ({
@@ -224,7 +225,18 @@ const useTemplateStore = create((set, get) => ({
             if (!token) throw new Error("Token manquant.");
 
             const { month, year } = usePeriodStore.getState();
-            const { selectedTemplateType } = get(); // 🔥 Vérifie si c'est un template perso ou par défaut
+            const { selectedTemplateType } = get();
+
+            // Vérifier que le template n'est pas vide (pour les templates perso)
+            if (selectedTemplateType === "perso") {
+                const template = useTemplateStore.getState().templates.find(
+                    (t) => t.categoryId === categoryId
+                );
+                if (!template || !template.transactions || template.transactions.length === 0) {
+                    /*alert("Le template est vide");*/
+                    return; // On arrête l'exécution si le template est vide
+                }
+            }
 
             const endpoint =
                 selectedTemplateType === "perso"
@@ -242,6 +254,8 @@ const useTemplateStore = create((set, get) => ({
             console.log("✅ Template appliqué avec succès :", response.data);
 
             await useTransacFixeStore.getState().fetchFixeByPeriod(month, year);
+            await useTransacRevenuStore.getState().fetchRevenuByPeriod(month, year);
+            await useTransacOccasStore.getState().fetchOccasByPeriod(month, year);
 
         } catch (error) {
             console.error("Erreur applyTemplateToCategory :", error);

@@ -21,9 +21,9 @@ const Dashboard = () => {
     const setUser = useUserStore((state) => state.setUser);
     /*const user = useUserStore((state) => state.user);*/
 
-    const { avatar_url, uploadAvatar, user, showPeriod, fetchUser, updateUser, loading, error } = useUserStore();
+    const { avatar_url, uploadAvatar, user, showPeriod, showTemplate, fetchUser, updateUser, loading, error } = useUserStore();
 
-    console.log(showPeriod);
+    console.log("bouton -> " + showPeriod);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -87,8 +87,9 @@ const Dashboard = () => {
                     <TitreOutils/>
                     <AccordionsTools/>
 
-                        {showPeriod && <FloatingDatePicker/>}
-                        <FloatingTemplatePicker/>
+                        {showPeriod ? <FloatingDatePicker/> : null}
+                    {showTemplate ? <FloatingTemplatePicker/> : null}
+
 
 
 

@@ -48,17 +48,6 @@ const ModalUpdateTransaction = ({ closeModal, handleUpdateTransaction, transacti
                         </div>
                         <input type="text" id="inputNom" value="${name}" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:bg-gray-800 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Nom">
                     </div>
-                    <!-- Prix -->
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none ">
-                            <svg className="w-[24px] h-[24px] text-white dark:text-white" aria-hidden="true" width="20" height="20" fill="#9CA3AF" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M7 6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-2v-4a3 3 0 0 0-3-3H7V6Z" clip-rule="evenodd"/>
-                                <path fill-rule="evenodd" d="M2 11a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7Zm7.5 1a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z" clip-rule="evenodd"/>
-                                <path d="M10.5 14.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/>
-                            </svg>
-                        </div>
-                        <input type="number" id="inputPrix" value="${amount}" class="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Prix">
-                    </div>
                 </div>
             </form>
             <style>
@@ -119,7 +108,6 @@ const ModalUpdateTransaction = ({ closeModal, handleUpdateTransaction, transacti
             cancelButtonText: "Annuler",
             didOpen: () => {
                 document.getElementById("inputNom").value = name;
-                document.getElementById("inputPrix").value = amount;
 
                 const backdrop = document.querySelector(".swal2-backdrop-show");
                 if (backdrop) {
@@ -129,12 +117,11 @@ const ModalUpdateTransaction = ({ closeModal, handleUpdateTransaction, transacti
             },
             preConfirm: () => {
                 const updatedName = document.getElementById("inputNom").value;
-                const updatedAmount = document.getElementById("inputPrix").value;
-                if (!updatedName || !updatedAmount) {
+                if (!updatedName) {
                     Swal.showValidationMessage("Veuillez remplir tous les champs.");
                     return null;
                 }
-                return { name: updatedName, amount: updatedAmount };
+                return { name: updatedName};
             },
         }).then((result) => {
             if (result.isConfirmed) {

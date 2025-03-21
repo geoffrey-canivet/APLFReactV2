@@ -87,9 +87,17 @@ const ProfileUser = () => {
             alert("Erreur lors de la mise à jour du profil");
         }*/
         await Swal.fire({
+            background: "#1F2937",
+            color: "#ffffff",
             title: "Version de démonstration",
-            text: "La modification des données utilisateur sont bloquée dans la version de démonstration.",
-            icon: "info"
+            text: "Les modifications des données utilisateurs sont bloquéent dans la version de démonstration.",
+            icon: "info",
+            confirmButtonColor: "rgb(249 115 22)",
+            customClass: {
+                popup: 'custom-swal', // Pour personnaliser encore plus l'alerte
+                icon: 'custom-icon', // Pour personnaliser l'icône
+                confirmButton: 'custom-button' // Pour personnaliser le bouton
+            }
         });
     };
 

@@ -111,7 +111,7 @@ const CardTemplate = () => {
         try {
             const response = await addTransactionToTemplate(selectedCategory.id, transactionData);
 
-            // 🔥 Vérifie que la transaction a bien été ajoutée
+            /*// 🔥 Vérifie que la transaction a bien été ajoutée
             if (!response || !response.transaction) {
                 throw new Error("La transaction n'a pas été correctement ajoutée.");
             }
@@ -120,11 +120,11 @@ const CardTemplate = () => {
             useTemplateStore.setState((state) => ({
                 templates: state.templates.map(template =>
                     template.categoryId === selectedCategory.id
-                        ? { ...template, transactions: [...template.transactions, response.transaction] }
+                        ? { ...template, transactions: [...(template.transactions || []), response.transaction] }
                         : template
                 )
-            }));
-
+            }));*/
+            await fetchUserTemplates();
             closeModal();
         } catch (error) {
             console.error("Erreur lors de l'ajout d'une transaction au template :", error);
@@ -133,12 +133,12 @@ const CardTemplate = () => {
 
     // HANDLER SUPPRIMER UNE TRANSACTION D'UN TEMPLATE PERSO
     const handleDeleteTransactionTemplate = async (transactionId, templateId) => {
-        if (selectedTemplateType !== "perso") return; // 🔥 Sécurisation : Ne supprime que les transactions perso
+        if (selectedTemplateType !== "perso") return; // Sécurisation : Ne supprime que les transactions perso
 
         try {
             await deleteTransactionFromTemplate(transactionId, templateId);
 
-            // 🔥 Met à jour immédiatement l'état local pour retirer la transaction supprimée
+            // Met à jour immédiatement l'état local pour retirer la transaction supprimée
             useTemplateStore.setState((state) => ({
                 templates: state.templates.map(template =>
                     template.id === templateId
@@ -150,7 +150,7 @@ const CardTemplate = () => {
                 )
             }));
 
-            // 🔥 Recharge les templates depuis l'API pour être sûr que l'état est bien à jour
+            // Recharge les templates depuis l'API pour être sûr que l'état est bien à jour
             await fetchUserTemplates();
 
         } catch (error) {
@@ -165,10 +165,10 @@ const CardTemplate = () => {
     if (loading) return <p>Chargement...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
 
-    // 🔥 Sélectionner les bonnes données en fonction du type de template
+    // Sélectionner les bonnes données en fonction du type de template
     const activeTemplates = selectedTemplateType === "perso" ? templates : defaultTemplates;
 
-    // 🔥 Fusionner les catégories avec leurs templates existants
+    // Fusionner les catégories avec leurs templates existants
     const mergedCategories = defaultCategories.map(category => {
         const template = activeTemplates.find(t => t.category?.id === category.id);
         return { ...category, template };
@@ -181,7 +181,7 @@ const CardTemplate = () => {
                      onClick={() => setOpenDropdownId(null)}></div>
             )}
 
-            {/* 🔥 Sélecteur pour choisir les templates perso ou par défaut */}
+            {/* Sélecteur pour choisir les templates perso ou par défaut */}
             <form className="max-w-sm ml-6">
                 <div className="flex">
                     <select
@@ -196,7 +196,7 @@ const CardTemplate = () => {
                 </div>
             </form>
 
-            {/* 🔥 Affichage des templates en fonction de la sélection */}
+            {/* Affichage des templates en fonction de la sélection */}
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center m-5">
                 {mergedCategories.map(category => (
                     <div key={category.id}

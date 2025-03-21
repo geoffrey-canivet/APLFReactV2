@@ -33,9 +33,9 @@ const FloatingDatePicker = () => {
             {showDatePicker && (
                 <motion.div
                     ref={datePickerRef} // Référence pour détecter le clic extérieur
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
+                    initial={{opacity: 0, y: 10}}
+                    animate={{opacity: 1, y: 0}}
+                    exit={{opacity: 0, y: 10}}
                     className="mb-2 bg-white p-4 rounded-lg shadow-lg"
                 >
                     <DatePicker
@@ -46,11 +46,12 @@ const FloatingDatePicker = () => {
                 </motion.div>
             )}
 
-            <button
-                onClick={() => setShowDatePicker(!showDatePicker)}
-                className="bg-gray-600 text-white p-3 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-600 transition"
-            >
-                <FontAwesomeIcon icon={faCalendarDays} />
+
+            <button type="button"
+                    onClick={() => setShowDatePicker(!showDatePicker)}
+                    className="shadow-lg mt-5 relative inline-flex items-center p-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <FontAwesomeIcon style={{fontSize: "20px"}} icon={faCalendarDays}/>
+                <span className="sr-only">Périodes</span>
             </button>
         </div>
     );

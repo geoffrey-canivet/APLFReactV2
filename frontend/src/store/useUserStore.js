@@ -6,6 +6,7 @@ const useUserStore = create((set) => ({
     user: null,
     avatar_url: "",
     showPeriod: JSON.parse(localStorage.getItem("showPeriod")) ?? true,
+    showTemplate: JSON.parse(localStorage.getItem("showTemplate")) ?? true,
     setUser: (userData) => set({ user: userData }),
     clearUser: () => set({ user: null }),
     loading: false,
@@ -15,6 +16,12 @@ const useUserStore = create((set) => ({
         const newShowPeriod = !state.showPeriod;
         localStorage.setItem("showPeriod", JSON.stringify(newShowPeriod)); // Sauvegarde la nouvelle valeur
         return { showPeriod: newShowPeriod };
+    }),
+
+    toggleShowTemplate: () => set((state) => {
+        const newShowTemplate = !state.showTemplate;
+        localStorage.setItem("showTemplate", JSON.stringify(newShowTemplate)); // Sauvegarde la nouvelle valeur
+        return { showTemplate: newShowTemplate };
     }),
 
     fetchUser: async () => {

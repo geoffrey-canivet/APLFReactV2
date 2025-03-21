@@ -54,7 +54,7 @@ const transactionController = {
         }
     },
 
-    // SUPPRIMER TOUTES LES TRANSACTIONS D'UNE CATEGORIE POUR UNE PERIODE DONNÉE
+    // SUPPRIMER TOUTES LES TRANSACTIONS D'UNE CATEGORIE POUR UNE PERIODE DONNÉE (FIXE -REVENU)
     deleteAllTransactionsByCategory: async (req, res) => {
         try {
             const { categoryId, periodId } = req.body;
@@ -83,6 +83,34 @@ const transactionController = {
         }
     },
 
+    // SUPPRIMER TOUTES LES TRANSACTIONS D'UNE CATEGORIE POUR UNE PERIODE DONNÉE (OCCASIONNELLE)
+    deleteAllTransactionsByCategoryOccas: async (req, res) => {
+        try {
+            const { categoryId, periodId } = req.body;
+
+            if (!categoryId || !periodId) {
+                return res.status(400).json({ message: "L'ID de la catégorie et l'ID de la période sont requis." });
+            }
+
+            const category = await Category.findByPk(categoryId);
+            if (!category) {
+                return res.status(404).json({ message: "Catégorie non trouvée." });
+            }
+
+            const deletedCount = await Transaction.destroy({
+                where: { categoryId, periodId }
+            });
+
+            if (deletedCount === 0) {
+                return res.status(404).json({ message: "Aucune transaction trouvée pour cette catégorie et cette période." });
+            }
+
+            return res.status(200).json({ message: `Les transactions de la catégorie ${categoryId} pour la période ${periodId} ont été supprimées.` });
+        } catch (error) {
+            console.error("Erreur lors de la suppression des transactions :", error);
+            return res.status(500).json({ message: "Erreur interne du serveur" });
+        }
+    },
 
     // MODIFIER UNE TRANSACTION (NOM + AMOUNT)
     updateTransaction: async (req, res) => {
@@ -102,6 +130,52 @@ const transactionController = {
             await transaction.update({ name, amount });
 
             return res.status(200).json({ message: "Transaction mise à jour avec succès", transaction });
+        } catch (error) {
+
+        }
+    },
+
+    // MODIFIER UNE TRANSACTION (NOM)
+    updateTransactionName: async (req, res) => {
+
+        try {
+            const { transactionId, name} = req.body;
+
+            if (!transactionId || !name === undefined) {
+                return res.status(400).json({ message: "L'ID de la transaction, le nom et le montant sont requis" });
+            }
+
+            const transaction = await Transaction.findByPk(transactionId);
+            if (!transaction) {
+                return res.status(404).json({ message: "Transaction non trouvée" });
+            }
+
+            await transaction.update({ name});
+
+            return res.status(200).json({ message: "Transaction mise à jour avec succès", transaction });
+        } catch (error) {
+
+        }
+    },
+
+    // MODIFIER UNE TRANSACTION (Prix)
+    updateTransactionAmount: async (req, res) => {
+        try {
+            const {transactionId, amount} = req.body;
+
+            if (!transactionId || amount === undefined) {
+                return res.status(400).json({ message: "L'ID de la transaction, le montant est requis" });
+            }
+
+            const transaction = await Transaction.findByPk(transactionId);
+            if (!transaction) {
+                return res.status(404).json({ message: "Transaction non trouvée" });
+            }
+
+            await transaction.update({ amount});
+
+            return res.status(200).json({ message: "Transaction mise à jour avec succès", transaction });
+
         } catch (error) {
 
         }

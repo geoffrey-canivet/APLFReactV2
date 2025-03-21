@@ -139,11 +139,6 @@ const CardFixe = () => {
     };
     // MODAL USETEMPLATE
     const modalUseTemplate = async (categoryId) => {
-        /*const confirm = window.confirm("⚠️ Cette action remplacera toutes les transactions actuelles par celles du template sélectionné. Continuer ?");
-
-        if (confirm) {
-            await applyTemplateToCategory(categoryId); // ✅ Gère les templates perso et par défaut automatiquement
-        }*/
         setCurrentModal("modalUseTemplate");
         setCategoryId(categoryId);
     };
