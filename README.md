@@ -42,9 +42,9 @@ Formé en infographie et arts plastiques, je porte une attention particulière �
 
 - Refactorisation en TypeScript
 
-📩 **Je suis actuellement à la recherche d’une opportunité en tant que développeur React junior.**  
-Ce projet reflète mon implication, mon sens du détail et ma passion pour l’UI/UX.
-- 🔗 [Mon portfolio et mon CV](https://geoffreycanivet.netlify.app)
+## 📩 Contact
+**Je suis actuellement à la recherche d’une opportunité en tant que développeur React junior.**
+- 🔗 [Mon portfolio 2024 et mon CV](https://geoffreycanivet.netlify.app)
 - 📧 Contact : geoffreycanivet@gmail.com
 
 ## Guide d'utilisation
