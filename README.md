@@ -96,7 +96,7 @@ L'utilisateur peut, via le menu de navigation, accéder à son profil ainsi qu'�
 **Modification des informations :**  
 L'utilisateur peut ainsi mettre à jour ses données personnelles.
 
-![Texte alternatif](/imgReadme/Vite___React_2025_03_25_11_40_38.png)
+![Texte alternatif](/imgReadme/settingUser.png)
 
 ---
 
