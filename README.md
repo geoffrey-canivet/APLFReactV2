@@ -104,7 +104,7 @@ L'utilisateur peut ainsi mettre à jour ses données personnelles.
 
 L'utilisateur a la possibilité d'ajouter ou de supprimer un commerce. De plus, il peut choisir d'afficher ou de masquer certains boutons raccourcis (par exemple, le bouton « Période Flottante » et le bouton « Templates »).
 
-![Texte alternatif](/imgReadme/prefUser.png)
+![Texte alternatif](/imgReadme/Vite___React_2025_03_25_11_40_38.png)
 
 Sur la même page, un système d'historique enregistre l'intégralité des actions de l'utilisateur.
 
@@ -146,8 +146,6 @@ situé en haut du tableau de bord, lui permettant de consulter les transactions 
 Pour encore plus de facilité, il peut également utiliser un bouton flottant, situé en bas à droite de son 
 dashboard.
 Ce bouton peut être désactivé à tout moment via les préférences.
-
-![Texte alternatif](/imgReadme/periodes.png)
 
 ### 7️⃣ Outil template
 
