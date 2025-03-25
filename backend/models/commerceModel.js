@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             comment: "Identifiant de l'utilisateur associé",
             references: {
-                model: 'users', // Nom de la table utilisateur
+                model: 'users',
                 key: 'id'
             }
         },

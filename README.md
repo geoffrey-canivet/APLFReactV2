@@ -61,8 +61,7 @@ Ce guide a pour objectif d'aider l'utilisateur à prendre en main l'application 
 - 6️⃣ Gestion des périodes
 - 7️⃣ Outil template
 - 8️⃣ Outil calendrier 
-- 9️⃣ Outil détails du mois 
-- 🔟 Outil comparer les mois
+- 9️⃣ Outil détails du mois
 
 ---
 
@@ -178,4 +177,6 @@ de l'ensemble des opérations du mois sélectionné.
 
 ![Texte alternatif](/imgReadme/detailsMois.png)
 
+### Schéma DB
 
+![Texte alternatif](/imgReadme/Schema.png)

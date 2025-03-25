@@ -1,5 +1,5 @@
 const { Commerce } = require('../models');
-const { Op } = require('sequelize'); // Import de l'opérateur OR
+const { Op } = require('sequelize');
 
 const commerceController = {
     // Créer un commerce lié à l'utilisateur authentifié

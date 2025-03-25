@@ -3,12 +3,12 @@ const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config/db.js');
 
-// ✅ Création de l'instance Sequelize
+// Création de l'instance Sequelize
 const sequelizeInstance = new Sequelize(config);
 
 const db = {};
 
-// ✅ Lecture des fichiers modèles et synchronisation avec la base de données
+// Lecture des fichiers modèles et synchronisation avec la base de données
 fs.readdirSync(__dirname)
     .filter(file => {
         return (
@@ -22,14 +22,14 @@ fs.readdirSync(__dirname)
         db[model.name] = model;
     });
 
-// ✅ Configuration des relations entre les modèles
+// Configuration des relations entre les modèles
 Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {
         db[modelName].associate(db);
     }
 });
 
-// ✅ Ajouter l'instance Sequelize et la classe Sequelize
+// Ajouter l'instance Sequelize et la classe Sequelize
 db.sequelize = sequelizeInstance;
 db.Sequelize = Sequelize;
 

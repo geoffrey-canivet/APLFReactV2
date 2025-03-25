@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
 import {faCalendarDays, faClone} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"; // Icône de calendrier
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const FloatingDatePicker = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
